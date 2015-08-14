@@ -1,0 +1,63 @@
+################
+# Mac
+################
+.DS_Store
+.svn
+._*
+.Spotlight-V100
+.Trashes
+
+################
+# Xcode
+################
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+*.xcuserstate
+profile
+*.moved-aside
+DerivedData
+.idea/
+
+################
+# CocoaPods
+################
+Pods
+
+################
+# Eclipse
+################
+*.pydevproject
+.project
+.metadata
+build/**
+bin/**
+**/bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/src/main/resources/rebel.xml
+# External tool builders
+.externalToolBuilders/
+# Locally stored "Eclipse launch configurations"
+*.launch
+# CDT-specific
+.cproject
+# PDT-specific
+.buildpath
