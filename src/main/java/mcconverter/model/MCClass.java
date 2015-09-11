@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 public class MCClass extends MCEntity {
 	
 	private MCType parent;
+	private List<MCType> protocols;
 	private List<MCProperty> properties;
 	
 	public MCClass(String identifier, String name) {
@@ -24,6 +25,7 @@ public class MCClass extends MCEntity {
 		super ( identifier, name );
 		
 		this.parent = parent;
+		this.protocols = new ArrayList<MCType>();
 		this.properties = new ArrayList<MCProperty>();
 		
 	}
@@ -37,6 +39,24 @@ public class MCClass extends MCEntity {
 	public MCType getParent() {
 		
 		return parent;
+		
+	}
+	
+	public void addProtocol(MCType protocol) {
+		
+		protocols.add(protocol);
+		
+	}
+	
+	public boolean hasProtocols() {
+		
+		return getProtocols().size() > 0;
+		
+	}
+	
+	public List<MCType> getProtocols() {
+		
+		return protocols;
 		
 	}
 	

@@ -20,6 +20,8 @@ public enum MCNativeType {
 	
 	NonNative,
 	
+	Object,
+	
 	Boolean,
 	Integer,
 	Long,
@@ -46,6 +48,7 @@ public enum MCNativeType {
 		
 		Map<Type, MCNativeType> m = new HashMap<Type, MCNativeType>();
 		
+		m.put(Object.class, MCNativeType.Object);
 		m.put(Boolean.class, MCNativeType.Boolean);
 		m.put(boolean.class, MCNativeType.Boolean);
 		m.put(Integer.class, MCNativeType.Integer);

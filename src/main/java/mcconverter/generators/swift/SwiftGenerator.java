@@ -33,6 +33,9 @@ public class SwiftGenerator extends Generator {
 		
 		switch ( type.getNativeType() ) {
 			
+			case Object:
+				t = "AnyObject";
+				break;
 			case Boolean:
 				t = "Bool";
 				break;

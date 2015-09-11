@@ -69,5 +69,21 @@ public class MCPackage {
 		return cls;
 		
 	}
+	
+	public String toString() {
+		
+		String i = "[";
+		
+		for ( MCEntity entity : entities.values() ) {
+			
+			i += entity.toString() + "\n";
+			
+		}
+		
+		i += "]";
+		
+		return i;
+		
+	}
 
 }

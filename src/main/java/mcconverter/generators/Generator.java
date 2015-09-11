@@ -17,6 +17,8 @@ import mcconverter.model.*;
 
 public abstract class Generator {
 	
+	/* ===== Private Properties ===== */
+	
 	private MCPackage pack;
 	
 	private Configuration freemarker;
@@ -24,6 +26,9 @@ public abstract class Generator {
 	
 	public static final String Path = "/Users/Thomas/Desktop/Temp/";
 	
+	
+	
+	/* ===== Construction ===== */
 	
 	public Generator() {
 		
@@ -40,58 +45,75 @@ public abstract class Generator {
 		
 	}
 	
-	public MCPackage getPackage() {
+	
+	
+	/* ===== Public Functions ===== */
+	
+	public final void setPackage(MCPackage pack) {
+		
+		this.pack = pack;
+		
+	}
+	
+	public final MCPackage getPackage() {
 		
 		return pack;
 		
 	}
 	
 	
-	public final String generate(MCPackage pack) {
+	public final boolean generate() {
 		
-		this.pack = pack;
+		boolean correct = false;
 		
-		try {
-			
-			FileUtils.cleanDirectory(Path);
-			
-			for ( String identifier : getPackage().getEntityIdentifiers() ) {
-				
-				MCEntity entity = getPackage().getEntity(identifier);
-				
-				for (String name : getTemplates(entity)) {
+		if ( getPackage() != null ) {
 
-					Template template = freemarker.getTemplate(name);
+			try {
+				
+				FileUtils.cleanDirectory(Path);
+				
+				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
-					String fileName = generateFileName(entity);
+					MCEntity entity = getPackage().getEntity(identifier);
 					
-					FileWriter writer = new FileWriter(Path + fileName);
+					for (String name : getTemplates(entity)) {
+
+						Template template = freemarker.getTemplate(name);
+						
+						String fileName = generateFileName(entity);
+						
+						FileWriter writer = new FileWriter(Path + fileName);
+						
+						Map<String, Object> model = entity.getModel(this);
+						
+						model.put("file_name", fileName);
+						model.put("file_date", date);
+						
+						validateModel(entity, model);
+						
+						template.process(model, writer);
+						
+					}
 					
-					Map<String, Object> model = entity.getModel(this);
-					
-					model.put("file_name", fileName);
-					model.put("file_date", date);
-					
-					validateModel(entity, model);
-					
-					template.process(model, writer);
+					System.out.println("-> Generated: " + entity.getIdentifier());
 					
 				}
 				
+				correct = true;
+				
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+				
+			} catch (TemplateException e) {
+				
+				e.printStackTrace();
+				
 			}
-			
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-			
-		} catch (TemplateException e) {
-			
-			e.printStackTrace();
 			
 		}
 		
-		
-		return "";
+		return correct;
 		
 	}
 	
