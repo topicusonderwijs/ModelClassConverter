@@ -42,6 +42,7 @@ Pods
 build/**
 bin/**
 **/bin/**
+target/**
 tmp/**
 tmp/**/*
 *.tmp
