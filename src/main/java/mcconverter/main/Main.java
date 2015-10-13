@@ -11,8 +11,10 @@ import mcconverter.model.MCPackage;
 
 public class Main {
 	
-	public static final String[] DEPENDENCIES = { "nl.topicus.digdag:digdag-service-contract-v37:1.0" };
-	public static final String[] PACKAGES = { "nl.topicus.digdag.servicecontract.v37.model" };
+	public static final String PACKAGE_NAME = "Digdag";
+	
+	public static final String[] DEPENDENCIES = { "nl.topicus.digdag:digdag-service-contract:39" };
+	public static final String[] PACKAGES = { "nl.topicus.cobra.restcontract.model", "nl.topicus.digdag.servicecontract.model" };
 	public static final String[] DEEPEST_SUPERCLASSES = { "Linkable" };
 	public static final String[] IGNORED_CLASSES = { "package-info", "java.lang.Object", "java.lang.Enum" };
 	public static final String[] IGNORED_PROPERTIES = { "serialVersionUID" };
@@ -39,14 +41,14 @@ public class Main {
 				
 				System.out.println("\n\n\n ====== Analyzing ====== \n");
 				
-				MCPackage pack = analyzer.analyze(classes);
+				MCPackage pack = analyzer.analyze(PACKAGE_NAME, classes);
 				
 				
 				System.out.println("\n\n\n ====== Output ====== \n");
 				
 				System.out.println(pack.toString());
 				
-				Generator gen = new SwiftRestKitGenerator();
+				Generator gen = new SwiftObjectMapperGenerator();
 				
 				gen.setPackage(pack);
 				

@@ -48,6 +48,18 @@ public class MCEnum extends MCEntity {
 			
 		}
 		
+		public Map<String, Object> getModel(Generator generator) {
+			
+			Map<String, Object> model = super.getModel(generator);
+			
+			model.put("enum_value_name", generator.generateEnumValueName(this));
+			model.put("enum_value_rawType", getRawType());
+			model.put("enum_value_rawValue", getRawValue());
+			
+			return model;
+			
+		}
+		
 		public String toString(int indent) {
 			
 			String s = StringUtils.repeat("\t", indent) + "Value(" + getName();

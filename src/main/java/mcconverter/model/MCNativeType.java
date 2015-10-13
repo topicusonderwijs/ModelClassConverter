@@ -79,9 +79,21 @@ public enum MCNativeType {
 	
 	/* === Public Functions === */
 	
-	public String getIdentifier() {
+	public static MCNativeType fromName(String name) {
 		
-		return name();
+		MCNativeType type;
+		
+		try {
+			
+			type = fromType(Class.forName(name));
+			
+		} catch (ClassNotFoundException e) {
+			
+			type = MCNativeType.NonNative;
+			
+		}
+		
+		return type;
 		
 	}
 	
@@ -98,6 +110,26 @@ public enum MCNativeType {
 		return type;
 		
 	}
+	
+	public String getIdentifier() {
+		
+		return name();
+		
+	}
+	
+	public MCType toType() {
+		
+		return new MCType(this);
+		
+	}
+	
+	public MCType toType(boolean optional) {
+		
+		return new MCType(this, optional);
+		
+	}
+	
+	
 	
 	
 	

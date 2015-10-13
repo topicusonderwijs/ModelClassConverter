@@ -2,7 +2,11 @@ package mcconverter.conversion;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +19,11 @@ import org.reflections.ReflectionUtils;
 
 public class Analyzer {
 	
+	/* ===== Constants ===== */
+	
+	private static final String GenericsPattern = "(<.*>)";
+	
+	
 	/* ===== Private Properties ===== */
 	
 	private Map<String, Class<?>> classes;
@@ -24,7 +33,7 @@ public class Analyzer {
 	
 	/* ===== Public Functions ===== */
 	
-	public MCPackage analyze( Map< String, Class<?> > classes ) {
+	public MCPackage analyze( String name, Map< String, Class<?> > classes ) {
 		
 		this.classes = classes;
 		entities = new HashMap<String, MCEntity>();
@@ -35,7 +44,7 @@ public class Analyzer {
 			
 		}
 		
-		MCPackage pack = new MCPackage();
+		MCPackage pack = new MCPackage(name);
 		
 		for ( MCEntity entity : entities.values() ) {
 			
@@ -72,7 +81,13 @@ public class Analyzer {
 						
 						for ( Object enumValue : enumValues ) {
 							
-							dataEnum.addValue(enumValue.toString());
+							if ( enumValue instanceof Enum ) {
+								
+								Enum<?> eValue = (Enum<?>)enumValue;
+								
+								dataEnum.addValue(eValue.name(), MCNativeType.String.toType(), eValue.toString());
+								
+							}
 							
 						}
 						
@@ -113,7 +128,7 @@ public class Analyzer {
 							
 							if ( !ArrayUtils.contains(Main.IGNORED_PROPERTIES, propertyName) ) {
 								
-								MCType propertyType = analyzeType(property.getType());
+								MCType propertyType = analyzeType(property.getGenericType());
 								
 								if ( propertyType != null ) {
 									
@@ -147,14 +162,14 @@ public class Analyzer {
 		
 	}
 	
-	private MCType analyzeType(Class<?> classType) {
+	private MCType analyzeType(Type type) {
 		
-		MCType t;
+		MCType t = null;
 		boolean optional = true;
 		
 		//Determine if optional
 		@SuppressWarnings("unchecked")
-		Set<Annotation> annotations = ReflectionUtils.getAnnotations(classType);
+		Set<Annotation> annotations = ReflectionUtils.getAnnotations(type.getClass());
 		
 		for ( Annotation annotation : annotations ) {
 			
@@ -162,50 +177,52 @@ public class Analyzer {
 			
 		}
 		
+		//Determine parameters
+		List<MCType> parameters = new ArrayList<MCType>();
 		
-		MCNativeType nativeType = MCNativeType.fromType(classType);
-		/*List<MCType> parameters = new ArrayList<MCType>();
-		
-		TypeVariable<?>[] parameterTypes = classType.getTypeParameters();
-		
-		for ( TypeVariable<?> parameterType : parameterTypes ) {
+		if ( type instanceof ParameterizedType ) {
 			
-			Object generic = parameterType.getGenericDeclaration();
+			Type[] aTypes = ((ParameterizedType)type).getActualTypeArguments();
 			
-			if ( generic instanceof Class ) {
+			for ( Type aType : aTypes ) {
 				
-				Class<?> genericClass = (Class<?>)generic;
+				MCType parameter = analyzeType(aType);
 				
-				genericClass.get
-				
-				System.out.println("Generic: " + genericClass);
-				
-				MCType p = analyzeType(genericClass);
-				
-				if ( p != null ) {
+				if ( parameter != null ) {
 					
-					parameters.add(p);
+					parameters.add(parameter);
 					
 				}
 				
 			}
 			
 		}
-		*/
 		
-		if ( nativeType != MCNativeType.NonNative ) {
+		//Determine if native type
+		MCNativeType nativeType;
+
+		//Strips away the generics
+		String baseType = type.getTypeName().replaceAll(GenericsPattern, "");
+		
+		if ( !baseType.equals(type.getTypeName()) ) {
 			
-			t = new MCType(nativeType, optional);
+			nativeType = MCNativeType.fromName(baseType);
 			
 		} else {
 			
-			t = new MCType(classType.getName(), optional);
+			nativeType = MCNativeType.fromType(type);
 			
 		}
 		
-		
-		//System.out.println(t);
-		
+		if ( nativeType != MCNativeType.NonNative ) {
+			
+			t = new MCType(nativeType, parameters, optional);
+			
+		} else {
+			
+			t = new MCType(baseType, parameters, optional);
+			
+		}
 		
 		return t;
 		

@@ -62,7 +62,7 @@ public class MCClass extends MCEntity {
 	
 	public void addProperty( String name, MCType type ) {
 		
-		getProperties().add( new MCProperty(getIdentifier() + "." + name , name, type) );
+		getProperties().add( new MCProperty(getIdentifier() + "." + name , name, name, type) );
 		
 	}
 	
@@ -84,7 +84,7 @@ public class MCClass extends MCEntity {
 		
 		if ( hasParent() ) {
 			
-			model.put("class_parent", generator.generateType(getParent()));
+			model.put("class_parent", generator.generateTypeName(getParent()));
 			
 		}
 		

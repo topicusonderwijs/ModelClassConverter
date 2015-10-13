@@ -1,17 +1,17 @@
 //  
 //  ${file_name}
 //  ${entity_identifier}
-//  Digdag
+//  ${package_name}
 //  
 //  Automatically generated on ${file_date}.
 //  
 
 import Foundation
 
-enum ${entity_name} {
+enum ${entity_name} : String {
 	
 	<#list enum_values as value>
-	case ${value.entity_name}
+	case ${value.enum_value_name}<#if value.enum_value_rawValue??> = "${value.enum_value_rawValue}" </#if>
 	</#list>
 	
 }

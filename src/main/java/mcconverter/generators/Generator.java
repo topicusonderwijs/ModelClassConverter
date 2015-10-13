@@ -83,8 +83,10 @@ public abstract class Generator {
 						String fileName = generateFileName(entity);
 						
 						FileWriter writer = new FileWriter(Path + fileName);
-						
+
 						Map<String, Object> model = entity.getModel(this);
+						
+						model.put("package_name", getPackage().getName());
 						
 						model.put("file_name", fileName);
 						model.put("file_date", date);
@@ -117,12 +119,30 @@ public abstract class Generator {
 		
 	}
 	
+	public final String generateTypeName(MCType type, int parameter) {
+		
+		return generateTypeName(type.getParameter(parameter));
+		
+	}
+	
 	/**
 	 * Returns the template to be used for the given entity.
 	 */
 	public abstract List<String> getTemplates(MCEntity entity);
 	
-	public abstract String generateType(MCType type);
+	/**
+	 * Returns the name to be used for the given property.
+	 * This can be used to prevent from using names that are for instance keywords.
+	 */
+	public abstract String generatePropertyName(MCProperty property);
+	
+	public abstract String generateEnumValueName(MCEnum.MCEnumValue value);
+	
+	/**
+	 * Returns the property syntax for representing the given type.
+	 */
+	public abstract String generateTypeName(MCType type);
+	
 	
 	public abstract String generateFileName(MCEntity entity);
 	

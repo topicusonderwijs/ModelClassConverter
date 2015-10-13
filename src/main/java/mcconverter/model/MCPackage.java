@@ -6,11 +6,19 @@ import java.util.Set;
 
 public class MCPackage {
 	
+	private String name;
 	private Map<String, MCEntity> entities;
 	
-	public MCPackage() {
+	public MCPackage(String name) {
 		
+		this.name = name;
 		entities = new HashMap<String, MCEntity>();
+		
+	}
+	
+	public String getName() {
+		
+		return name;
 		
 	}
 	

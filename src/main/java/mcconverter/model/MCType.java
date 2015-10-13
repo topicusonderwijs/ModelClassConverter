@@ -1,6 +1,10 @@
 package mcconverter.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import mcconverter.generators.Generator;
 
 public class MCType {
 	
@@ -15,15 +19,21 @@ public class MCType {
 	
 	/* ===== Construction ===== */
 	
+	public MCType(MCNativeType nativeType) {
+		
+		this(nativeType, false);
+		
+	}
+	
 	public MCType(MCNativeType nativeType, boolean optional) {
 		
 		this(nativeType, null, optional);
 		
 	}
 	
-	public MCType(MCNativeType NativeType, List<MCType> parameters, boolean optional) {
+	public MCType(MCNativeType nativeType, List<MCType> parameters, boolean optional) {
 		
-		this.nativeType = NativeType;
+		this.nativeType = nativeType;
 		this.parameters = parameters;
 		this.identifier = nativeType.getIdentifier();
 		this.optional = optional;
@@ -32,11 +42,18 @@ public class MCType {
 	
 	public MCType(String identifier, boolean optional) {
 		
+		this(identifier, null, optional);
+		
+	}
+	
+	public MCType(String identifier, List<MCType> parameters, boolean optional) {
+		
 		this.nativeType = MCNativeType.NonNative;
+		this.parameters = parameters;
 		this.identifier = identifier;
 		this.optional = optional;
 		
-	}
+	}	
 	
 	
 	
@@ -75,6 +92,53 @@ public class MCType {
 	public List<MCType> getParameters() {
 		
 		return parameters;
+		
+	}
+	
+	/**
+	 * Determines and returns whether the type has exactly the given amount of parameters.
+	 */
+	public boolean hasParameterCount(int count) {
+		
+		return hasParameters() && getParameters().size() == count;
+		
+	}
+	
+	/**
+	 * Determines and returns whether the type has a parameter at the given index.
+	 */
+	public boolean hasParameter(int index) {
+		
+		return hasParameters() && index >= 0 && index < getParameters().size();
+		
+	}
+	
+	/**
+	 * Determines and returns the parameter at the given index or null if there is none.
+	 */
+	public MCType getParameter(int index) {
+		
+		MCType parameter = null;
+		
+		if ( hasParameter(index) ) {
+			
+			parameter = getParameters().get(index);
+			
+		}
+		
+		return parameter;
+		
+	}
+	
+	public Map<String, Object> getModel(Generator generator) {
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		model.put("type_identifier", getIdentifier());
+		model.put("type_name", generator.generateTypeName(this));
+		model.put("type_optional", isOptional());
+		
+		return model;
 		
 	}
 	
