@@ -10,23 +10,29 @@ import org.apache.commons.lang.StringUtils;
 
 public class MCClass extends MCEntity {
 	
+	private MCType type;
 	private MCType parent;
-	private List<MCType> protocols;
 	private List<MCProperty> properties;
 	
-	public MCClass(String identifier, String name) {
+	public MCClass(MCType type, String name) {
 		
-		this( identifier, name, null );
+		this( type, name, null );
 		
 	}
 	
-	public MCClass(String identifier, String name, MCType parent) {
+	public MCClass(MCType type, String name, MCType parent) {
 		
-		super ( identifier, name );
+		super ( type.getIdentifier(), name );
 		
+		this.type = type;
 		this.parent = parent;
-		this.protocols = new ArrayList<MCType>();
 		this.properties = new ArrayList<MCProperty>();
+		
+	}
+	
+	public MCType getType() {
+		
+		return type;
 		
 	}
 	
@@ -42,27 +48,9 @@ public class MCClass extends MCEntity {
 		
 	}
 	
-	public void addProtocol(MCType protocol) {
+	public void addProperty(MCProperty property) {
 		
-		protocols.add(protocol);
-		
-	}
-	
-	public boolean hasProtocols() {
-		
-		return getProtocols().size() > 0;
-		
-	}
-	
-	public List<MCType> getProtocols() {
-		
-		return protocols;
-		
-	}
-	
-	public void addProperty( String name, MCType type ) {
-		
-		getProperties().add( new MCProperty(getIdentifier() + "." + name , name, name, type) );
+		getProperties().add(property);
 		
 	}
 	
@@ -84,7 +72,7 @@ public class MCClass extends MCEntity {
 		
 		if ( hasParent() ) {
 			
-			model.put("class_parent", generator.generateTypeName(getParent()));
+			model.put("class_parent", generator.generateTypeLiteral(getParent()));
 			
 		}
 		
@@ -97,6 +85,7 @@ public class MCClass extends MCEntity {
 		}
 		
 		model.put("class_properties", properties);
+		model.put("class_type", getType().getModel(generator));
 		
 		return model;
 		

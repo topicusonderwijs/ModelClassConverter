@@ -119,12 +119,6 @@ public abstract class Generator {
 		
 	}
 	
-	public final String generateTypeName(MCType type, int parameter) {
-		
-		return generateTypeName(type.getParameter(parameter));
-		
-	}
-	
 	/**
 	 * Returns the template to be used for the given entity.
 	 */
@@ -141,8 +135,9 @@ public abstract class Generator {
 	/**
 	 * Returns the property syntax for representing the given type.
 	 */
-	public abstract String generateTypeName(MCType type);
+	public abstract String generateTypeLiteral(MCType type);
 	
+	public abstract String generateTypeParameterLiteral(MCTypeParameter parameter);
 	
 	public abstract String generateFileName(MCEntity entity);
 	

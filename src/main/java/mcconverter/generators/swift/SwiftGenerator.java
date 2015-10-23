@@ -27,7 +27,7 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public String generateTypeName(MCType type) {
+	public String generateTypeLiteral(MCType type) {
 		
 		String t = "AnyObject";
 		
@@ -68,11 +68,12 @@ public class SwiftGenerator extends Generator {
 					break;
 					
 				case List:
-					t = "[" + generateTypeName(type, 0) + "]";
+					
+					t = "[" + generateTypeParameterLiteral(type.getParameter(0), false) + "]";
 					break;
 					
 				case Set:
-					t = "Set<" + generateTypeName(type, 0) + ">";
+					t = "Set<" + generateTypeParameterLiteral(type.getParameter(0), false) + ">";
 					break;
 					
 				case URI:
@@ -80,11 +81,17 @@ public class SwiftGenerator extends Generator {
 					break;
 					
 				case Map:
-					t = "[" + generateTypeName(type, 0) + ": " + generateTypeName(type, 1) + "]";
+					t = "["
+						+ generateTypeParameterLiteral(type.getParameter(0), false)
+						+ ": "
+						+ generateTypeParameterLiteral(type.getParameter(1), false)
+						+ "]";
 					break;
+					
 				case Date:
 					t = "NSDate";
 					break;
+					
 				case LocalTime:
 					t = "NSDate";
 					break;
@@ -124,6 +131,12 @@ public class SwiftGenerator extends Generator {
 		return t;
 	}
 	
+	public String generateTypeParameterLiteral(MCTypeParameter parameter) {
+		
+		return generateTypeParameterLiteral(parameter, true);
+		
+	}
+	
 	public String generatePropertyName(MCProperty property) {
 		
 		return replacePropertyName(property.getName());
@@ -157,6 +170,37 @@ public class SwiftGenerator extends Generator {
 		if ( name.equals("id") ) {
 			
 			name = "objectId";
+			
+		}
+		
+		return name;
+		
+	}
+	
+	private String generateTypeParameterLiteral(MCTypeParameter parameter, boolean applyType) {
+		
+		String name = "";
+		
+		if ( parameter != null ) {
+			
+			applyType &= parameter.hasType();
+			
+			if ( parameter.hasName() ) {
+				name = parameter.getName();
+				
+				if ( applyType ) {
+					name += " : ";
+				}
+				
+			}
+			
+			if ( !parameter.hasName() || applyType ) {
+				name += generateTypeLiteral(parameter.getType().copy(false));
+			}
+			
+		} else {
+			
+			name = "AnyObject";
 			
 		}
 		

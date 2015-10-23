@@ -1,5 +1,6 @@
 package mcconverter.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,8 @@ public class MCType {
 	private String identifier;
 	private MCNativeType nativeType;
 	private boolean optional;
-	private List<MCType> parameters;
+	private List<MCTypeParameter> parameters;
+	private List<MCType> protocols;
 	
 	
 	
@@ -31,10 +33,11 @@ public class MCType {
 		
 	}
 	
-	public MCType(MCNativeType nativeType, List<MCType> parameters, boolean optional) {
+	public MCType(MCNativeType nativeType, List<MCTypeParameter> parameters, boolean optional) {
 		
 		this.nativeType = nativeType;
 		this.parameters = parameters;
+		this.protocols = new ArrayList<MCType>();
 		this.identifier = nativeType.getIdentifier();
 		this.optional = optional;
 		
@@ -46,10 +49,17 @@ public class MCType {
 		
 	}
 	
-	public MCType(String identifier, List<MCType> parameters, boolean optional) {
+	public MCType(String identifier, List<MCTypeParameter> parameters) {
+		
+		this(identifier, parameters, false);
+		
+	}
+	
+	public MCType(String identifier, List<MCTypeParameter> parameters, boolean optional) {
 		
 		this.nativeType = MCNativeType.NonNative;
 		this.parameters = parameters;
+		this.protocols = new ArrayList<MCType>();
 		this.identifier = identifier;
 		this.optional = optional;
 		
@@ -89,7 +99,7 @@ public class MCType {
 		
 	}
 	
-	public List<MCType> getParameters() {
+	public List<MCTypeParameter> getParameters() {
 		
 		return parameters;
 		
@@ -116,9 +126,9 @@ public class MCType {
 	/**
 	 * Determines and returns the parameter at the given index or null if there is none.
 	 */
-	public MCType getParameter(int index) {
+	public MCTypeParameter getParameter(int index) {
 		
-		MCType parameter = null;
+		MCTypeParameter parameter = null;
 		
 		if ( hasParameter(index) ) {
 			
@@ -130,15 +140,88 @@ public class MCType {
 		
 	}
 	
+	/**
+	 * Determines and returns a copy of the type of the parameter at the given index.
+	 * The returned type is set to be non-optional.
+	 */
+	public MCType getNonOptionalParameterType(int index) {
+		
+		MCType type = null;
+		
+		MCTypeParameter parameter = getParameter(index);
+		
+		if ( parameter != null ) {
+			
+			type = parameter.getType().copy(false);
+			
+		}
+		
+		return type;
+		
+	}
+	
+	public void addProtocol(MCType protocol) {
+		
+		protocols.add(protocol);
+		
+	}
+	
+	public boolean hasProtocols() {
+		
+		return getProtocols().size() > 0;
+		
+	}
+	
+	public List<MCType> getProtocols() {
+		
+		return protocols;
+		
+	}
+	
 	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		
+		List<Map<String, Object>> parameters = new ArrayList<Map<String, Object>>();
+		
+		for ( MCTypeParameter parameter : getParameters() ) {
+			
+			parameters.add(parameter.getModel(generator));
+			
+		}
+		model.put("type_parameters", parameters);
+		
 		model.put("type_identifier", getIdentifier());
-		model.put("type_name", generator.generateTypeName(this));
+		model.put("type_literal", generator.generateTypeLiteral(this));
 		model.put("type_optional", isOptional());
 		
 		return model;
+		
+	}
+	
+	/**
+	 * Creates and returns a copy of the type with its optional property set to the given value.
+	 */
+	public MCType copy(boolean optional) {
+		
+		MCType copy;
+		
+		if ( isNativeType() ) {
+			copy = new MCType(getNativeType(), getParameters(), optional);
+		} else {
+			copy = new MCType(getIdentifier(), getParameters(), optional);
+		}
+		
+		return copy;
+		
+	}
+	
+	/**
+	 * Creates and returns a copy of the type.
+	 */
+	public MCType copy() {
+		
+		return copy(isOptional());
 		
 	}
 	
@@ -166,7 +249,7 @@ public class MCType {
 			
 			boolean first = true;
 			
-			for (MCType parameter : getParameters()) {
+			for (MCTypeParameter parameter : getParameters()) {
 				
 				if ( !first ) {
 					

@@ -9,10 +9,11 @@
 import Foundation
 import ObjectMapper
 
-class ${entity_name} : <#if class_parent??>${class_parent}, </#if>Mappable {
+class ${entity_name} <#if ( class_type.type_parameters?size > 0)><<#list class_type.type_parameters as parameter><#t>
+${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_parent??>${class_parent}, </#if>Mappable {
 	
 	<#list class_properties as property>
-	var ${property.property_name} : ${property.property_type.type_name}
+	var ${property.property_name} : ${property.property_type.type_literal}
 	</#list><#t>
 	
 	<#if class_parent??>override </#if>required init?(_ map: Map) {

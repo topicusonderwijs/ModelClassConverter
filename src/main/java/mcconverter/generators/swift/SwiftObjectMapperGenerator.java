@@ -32,7 +32,7 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	
 	public String generateTypeName(MCType type) {
 		
-		String t = super.generateTypeName(type);
+		String t = super.generateTypeLiteral(type);
 		
 		if ( type != null ) {
 			
