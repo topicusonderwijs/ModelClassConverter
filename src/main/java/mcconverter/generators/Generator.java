@@ -13,6 +13,7 @@ import org.codehaus.plexus.util.FileUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import mcconverter.main.Main;
 import mcconverter.model.*;
 
 public abstract class Generator {
@@ -24,7 +25,7 @@ public abstract class Generator {
 	private Configuration freemarker;
 	private String date;
 	
-	public static final String Path = "/Users/Thomas/Desktop/Temp/";
+	public static final String Path = Main.OUTPUT_LOCATION;
 	
 	
 	
@@ -75,6 +76,8 @@ public abstract class Generator {
 				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
 					MCEntity entity = getPackage().getEntity(identifier);
+					
+					validateEntity(entity);
 					
 					for (String name : getTemplates(entity)) {
 
@@ -130,6 +133,11 @@ public abstract class Generator {
 	 */
 	public abstract String generatePropertyName(MCProperty property);
 	
+	public abstract String generatePropertyLiteral(MCProperty property);
+	
+	public abstract String generatePropertyMapping(MCProperty property);
+	
+	
 	public abstract String generateEnumValueName(MCEnum.MCEnumValue value);
 	
 	/**
@@ -140,6 +148,8 @@ public abstract class Generator {
 	public abstract String generateTypeParameterLiteral(MCTypeParameter parameter);
 	
 	public abstract String generateFileName(MCEntity entity);
+	
+	public abstract void validateEntity(MCEntity entity);
 	
 	public abstract void validateModel(MCEntity entity, Map<String, Object> model);
 	

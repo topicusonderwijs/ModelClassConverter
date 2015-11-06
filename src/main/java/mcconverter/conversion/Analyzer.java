@@ -10,11 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.*;
-
+import javassist.Modifier;
 import mcconverter.main.Main;
 import mcconverter.model.*;
 
@@ -27,7 +24,7 @@ public class Analyzer {
 	/* ===== Constants ===== */
 	
 	private static final String GenericsPattern = "(<.*>)";
-	private static final Pattern PropertyKeyPattern = Pattern.compile("(property=)(.*)(,.*)");
+	//private static final Pattern PropertyKeyPattern = Pattern.compile("(property=)([^,]*),");
 	
 	
 	/* ===== Private Properties ===== */
@@ -177,23 +174,33 @@ public class Analyzer {
 			String propertyName = property.getName();
 			
 			if ( !ArrayUtils.contains(Main.IGNORED_PROPERTIES, propertyName) ) {
-				
-				MCType propertyType = analyzeType(property.getGenericType());
+
 				String propertyKey = propertyName;
+				boolean propertyTypeNonOptional = false;
 				
-				for ( Annotation annotation : property.getAnnotations() ) {
+				Annotation[] annotations = property.getAnnotations();
+				
+				for ( Annotation annotation : annotations ) {
 					
-					//TODO: Extract property key
+					propertyTypeNonOptional = propertyTypeNonOptional || annotation.toString().contains("required=true");
 					
+				}
+				
+				int modifiers = property.getModifiers();
+				
+				MCType propertyType = analyzeType(property.getGenericType(), !propertyTypeNonOptional);
+				String propertyValue = null;
+				boolean propertyStatic = Modifier.isStatic(modifiers);
+				boolean propertyConstant = Modifier.isFinal(modifiers);
+				
+				if ( propertyStatic && propertyType.isNativeType(MCNativeType.String) ) {
 					
-					if ( annotation.toString().contains("property")) {
+					try {
+						propertyValue = property.get(null).toString();
+					} catch (IllegalArgumentException e) {
 						
-						System.err.println("Match: " + annotation.toString());
-					}
-					
-					Matcher matcher = PropertyKeyPattern.matcher(annotation.toString());
-					if ( matcher.find() ) {
-						propertyKey = matcher.group(2);
+					} catch (IllegalAccessException e) {
+						
 					}
 					
 				}
@@ -202,7 +209,10 @@ public class Analyzer {
 					dataClass.getIdentifier() + "." + propertyName,
 					propertyName,
 					propertyKey,
-					propertyType
+					propertyType,
+					propertyValue,
+					propertyStatic,
+					propertyConstant
 				));
 				
 			}
@@ -215,22 +225,16 @@ public class Analyzer {
 	
 	private MCType analyzeType(Type type) {
 		
+		return analyzeType(type, true);
+		
+	}
+	
+	private MCType analyzeType(Type type, boolean optional) {
+		
 		MCType t = null;
-		boolean optional = true;
-		
-		//Determine if optional
-		@SuppressWarnings("unchecked")
-		Set<Annotation> annotations = ReflectionUtils.getAnnotations(type.getClass());
-		
-		for ( Annotation annotation : annotations ) {
-			
-			optional = optional || annotation.toString().contains("required=true");
-			
-		}
 		
 		//Determine parameters
 		List<MCTypeParameter> parameters = analyzeTypeParameter(type);
-		
 		
 		//Determine if native type
 		MCNativeType nativeType;

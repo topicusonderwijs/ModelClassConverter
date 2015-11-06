@@ -81,6 +81,12 @@ public class MCType {
 		
 	}
 	
+	public boolean isNativeType(MCNativeType type) {
+		
+		return isNativeType() && getNativeType() == type;
+		
+	}
+	
 	public MCNativeType getNativeType() {
 		
 		return nativeType;
@@ -90,6 +96,12 @@ public class MCType {
 	public boolean isOptional() {
 		
 		return optional;
+		
+	}
+	
+	public void setOptional(boolean optional) {
+		
+		this.optional = optional;
 		
 	}
 	
@@ -184,13 +196,30 @@ public class MCType {
 		
 		List<Map<String, Object>> parameters = new ArrayList<Map<String, Object>>();
 		
-		for ( MCTypeParameter parameter : getParameters() ) {
-			
-			parameters.add(parameter.getModel(generator));
+		if ( hasParameters() ) {
+
+			for ( MCTypeParameter parameter : getParameters() ) {
+				
+				parameters.add(parameter.getModel(generator));
+				
+			}
 			
 		}
-		model.put("type_parameters", parameters);
 		
+		List<Map<String, Object>> protocols = new ArrayList<Map<String, Object>>();
+		
+		if ( hasProtocols() ) {
+
+			for ( MCType protocol : getProtocols() ) {
+				
+				protocols.add(protocol.getModel(generator));
+				
+			}
+			
+		}
+		
+		model.put("type_parameters", parameters);
+		model.put("type_protocols", protocols);
 		model.put("type_identifier", getIdentifier());
 		model.put("type_literal", generator.generateTypeLiteral(this));
 		model.put("type_optional", isOptional());

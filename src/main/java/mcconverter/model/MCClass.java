@@ -13,6 +13,7 @@ public class MCClass extends MCEntity {
 	private MCType type;
 	private MCType parent;
 	private List<MCProperty> properties;
+	private List<MCProperty> constants;
 	
 	public MCClass(MCType type, String name) {
 		
@@ -27,6 +28,7 @@ public class MCClass extends MCEntity {
 		this.type = type;
 		this.parent = parent;
 		this.properties = new ArrayList<MCProperty>();
+		this.constants = new ArrayList<MCProperty>();
 		
 	}
 	
@@ -50,7 +52,15 @@ public class MCClass extends MCEntity {
 	
 	public void addProperty(MCProperty property) {
 		
-		getProperties().add(property);
+		if ( property.isConstant() ) {
+			
+			getConstants().add(property);
+			
+		} else {
+			
+			getProperties().add(property);
+			
+		}
 		
 	}
 	
@@ -60,9 +70,46 @@ public class MCClass extends MCEntity {
 		
 	}
 	
+	public boolean hasProperty(String name) {
+		
+		return getProperty(name) != null;
+		
+	}
+	
+	public MCProperty getProperty(String name) {
+		
+		MCProperty property = null;
+		
+		for (MCProperty current : getProperties()) {
+			
+			if ( current.getName().equals(name) ) {
+				
+				property = current;
+				break;
+				
+			}
+			
+		}
+		
+		return property;
+		
+	}
+	
 	public List<MCProperty> getProperties() {
 		
 		return properties;
+		
+	}
+	
+	public boolean hasConstants() {
+		
+		return getConstants().size() > 0;
+		
+	}
+	
+	public List<MCProperty> getConstants() {
+		
+		return constants;
 		
 	}
 	
@@ -76,6 +123,14 @@ public class MCClass extends MCEntity {
 			
 		}
 		
+		List<Map<String, Object>> constants = new ArrayList<Map<String, Object>>();
+		
+		for ( MCProperty constant : getConstants() ) {
+			
+			constants.add(constant.getModel(generator));
+			
+		}
+		
 		List<Map<String, Object>> properties = new ArrayList<Map<String, Object>>();
 		
 		for ( MCProperty property : getProperties() ) {
@@ -84,6 +139,7 @@ public class MCClass extends MCEntity {
 			
 		}
 		
+		model.put("class_constants", constants);
 		model.put("class_properties", properties);
 		model.put("class_type", getType().getModel(generator));
 		

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.CaseFormat;
+
 import mcconverter.generators.Generator;
 import mcconverter.model.*;
 
@@ -139,19 +141,81 @@ public class SwiftGenerator extends Generator {
 	
 	public String generatePropertyName(MCProperty property) {
 		
-		return replacePropertyName(property.getName());
+		String name = replacePropertyName(property.getName());
+		
+		if ( property.isConstant() ) {
+			
+			name = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name);
+			
+		}
+		
+		return name;
+		
+	}
+	
+	public String generatePropertyLiteral(MCProperty property) {
+		
+		String literal = "";
+		
+		if ( property.isStatic() ) {
+			
+			literal += "static ";
+			
+		}
+		
+		literal += ( property.isConstant() ? "let " : "var " );
+		literal += generatePropertyName(property);
+		
+		if ( property.hasValue() ) {
+			
+			literal += " = \"" + property.getValue() + "\"";
+			
+		} else {
+			
+			literal += " : " + generateTypeLiteral(property.getType());
+			
+			String propertyValue = null;
+			
+			switch ( property.getType().getNativeType() ) {
+			case List:
+				propertyValue = "[]";
+				break;
+			default:
+				break;
+			}
+			
+			if ( propertyValue != null ) {
+				
+				literal += " = " + propertyValue;				
+			}
+			
+		}
+		
+		return literal;
+		
+	}
+	
+	public String generatePropertyMapping(MCProperty property) {
+		
+		return "";
 		
 	}
 	
 	public String generateEnumValueName(MCEnum.MCEnumValue value) {
 		
-		return replacePropertyName(value.getName());
+		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, replacePropertyName(value.getName()));
 		
 	}
 	
 	public String generateFileName(MCEntity entity) {
 		
 		return entity.getName() + ".swift";
+		
+	}
+	
+	public void validateEntity(MCEntity entity) {
+		
+		
 		
 	}
 	
@@ -170,6 +234,10 @@ public class SwiftGenerator extends Generator {
 		if ( name.equals("id") ) {
 			
 			name = "objectId";
+			
+		} else if ( name.toLowerCase().equals("self") ) {
+			
+			name = "zelf";
 			
 		}
 		

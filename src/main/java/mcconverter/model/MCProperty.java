@@ -10,13 +10,26 @@ public class MCProperty extends MCEntity {
 
 	private String key;
 	private MCType type;
+	private String value;
+	private boolean isStatic;
+	private boolean isConstant;
 	
 	public MCProperty(String identifier, String name, String key, MCType type) {
 		
+		this(identifier, name, key, type, null, false, false);
+		
+	}
+	
+	public MCProperty(String identifier, String name, String key, MCType type, String value, boolean isStatic, boolean isConstant) {
+		
 		super( identifier, name );
 		
-		this.key = key;
+		setKey(key);
+		
 		this.type = type;
+		this.value = value;
+		this.isStatic = isStatic;
+		this.isConstant = isConstant;
 		
 	}
 	
@@ -26,9 +39,39 @@ public class MCProperty extends MCEntity {
 		
 	}
 	
+	public void setKey(String key) {
+		
+		this.key = key;
+		
+	}
+	
 	public MCType getType() {
 		
 		return type;
+		
+	}
+	
+	public boolean hasValue() {
+		
+		return getValue() != null;
+		
+	}
+	
+	public String getValue() {
+		
+		return value;
+		
+	}
+	
+	public boolean isStatic() {
+		
+		return isStatic;
+		
+	}
+	
+	public boolean isConstant() {
+		
+		return isConstant;
 		
 	}
 	
@@ -36,9 +79,14 @@ public class MCProperty extends MCEntity {
 		
 		Map<String, Object> model = super.getModel(generator);
 		
+		model.put("property_literal", generator.generatePropertyLiteral(this));
 		model.put("property_name", generator.generatePropertyName(this));
 		model.put("property_key", getKey());
 		model.put("property_type", getType().getModel(generator));
+		model.put("property_value", getValue());
+		model.put("property_isStatic", isStatic());
+		model.put("property_isConstant", isConstant());
+		model.put("property_mapping", generator.generatePropertyMapping(this));
 		
 		return model;
 		
