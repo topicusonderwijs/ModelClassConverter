@@ -74,7 +74,7 @@ public class MCType {
 		return identifier;
 		
 	}
-	
+		
 	public boolean isNativeType() {
 		
 		return nativeType != MCNativeType.NonNative;
@@ -217,7 +217,8 @@ public class MCType {
 			}
 			
 		}
-		
+
+		model.put("type_name", generator.generateTypeName(this));
 		model.put("type_parameters", parameters);
 		model.put("type_protocols", protocols);
 		model.put("type_identifier", getIdentifier());

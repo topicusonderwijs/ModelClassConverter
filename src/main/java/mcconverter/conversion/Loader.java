@@ -12,10 +12,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import mcconverter.configuration.Configuration;
 import mcconverter.main.Main;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 import com.tobedevoured.naether.DependencyException;
 import com.tobedevoured.naether.URLException;
@@ -25,9 +23,6 @@ import com.tobedevoured.naether.impl.NaetherImpl;
 public class Loader {
 	
 	/* ===== Private Properties ===== */
-	
-	private String[] dependencies;
-	private String[] packages;
 	
 	private URLClassLoader loader;
 	private Map<String, Class<?>> classes;
@@ -49,30 +44,6 @@ public class Loader {
 	
 	
 	/* ===== Public Functions ===== */
-	
-	public final void setDependencies(String[] dependencies) {
-		
-		this.dependencies = dependencies;
-		
-	}
-	
-	public final String[] getDependencies() {
-		
-		return dependencies;
-		
-	}
-	
-	public final void setPackages(String[] packages) {
-		
-		this.packages = packages;
-		
-	}
-	
-	public final String[] getPackages() {
-		
-		return packages;
-		
-	}
 	
 	public final boolean hasClass(String name) {
 		
@@ -103,7 +74,7 @@ public class Loader {
 			try {
 				
 				//Determine dependencies
-				for ( String dependency : dependencies) {
+				for ( String dependency : Configuration.current().getDependencies()) {
 					
 					n.addDependency(dependency);
 					
@@ -200,8 +171,7 @@ public class Loader {
 				if ( verifyClass(c, indent) ) {
 					
 					classes.put(name, c);
-					
-					System.out.println(StringUtils.repeat("\t", indent) + "-> Loaded: " + name);
+					Main.entry("Loaded", name, indent);
 					
 					Class<?> s = determineSuperClass(c);
 					
@@ -216,7 +186,7 @@ public class Loader {
 				
 			} catch (ClassNotFoundException e) {
 				
-				System.err.println("Could not find: " + name);
+				Main.fatal("Could not find: " + name);
 				
 			}
 			
@@ -232,7 +202,7 @@ public class Loader {
 		
 		if ( indent == 0 ) {
 			
-			for ( String pack : packages ) {
+			for ( String pack : Configuration.current().getPackages() ) {
 				
 				valid = valid || c.getName().startsWith( pack ); //Also need super classes!
 				
@@ -245,8 +215,8 @@ public class Loader {
 		}
 		
 		return valid &&
-				!ArrayUtils.contains(Main.IGNORED_CLASSES, c.getName()) &&
-				!ArrayUtils.contains(Main.IGNORED_CLASSES, c.getSimpleName());
+				!Configuration.current().getIgnoredClasses().contains(c.getName()) &&
+				!Configuration.current().getIgnoredClasses().contains(c.getSimpleName());
 		
 	}
 	
@@ -255,9 +225,9 @@ public class Loader {
 		Class<?> s = c.getSuperclass();
 		
 		if ( s != null && (
-			ArrayUtils.contains(Main.DEEPEST_SUPERCLASSES, c.getName())
+			Configuration.current().getDeepestSuperClasses().contains(c.getName())
 			||
-			ArrayUtils.contains(Main.DEEPEST_SUPERCLASSES, c.getSimpleName())
+			Configuration.current().getDeepestSuperClasses().contains(c.getSimpleName())
 		)) {
 			
 			s = null;

@@ -1,7 +1,7 @@
 //  
 //  ${file_name}
 //  ${entity_identifier}
-//  ${package_name}
+//  ${product_name}
 //  
 //  Automatically generated on ${file_date}.
 //  

@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javassist.Modifier;
+import mcconverter.configuration.Configuration;
 import mcconverter.main.Main;
 import mcconverter.model.*;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.reflections.ReflectionUtils;
 
@@ -24,7 +24,7 @@ public class Analyzer {
 	/* ===== Constants ===== */
 	
 	private static final String GenericsPattern = "(<.*>)";
-	//private static final Pattern PropertyKeyPattern = Pattern.compile("(property=)([^,]*),");
+	
 	
 	
 	/* ===== Private Properties ===== */
@@ -36,7 +36,7 @@ public class Analyzer {
 	
 	/* ===== Public Functions ===== */
 	
-	public MCPackage analyze( String name, Map< String, Class<?> > classes ) {
+	public MCPackage analyze(String name, Map< String, Class<?> > classes) {
 		
 		this.classes = classes;
 		entities = new HashMap<String, MCEntity>();
@@ -63,7 +63,13 @@ public class Analyzer {
 	
 	/* ===== Private Functions ===== */
 	
-	private MCEntity analyze ( Class<?> c, int indent ) {
+	private static final Configuration getConfiguration() {
+		
+		return Configuration.current();
+		
+	}
+	
+	private MCEntity analyze(Class<?> c, int indent) {
 		
 		MCEntity dataEntity = null;
 		
@@ -72,7 +78,11 @@ public class Analyzer {
 			String identifier = c.getCanonicalName();
 			String name = c.getSimpleName();
 			
-			if ( !entities.containsKey(identifier) && classes.containsKey(identifier) && !StringUtils.isEmpty(name) ) {
+			if ( entities.containsKey(identifier) ) {
+				
+				dataEntity = entities.get(identifier);
+				
+			} else if ( classes.containsKey(identifier) && !StringUtils.isEmpty(name) ) {
 					
 				MCEnum dataEnum = analyzeEnum(c, identifier, name);
 				
@@ -89,8 +99,7 @@ public class Analyzer {
 				if ( dataEntity != null ) {
 					
 					entities.put(dataEntity.getIdentifier(), dataEntity);
-					
-					System.out.println(StringUtils.repeat("\t", indent) + "-> Analyzed: " + dataEntity.getIdentifier());
+					Main.entry("Analyzed", dataEntity.getIdentifier(), indent);
 					
 				}
 				
@@ -132,14 +141,6 @@ public class Analyzer {
 	
 	private MCClass analyzeClass(Class<?> c, String identifier, String name, int indent) {
 		
-		MCClass dataClass;
-		
-		// TODO: Filtering on super class and interfaces should occur here
-		// The loader already loads all classes necessary, only the top level classes should be passed to the analyzer!
-		// This means functionality of the loader should be moved to the analyzer.
-		// The analyzer should then get the super class and interfaces through reflection!
-		// This also applies for the generics realization.
-		
 		//Determine parameters
 		List<MCTypeParameter> parameters = new ArrayList<MCTypeParameter>();
 		
@@ -150,20 +151,33 @@ public class Analyzer {
 		}
 		
 		MCType dataType = new MCType(identifier, parameters);
+		MCClass dataClass = new MCClass( dataType, name, c.isInterface() );
 		
-		//Determine super class
-		MCEntity superEntity = analyze(c.getSuperclass(), indent + 1);
+		//Determine parent
+		MCEntity parentEntity = analyze(c.getSuperclass(), indent + 1);
 		
-		if ( superEntity != null && superEntity instanceof MCClass ) {
+		if ( parentEntity != null && parentEntity instanceof MCClass ) {
 			
-			dataClass = new MCClass( dataType, name, ((MCClass)superEntity).getType() );
-			
-		} else {
-			
-			dataClass = new MCClass( dataType, name );
+			dataClass.setParent(((MCClass)parentEntity).getType());
 			
 		}
 		
+		//Determine protocols
+		if ( !getConfiguration().getIgnoreProtocols() ) {
+
+			for ( Class<?> protocol : c.getInterfaces() ) {
+				
+				MCEntity protocolEntity = analyze(protocol, indent + 1);
+				
+				if ( protocolEntity != null && protocolEntity instanceof MCClass ) {
+					
+					dataClass.getType().addProtocol(((MCClass)protocolEntity).getType());
+					
+				}
+				
+			}
+			
+		}
 		
 		//Analyze properties
 		@SuppressWarnings("unchecked")
@@ -173,7 +187,7 @@ public class Analyzer {
 			
 			String propertyName = property.getName();
 			
-			if ( !ArrayUtils.contains(Main.IGNORED_PROPERTIES, propertyName) ) {
+			if ( !getConfiguration().getIgnoredProperties().contains(propertyName) ) {
 
 				String propertyKey = propertyName;
 				boolean propertyTypeNonOptional = false;

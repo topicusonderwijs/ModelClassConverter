@@ -2,6 +2,10 @@ package mcconverter.main;
 
 import java.util.Map;
 
+import org.codehaus.plexus.util.StringUtils;
+
+import mcconverter.configuration.Configuration;
+import mcconverter.configuration.ConfigurationParser;
 import mcconverter.conversion.Analyzer;
 import mcconverter.conversion.Loader;
 import mcconverter.generators.*;
@@ -10,86 +14,150 @@ import mcconverter.model.MCPackage;
 
 public class Main {
 	
-	public static final String PACKAGE_NAME = "Parro";
-	
-	public static final String[] DEPENDENCIES = {
-		//"nl.topicus.digdag:digdag-service-contract:39"
-		"nl.topicus.geon:geon-rest-contract:1-SNAPSHOT"
-	};
-	public static final String[] PACKAGES = {
-		"nl.topicus.cobra.restcontract.model",
-		//"nl.topicus.digdag.servicecontract.model"
-		"nl.topicus.geon.restcontract.model"
-	};
-	public static final String[] ANNOTATIONS = {
-		
-	};
-	public static final String[] DEEPEST_SUPERCLASSES = { "Linkable" };
-	public static final String[] IGNORED_CLASSES = { "package-info", "java.lang.Object", "java.lang.Enum" };
-	public static final String[] IGNORED_PROPERTIES = { "serialVersionUID" };
-	
-	public static final String GENERATOR_NAME = "mcconverter.generators.swift.SwiftObjectMapperParroGenerator";
-	
-	public static final String OUTPUT_LOCATION = "/Users/Thomas/Development/Topicus/geon/geon-ios/comm/Geon/Communication/rest/entities/generated/";
-	
+	public static final String DefaultConfigurationLocation = "conf/digdag.xml";
 	
 	public static void main(String[] args) {
 		
-		Loader loader = new Loader();
+		//Determine location of configuration
+		String location = DefaultConfigurationLocation;
 		
-		loader.setDependencies(DEPENDENCIES);
-		loader.setPackages(PACKAGES);
-		
-		System.out.println("\n\n\n ====== Loading ====== \n");
-		
-		if ( loader.load() ) {
+		if ( args.length > 0 ) {
 			
-			Map<String, Class<?>> classes = loader.getClasses();
+			location = args[0];
 			
-			if ( classes != null ) {
+		}
+		
+		//Parse configuration
+		ConfigurationParser parser = new ConfigurationParser(location);
+		if ( !parser.parse() ) {
+			
+			fatal("Could not parse configuration");
+			
+		} else {
+			
+			Configuration.setCurrent(parser.getConfiguration());
+			
+			//Load classes
+			header("Loading");
+			
+			Loader loader = new Loader();
+			if ( !loader.load() ) {
 				
-				Analyzer analyzer = new Analyzer();
+				fatal("Could not load classes");
 				
-				System.out.println("\n\n\n ====== Analyzing ====== \n");
+			} else {
 				
-				MCPackage pack = analyzer.analyze(PACKAGE_NAME, classes);
-				
-				
-				System.out.println("\n\n\n ====== Output ====== \n");
-				
-				System.out.println(pack.toString());
-				
-				Generator generator = null;
-				
-				try {
+				Map<String, Class<?>> classes = loader.getClasses();
+				if ( classes == null ) {
 					
-					Object gen = Class.forName(GENERATOR_NAME).newInstance();
+					fatal("Could not extract classes from loader");
 					
-					if ( gen instanceof Generator ) {
-						generator = (Generator)gen;
+				} else {
+					
+					//Analyze classes
+					header("Analyzing");
+					
+					Analyzer analyzer = new Analyzer();
+					MCPackage pack = analyzer.analyze(Configuration.current().getProductName(), classes);
+					
+					//Find generator
+					Generator generator = null;
+					
+					try {
+						
+						Object gen = Class.forName(Configuration.current().getGeneratorName()).newInstance();
+						
+						if ( gen instanceof Generator ) {
+							generator = (Generator)gen;
+						}
+						
+					} catch (ClassNotFoundException e) {
+						
+						fatal("Class for generator not found");
+						
+					} catch (InstantiationException e) {
+						
+						fatal("Could not intialize generator");
+						
+					} catch (IllegalAccessException e) {
+						
+						fatal("Not allowed to initialize generator");
+						
 					}
 					
-				} catch (ClassNotFoundException e) {
-					System.err.println("Generator not found");
-				} catch (InstantiationException e) {
-					System.err.println("Could not intialize generator");
-				} catch (IllegalAccessException e) {
-					System.err.println("Not allowed to initialize generator");
-				}
-				
-				if ( generator != null ) {
-					
-					generator.setPackage(pack);
-					
-					System.out.println("\n\n\n ====== Generating ====== \n");
-					
-					generator.generate();
+					if ( generator == null ) {
+						
+						fatal("No valid class for generator found");
+						
+					} else {
+						
+						//Generate classes
+						header("Generating");
+						generator.setPackage(pack);
+						
+						if ( generator.generate() ) {
+							
+							header("Finished");
+							info("✅ Finished generating to " + Configuration.current().getOutputLocation());
+							
+						}
+						
+					}
 					
 				}
 				
 			}
 			
 		}
+		
+	}
+	
+	/**
+	 * Outputs the given title as a header.
+	 */
+	public static void header(String title) {
+		
+		info("\n\n\n ━━━━━━━━━━ " + title + " ━━━━━━━━━━ \n");
+		
+	}
+	
+	/**
+	 * Outputs an entry with given name and content.
+	 * The given indent is applied as well.
+	 * An entry is for instance an analyzed entity.
+	 */
+	public static void entry(String name, String content, int indent) {
+		
+		info(StringUtils.repeat("\t", indent) +  "→ " + name + ": " + content);
+		
+	}
+	
+	/**
+	 * Outputs the given message.
+	 */
+	public static void info(String message) {
+		
+		System.out.println(message);
+		
+	}
+	
+	/**
+	 * Outputs the given message as a warning.
+	 */
+	public static void warning(String message) {
+		
+		System.err.println("Warning: " + message);
+		
+	}
+	
+	/**
+	 * Outputs the given message as fatal error.
+	 * The application will exit after the output is displayed.
+	 */
+	public static void fatal(String message) {
+		
+		System.err.println("❌️ Error: " + message);
+		System.exit(0);
 		
 	}
 	

@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<mcconverter>
+	
+	<!--
+		The name of the product that will be using the generated model classes.
+	-->
+	<product name="Digdag" />
+	
+	<!--
+		The path to read the templates from.
+		This can be relative to the working directory or absolute.
+	-->
+	<template path="templates/" />
+	
+	<!--
+		The path to write the generated classes to.
+		This can be relative to the working directory or absolute.
+	-->
+	<output path="/Users/Thomas/Development/Topicus/digdag/mobile/ios-entities/generated" />
+	
+	<!--
+		The class name of the generator to be used.
+		Builtin generators are:
+			mcconverter.generators.swift.SwiftObjectMapperGenerator
+			mcconverter.generators.swift.SwiftRestKitGenerator
+	-->
+	<generator name="mcconverter.generators.swift.SwiftRestKitGenerator" />
+	
+	<!--
+		The Maven dependencies required by the classes.
+		Note that any related dependencies will automatically be resolved if required and possible.
+	-->
+	<dependencies>
+		<dependency name="nl.topicus.digdag:digdag-service-contract:40" />
+	</dependencies>
+	
+	
+	<!--
+		The packages containing the classes that should be converted.
+	-->
+	<packages>
+		<package name="nl.topicus.cobra.restcontract.model" />
+		<package name="nl.topicus.digdag.servicecontract.model" />
+	</packages>
+	
+	<!--
+		The deepest super classes to consider for converting.
+	-->
+	<deepestSuperClasses>
+		<deepestSuperClass name="Linkable" />
+	</deepestSuperClasses>
+	
+	<!--
+		The classes that will be completely ignored.
+		Note that subclasses of these will indeed be converted.
+	-->
+	<ignoredClasses>
+		<ignoredClass name="" />
+	</ignoredClasses>
+	
+	<!--
+		The property that will be completely ignored.
+	-->
+	<ignoredProperties>
+		<ignoredProperty name="" />
+	</ignoredProperties>
+	
+	<!--
+		A flag indicating whether protocols (or interfaces) should be ignored.
+	-->
+	<ignoreProtocols value="true" />
+	
+	<!--
+		Entities that require custom mapping.
+		Note that native entities are mapped automatically and do not have to be listed.
+	-->
+	<mappedEntities>
+		<mappedEntity from="ILinkable" to="Linkable" />
+	</mappedEntities>
+	
+</mcconverter>

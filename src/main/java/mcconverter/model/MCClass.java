@@ -5,32 +5,38 @@ import java.util.List;
 import java.util.Map;
 
 import mcconverter.generators.Generator;
+import mcconverter.main.Main;
 
 import org.apache.commons.lang.StringUtils;
 
 public class MCClass extends MCEntity {
 	
+	/* ===== Private Properties ===== */
+	
 	private MCType type;
 	private MCType parent;
 	private List<MCProperty> properties;
 	private List<MCProperty> constants;
+	private boolean isProtocol;
 	
-	public MCClass(MCType type, String name) {
-		
-		this( type, name, null );
-		
-	}
 	
-	public MCClass(MCType type, String name, MCType parent) {
+	
+	/* ===== Construction ===== */
+	
+	public MCClass(MCType type, String name, boolean isProtocol) {
 		
 		super ( type.getIdentifier(), name );
 		
 		this.type = type;
-		this.parent = parent;
 		this.properties = new ArrayList<MCProperty>();
 		this.constants = new ArrayList<MCProperty>();
+		this.isProtocol = isProtocol;
 		
 	}
+	
+	
+	
+	/* ===== Public Functions ===== */
 	
 	public MCType getType() {
 		
@@ -47,6 +53,18 @@ public class MCClass extends MCEntity {
 	public MCType getParent() {
 		
 		return parent;
+		
+	}
+	
+	public void setParent(MCType parent) {
+		
+		this.parent = parent;
+		
+	}
+	
+	public boolean isProtocol() {
+		
+		return isProtocol;
 		
 	}
 	
@@ -139,8 +157,16 @@ public class MCClass extends MCEntity {
 			
 		}
 		
+		model.put("class_isProtocol", isProtocol());
 		model.put("class_constants", constants);
 		model.put("class_properties", properties);
+		
+		if ( getName().equals("LinkableWrapper")) {
+			
+			Main.info("LinkableWrapper");
+			
+		}
+		
 		model.put("class_type", getType().getModel(generator));
 		
 		return model;

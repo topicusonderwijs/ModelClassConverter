@@ -7,9 +7,16 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.generators.Generator;
+import mcconverter.main.Main;
 import mcconverter.model.*;
 
 public class SwiftGenerator extends Generator {
+	
+	public List<String> getTemplates(MCPackage pack) {
+		
+		return new ArrayList<String>();
+		
+	}
 	
 	public List<String> getTemplates(MCEntity entity) {
 		
@@ -29,6 +36,90 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
+	public String generateTypeName(MCType type) {
+		
+		String name = "AnyObject";
+		
+		if ( type != null ) {
+			
+			switch ( type.getNativeType() ) {
+				
+				case Boolean:
+					name = "Bool";
+					break;
+				case Integer:
+					name = "Int";
+					break;
+				case Long:
+					name = "Int64";
+					break;
+				case BigInteger:
+					name = "Int64";
+					break;
+				case Double:
+					name = "Double";
+					break;
+				case Float:
+					name = "Float";
+					break;
+				case BigDecimal:
+					name = "Double";
+					break;
+				case String:
+					name = "String";
+					break;
+				case List:
+					name = "Array";
+					break;
+				case Set:
+					name = "Set";
+					break;
+				case URI:
+					name = "NSURL";
+					break;
+				case Map:
+					name = "Dictionary";
+					break;
+				case Date:
+					name = "NSDate";
+					break;
+				case LocalTime:
+					name = "NSDate";
+					break;
+				case DateTime:
+					name = "NSDate";
+					break;
+				case LocalDate:
+					name = "NSDate";
+					break;
+				default:
+					
+					if ( getPackage().hasEntity(type.getIdentifier())) {
+						
+						name = getPackage().getEntity(type.getIdentifier()).getName();
+						
+					} else {
+						
+						Main.warning("Ignoring identifier: " + type.getIdentifier());
+						
+					}
+					
+					if ( getConfiguration().hasMappedEntity(name) ) {
+						
+						name = getConfiguration().getMappedEntity(name);
+						
+					}
+					
+					break;
+					
+			}
+				
+		}
+			
+		return name;	
+		
+	}
+	
 	public String generateTypeLiteral(MCType type) {
 		
 		String t = "AnyObject";
@@ -37,51 +128,12 @@ public class SwiftGenerator extends Generator {
 
 			switch ( type.getNativeType() ) {
 				
-				case Boolean:
-					t = "Bool";
-					break;
-					
-				case Integer:
-					t = "Int";
-					break;
-					
-				case Long:
-					t = "Long";
-					break;
-					
-				case BigInteger:
-					t = "Long";
-					break;
-					
-				case Double:
-					t = "Double";
-					break;
-					
-				case Float:
-					t = "Float";
-					break;
-					
-				case BigDecimal:
-					t = "Double";
-					break;
-					
-				case String:
-					t = "String";
-					break;
-					
 				case List:
-					
 					t = "[" + generateTypeParameterLiteral(type.getParameter(0), false) + "]";
 					break;
-					
 				case Set:
 					t = "Set<" + generateTypeParameterLiteral(type.getParameter(0), false) + ">";
 					break;
-					
-				case URI:
-					t = "NSURL";
-					break;
-					
 				case Map:
 					t = "["
 						+ generateTypeParameterLiteral(type.getParameter(0), false)
@@ -89,35 +141,8 @@ public class SwiftGenerator extends Generator {
 						+ generateTypeParameterLiteral(type.getParameter(1), false)
 						+ "]";
 					break;
-					
-				case Date:
-					t = "NSDate";
-					break;
-					
-				case LocalTime:
-					t = "NSDate";
-					break;
-					
-				case DateTime:
-					t = "NSDate";
-					break;
-					
-				case LocalDate:
-					t = "NSDate";
-					break;
-					
 				default:
-					
-					if ( getPackage().hasEntity(type.getIdentifier())) {
-						
-						t = getPackage().getEntity(type.getIdentifier()).getName();
-						
-					} else {
-						
-						System.err.println("Unknown identifier: " + type.getIdentifier());
-						
-					}
-					
+					t = generateTypeName(type);
 					break;
 				
 			}
@@ -186,7 +211,8 @@ public class SwiftGenerator extends Generator {
 			
 			if ( propertyValue != null ) {
 				
-				literal += " = " + propertyValue;				
+				literal += " = " + propertyValue;
+				
 			}
 			
 		}
@@ -207,9 +233,29 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
+	public String generateFileName(MCPackage pack) {
+		
+		return null;
+		
+	}
+	
 	public String generateFileName(MCEntity entity) {
 		
-		return entity.getName() + ".swift";
+		String name = entity.getName() + ".swift";;
+		
+		if ( entity instanceof MCClass ) {
+			
+			MCClass c = (MCClass)entity;
+			
+			if ( getConfiguration().getIgnoreProtocols() && c.isProtocol() ) {
+				
+				name = null;
+				
+			}
+			
+		}
+		
+		return name;
 		
 	}
 	
@@ -219,9 +265,30 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public void validateModel(MCEntity entity, Map<String, Object> model) {
+	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
 		
+		return true;
 		
+	}
+	
+	public boolean validateModel(MCEntity entity, Map<String, Object> model) {
+		
+		boolean valid = true;
+		
+		if ( entity instanceof MCClass ) {
+			
+			MCClass c = (MCClass)entity;
+			
+			if ( getConfiguration().getIgnoreProtocols() ) {
+				
+				valid = !c.isProtocol();
+				model.remove("class_protocols");
+				
+			}
+			
+		}
+		
+		return valid;
 		
 	}
 	
@@ -275,7 +342,5 @@ public class SwiftGenerator extends Generator {
 		return name;
 		
 	}
-	
-	
 	
 }

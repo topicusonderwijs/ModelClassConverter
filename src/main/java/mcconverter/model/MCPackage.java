@@ -1,8 +1,13 @@
 package mcconverter.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import mcconverter.generators.Generator;
 
 public class MCPackage {
 	
@@ -46,6 +51,12 @@ public class MCPackage {
 		
 	}
 	
+	public boolean hasClass(String identifier) {
+		
+		return getClass(identifier) != null;
+		
+	}
+	
 	public MCClass getClass(String identifier) {
 		
 		MCClass cls = null;
@@ -62,6 +73,12 @@ public class MCPackage {
 		
 	}
 	
+	public boolean hasEnum(String identifier) {
+		
+		return getEnum(identifier) != null;
+		
+	}
+	
 	public MCEnum getEnum(String identifier) {
 		
 		MCEnum cls = null;
@@ -75,6 +92,35 @@ public class MCPackage {
 		}
 		
 		return cls;
+		
+	}
+	
+	public Map<String, Object> getModel(Generator generator) {
+		
+		List<Map<String, Object>> entities = new ArrayList<Map<String, Object>>();
+		
+		List<String> entityIdentifiers = new ArrayList<String>(getEntityIdentifiers());
+		Collections.sort(entityIdentifiers);
+		
+		for ( String entityIdentifier : entityIdentifiers ) {
+			
+			MCEntity entity = getEntity(entityIdentifier);
+			
+			Map<String, Object> entityModel = entity.getModel(generator);
+			if ( generator.validateModel(entity, entityModel) ) {
+				
+				entities.add(entityModel);
+				
+			}
+			
+		}
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		model.put("package_name", getName());
+		model.put("package_entities", entities);
+		
+		return model;
 		
 	}
 	
