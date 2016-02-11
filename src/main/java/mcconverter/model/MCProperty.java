@@ -6,7 +6,7 @@ import mcconverter.generators.Generator;
 
 import org.apache.commons.lang.StringUtils;
 
-public class MCProperty extends MCEntity {
+public class MCProperty extends MCEntity implements MCModelable {
 
 	private String key;
 	private MCType type;
@@ -30,6 +30,8 @@ public class MCProperty extends MCEntity {
 		this.value = value;
 		this.isStatic = isStatic;
 		this.isConstant = isConstant;
+		
+		type.setOwner(this);
 		
 	}
 	

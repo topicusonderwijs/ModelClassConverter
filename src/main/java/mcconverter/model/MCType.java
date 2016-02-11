@@ -7,13 +7,14 @@ import java.util.Map;
 
 import mcconverter.generators.Generator;
 
-public class MCType {
+public class MCType implements MCModelable {
 	
 	/* ===== Private Properties ===== */
 	
 	private String identifier;
 	private MCNativeType nativeType;
 	private boolean optional;
+	private MCModelable owner;
 	private List<MCTypeParameter> parameters;
 	private List<MCType> protocols;
 	
@@ -21,21 +22,35 @@ public class MCType {
 	
 	/* ===== Construction ===== */
 	
+	/**
+	 * Construction a type from the given native type.
+	 * The constructed type is not optional.
+	 */
 	public MCType(MCNativeType nativeType) {
 		
 		this(nativeType, false);
 		
 	}
 	
+	/**
+	 * Constructs a type from the given native type which can be potentially optional.
+	 */
 	public MCType(MCNativeType nativeType, boolean optional) {
 		
 		this(nativeType, null, optional);
 		
 	}
 	
+	/**
+	 * Constructs a type from the given native type.
+	 * @param nativeType The native type of the type.
+	 * @param parameters The type parameters of the type.
+	 * @param optional A flag indicating whether the type is optional (`true`) or not (`false`).
+	 */
 	public MCType(MCNativeType nativeType, List<MCTypeParameter> parameters, boolean optional) {
 		
 		this.nativeType = nativeType;
+		this.owner = null;
 		this.parameters = parameters;
 		this.protocols = new ArrayList<MCType>();
 		this.identifier = nativeType.getIdentifier();
@@ -74,16 +89,39 @@ public class MCType {
 		return identifier;
 		
 	}
-		
+	
+	/**
+	 * Determines and returns whether the type is a native type.
+	 */
 	public boolean isNativeType() {
 		
 		return nativeType != MCNativeType.NonNative;
 		
 	}
 	
-	public boolean isNativeType(MCNativeType type) {
+	/**
+	 * Determines and returns whether the type is one of the given native types.
+	 */
+	public boolean isNativeType(MCNativeType... types) {
 		
-		return isNativeType() && getNativeType() == type;
+		boolean nativeType = false;
+		
+		if ( isNativeType() ) {
+
+			for ( MCNativeType type : types ) {
+				
+				if ( getNativeType() == type ) {
+					
+					nativeType = true;
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		return nativeType;
 		
 	}
 	
@@ -104,6 +142,37 @@ public class MCType {
 		this.optional = optional;
 		
 	}
+	
+	/**
+	 * Determines and returns whether the type has an owner.
+	 */
+	public boolean hasOwner() {
+		
+		return getOwner() != null;
+		
+	}
+	
+	/**
+	 * Returns the owner of the type if available.
+	 * If there is no owner then `null` is returned.
+	 * The owner of a type can be a class, property or type parameter depending on where it is used.
+	 * TODO: Perhaps there should be subclasses to distinguish between the different uses of type.
+	 */
+	public MCModelable getOwner() {
+		
+		return owner;
+		
+	}
+	
+	/**
+	 * Sets the owner of the type.
+	 */
+	public void setOwner(MCModelable owner) {
+		
+		this.owner = owner;
+		
+	}
+	
 	
 	public boolean hasParameters() {
 		
@@ -172,18 +241,35 @@ public class MCType {
 		
 	}
 	
+	
 	public void addProtocol(MCType protocol) {
 		
 		protocols.add(protocol);
 		
 	}
 	
+	public void addProtocols(List<MCType> protocols) {
+		
+		for ( MCType protocol : protocols ) {
+			
+			protocols.add(protocol);
+			
+		}
+		
+	}
+	
+	/**
+	 * Determines and returns whether the type implements any protocols (or interfaces).
+	 */
 	public boolean hasProtocols() {
 		
 		return getProtocols().size() > 0;
 		
 	}
 	
+	/**
+	 * Returns the protocols that the type implements if available.
+	 */
 	public List<MCType> getProtocols() {
 		
 		return protocols;
@@ -231,6 +317,7 @@ public class MCType {
 	
 	/**
 	 * Creates and returns a copy of the type with its optional property set to the given value.
+	 * All other properties of the type will remain equal.
 	 */
 	public MCType copy(boolean optional) {
 		
@@ -242,12 +329,16 @@ public class MCType {
 			copy = new MCType(getIdentifier(), getParameters(), optional);
 		}
 		
+		copy.setOwner(getOwner());
+		copy.addProtocols(getProtocols());
+		
 		return copy;
 		
 	}
 	
 	/**
 	 * Creates and returns a copy of the type.
+	 * All other properties of the type will remain equal.
 	 */
 	public MCType copy() {
 		

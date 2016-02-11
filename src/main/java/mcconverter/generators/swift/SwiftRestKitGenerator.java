@@ -13,6 +13,7 @@ import mcconverter.model.MCNativeType;
 import mcconverter.model.MCPackage;
 import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
+import mcconverter.model.MCTypeParameter;
 
 public class SwiftRestKitGenerator extends SwiftGenerator {
 	
@@ -46,6 +47,25 @@ public class SwiftRestKitGenerator extends SwiftGenerator {
 		
 	}
 	
+	public String generateTypeLiteral(MCType type) {
+		
+		String literal = super.generateTypeLiteral(type.copy(false));
+		
+		if ( type.getOwner() instanceof MCProperty ) {
+			
+			literal += type.isOptional() ? "?" : "!";
+			
+		}
+		
+		return literal;
+	}
+	
+	public String generateTypeParameterLiteral(MCTypeParameter parameter) {
+		
+		return super.generateTypeParameterLiteral(parameter);
+		
+	}
+	
 	public String generateFileName(MCPackage pack) {
 		
 		return "EntityRegistry.swift";
@@ -60,8 +80,6 @@ public class SwiftRestKitGenerator extends SwiftGenerator {
 			
 			//All properties need to be optional since RestKit likes it that way.
 			for (MCProperty property : c.getProperties() ) {
-				
-				property.getType().setOptional(true);
 				
 				if ( getPackage().hasEnum(property.getType().getIdentifier()) ) {
 					

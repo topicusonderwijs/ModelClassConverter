@@ -11,12 +11,22 @@ import Foundation
 public enum ${entity_name}Enum : String {
 	
 	<#list enum_values as value>
-	case ${value.entity_name} = "${value.enum_value_name}"
+	case ${value.enum_value_name} = "${value.enum_value_rawValue}"
 	</#list>
+	
+	public var wrapper : ${entity_name} {
+        
+        return ${entity_name}(value: self)
+        
+    }
 	
 }
 
 public class ${entity_name} : NSObject {
+	
+	<#list enum_values as value>
+	static let ${value.enum_value_name} = ${entity_name}Enum.${value.enum_value_name}.wrapper
+	</#list>
 	
 	public var value : ${entity_name}Enum?
 	

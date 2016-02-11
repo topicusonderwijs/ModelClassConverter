@@ -9,7 +9,7 @@ import java.util.Set;
 
 import mcconverter.generators.Generator;
 
-public class MCPackage {
+public class MCPackage implements MCModelable {
 	
 	private String name;
 	private Map<String, MCEntity> entities;
@@ -98,6 +98,8 @@ public class MCPackage {
 	public Map<String, Object> getModel(Generator generator) {
 		
 		List<Map<String, Object>> entities = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> classes = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
 		
 		List<String> entityIdentifiers = new ArrayList<String>(getEntityIdentifiers());
 		Collections.sort(entityIdentifiers);
@@ -105,11 +107,21 @@ public class MCPackage {
 		for ( String entityIdentifier : entityIdentifiers ) {
 			
 			MCEntity entity = getEntity(entityIdentifier);
-			
 			Map<String, Object> entityModel = entity.getModel(generator);
+			
 			if ( generator.validateModel(entity, entityModel) ) {
 				
 				entities.add(entityModel);
+				
+				if ( entity instanceof MCEnum ) {
+					
+					enums.add(entityModel);
+					
+				} else if ( entity instanceof MCClass ) {
+					
+					classes.add(entityModel);
+					
+				}
 				
 			}
 			
@@ -119,6 +131,8 @@ public class MCPackage {
 		
 		model.put("package_name", getName());
 		model.put("package_entities", entities);
+		model.put("package_classes", classes);
+		model.put("package_enums", enums);
 		
 		return model;
 		

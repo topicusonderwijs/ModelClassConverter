@@ -55,7 +55,7 @@
 		Note that subclasses of these will indeed be converted.
 	-->
 	<ignoredClasses>
-		<ignoredClass name="" />
+		<ignoredClass name="KindBean" />
 	</ignoredClasses>
 	
 	<!--

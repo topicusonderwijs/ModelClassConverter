@@ -193,7 +193,17 @@ public class SwiftGenerator extends Generator {
 		
 		if ( property.hasValue() ) {
 			
-			literal += " = \"" + property.getValue() + "\"";
+			literal += " = ";
+			
+			switch ( property.getType().getNativeType() ) {
+				
+			case String:
+				literal += "\"" + property.getValue() + "\"";
+				break;
+			default:
+				literal += property.getValue();
+				break;
+			}
 			
 		} else {
 			

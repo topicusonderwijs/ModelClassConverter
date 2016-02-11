@@ -10,14 +10,14 @@ import Foundation
 public class EntityRegistry : NSObject {
 	
 	public static let registry = [
-		<#list package_entities as entity>
-		"${entity.entity_descriptor}": ${entity.entity_name}.self<#sep>,</#sep>
+		<#list package_classes as class>
+		"${class.entity_descriptor}": ${class.entity_name}.responseMapping<#sep>,</#sep>
 		</#list>
 	]
 	
 	public static func mappingFor(type: String) -> RKObjectMapping? {
 		
-		return registry[type]?.responseMapping
+		return registry[type]
 		
 	}
 	

@@ -146,7 +146,7 @@ public class Analyzer {
 		
 		for( TypeVariable<?> generic : c.getTypeParameters() ) {
 			
-			parameters.add(analyzeTypeParameter(generic).get(0));
+			parameters.add(analyzeTypeParameter(generic, 0).get(0));
 			
 		}
 		
@@ -202,18 +202,19 @@ public class Analyzer {
 				
 				int modifiers = property.getModifiers();
 				
-				MCType propertyType = analyzeType(property.getGenericType(), !propertyTypeNonOptional);
+				MCType propertyType = analyzeType(property.getGenericType(), !propertyTypeNonOptional, 0);
 				String propertyValue = null;
 				boolean propertyStatic = Modifier.isStatic(modifiers);
 				boolean propertyConstant = Modifier.isFinal(modifiers);
 				
-				if ( propertyStatic && propertyType.isNativeType(MCNativeType.String) ) {
+				if ( propertyStatic ) {
 					
-					try {
-						propertyValue = property.get(null).toString();
-					} catch (IllegalArgumentException e) {
+					//Try to get value of static property
+					if ( propertyType.isNativeType(MCNativeType.String, MCNativeType.Integer) ) {
 						
-					} catch (IllegalAccessException e) {
+						try {
+							propertyValue = property.get(null).toString();
+						} catch (Exception e) {}
 						
 					}
 					
@@ -239,16 +240,16 @@ public class Analyzer {
 	
 	private MCType analyzeType(Type type) {
 		
-		return analyzeType(type, true);
+		return analyzeType(type, true, 1);
 		
 	}
 	
-	private MCType analyzeType(Type type, boolean optional) {
+	private MCType analyzeType(Type type, boolean optional, int depth) {
 		
 		MCType t = null;
 		
 		//Determine parameters
-		List<MCTypeParameter> parameters = analyzeTypeParameter(type);
+		List<MCTypeParameter> parameters = analyzeTypeParameter(type, depth + 1);
 		
 		//Determine if native type
 		MCNativeType nativeType;
@@ -282,9 +283,8 @@ public class Analyzer {
 	
 	/**
 	 * Determines the type parameters for the given type.
-	 * TODO: Should be split into two different functions.
 	 */
-	private List<MCTypeParameter> analyzeTypeParameter(Type type) {
+	private List<MCTypeParameter> analyzeTypeParameter(Type type, int depth) {
 		
 		List<MCTypeParameter> parameters = new ArrayList<MCTypeParameter>();
 		
@@ -295,7 +295,7 @@ public class Analyzer {
 			
 			if ( typeBounds.length > 0 ) {
 				
-				parameters.add(new MCTypeParameter(aType.getName(), analyzeType(typeBounds[0])));
+				parameters.add(new MCTypeParameter(aType.getName(), analyzeType(typeBounds[0]), depth));
 				
 			}
 			
@@ -313,7 +313,7 @@ public class Analyzer {
 					
 				}
 				
-				parameters.add(new MCTypeParameter(name, analyzeType(aType)));
+				parameters.add(new MCTypeParameter(name, analyzeType(aType), depth));
 				
 			}
 			

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import mcconverter.generators.Generator;
 
-public class MCEntity {
+public class MCEntity implements MCModelable {
 	
 	private String identifier;
 	private String name;

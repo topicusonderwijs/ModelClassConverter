@@ -65,4 +65,10 @@ ${parameter.parameter_literal}<#t></#list>></#if> : <#if class_parent??>${class_
 		
 	}
 	
+	public <#if class_parent??>override </#if>class var typeName : String {
+		
+		return "${entity_descriptor}"
+		
+	}
+	
 }

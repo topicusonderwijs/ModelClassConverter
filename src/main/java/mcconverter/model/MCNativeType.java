@@ -117,12 +117,18 @@ public enum MCNativeType {
 		
 	}
 	
+	/**
+	 * Creates a type that represents the native type.
+	 */
 	public MCType toType() {
 		
 		return new MCType(this);
 		
 	}
 	
+	/**
+	 * Creates a type that represents the native type that can potentially be optional.
+	 */
 	public MCType toType(boolean optional) {
 		
 		return new MCType(this, optional);

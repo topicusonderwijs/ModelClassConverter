@@ -33,6 +33,9 @@ public class Loader {
 	
 	/* ===== Construction ===== */
 	
+	/**
+	 * Constructs a loader.
+	 */
 	public Loader() {
 		
 		classes = new HashMap<String, Class<?>>();
@@ -45,24 +48,36 @@ public class Loader {
 	
 	/* ===== Public Functions ===== */
 	
+	/**
+	 * Determines and returns whether a class with given name is loaded and should be converted.
+	 */
 	public final boolean hasClass(String name) {
 		
 		return classes.containsKey(name);
 		
 	}
 	
+	/**
+	 * A map of classes and their identifiers that are loaded and should be converted.
+	 */
 	public final Map<String, Class<?>> getClasses() {
 		
 		return classes;
 		
 	}
 	
+	/**
+	 * A flag indicating whether the loader is done loading all necessary classes.
+	 */
 	public final boolean hasLoaded() {
 		
 		return loaded;
 		
 	}
 	
+	/**
+	 * Loads the necessary classes and determines which classes need to be converted.
+	 */
 	public final boolean load() {
 		
 		boolean correct = false;
@@ -162,12 +177,10 @@ public class Loader {
 			
 			try {
 				
+				//Load class
 				Class<?> c = loader.loadClass(name);
 				
-				
-				
 				//Determine if it needs conversion
-				
 				if ( verifyClass(c, indent) ) {
 					
 					classes.put(name, c);

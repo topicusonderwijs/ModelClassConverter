@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import mcconverter.generators.Generator;
-import mcconverter.main.Main;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,6 +30,8 @@ public class MCClass extends MCEntity {
 		this.properties = new ArrayList<MCProperty>();
 		this.constants = new ArrayList<MCProperty>();
 		this.isProtocol = isProtocol;
+		
+		type.setOwner(this);
 		
 	}
 	
@@ -160,13 +161,6 @@ public class MCClass extends MCEntity {
 		model.put("class_isProtocol", isProtocol());
 		model.put("class_constants", constants);
 		model.put("class_properties", properties);
-		
-		if ( getName().equals("LinkableWrapper")) {
-			
-			Main.info("LinkableWrapper");
-			
-		}
-		
 		model.put("class_type", getType().getModel(generator));
 		
 		return model;
