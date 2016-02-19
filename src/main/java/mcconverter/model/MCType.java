@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 
 public class MCType implements MCModelable {
 	
@@ -276,7 +276,7 @@ public class MCType implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		
@@ -310,6 +310,7 @@ public class MCType implements MCModelable {
 		model.put("type_identifier", getIdentifier());
 		model.put("type_literal", generator.generateTypeLiteral(this));
 		model.put("type_optional", isOptional());
+		model.put("type_isNativeType", isNativeType());
 		
 		return model;
 		

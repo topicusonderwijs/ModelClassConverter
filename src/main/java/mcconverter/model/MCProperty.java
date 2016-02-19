@@ -2,7 +2,7 @@ package mcconverter.model;
 
 import java.util.Map;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -77,7 +77,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -132,7 +132,7 @@ public class MCClass extends MCEntity {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		

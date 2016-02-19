@@ -4,7 +4,7 @@
 	<!--
 		The name of the product that will be using the generated model classes.
 	-->
-	<product name="Digdag" />
+	<product name="Parro Leerkracht" />
 	
 	<!--
 		The path to read the templates from.
@@ -16,22 +16,22 @@
 		The path to write the generated classes to.
 		This can be relative to the working directory or absolute.
 	-->
-	<output path="/Users/Thomas/Development/Topicus/digdag/mobile/local-pods/ios-entities/generated/" />
+	<output path="/Users/Thomas/Development/Topicus/geon/geon-ios/leerkracht/Geon/Communication/rest/entities/generated/" />
 	
 	<!--
 		The class name of the generator to be used.
 		Builtin generators are:
 			mcconverter.generators.swift.SwiftObjectMapperGenerator
-			mcconverter.generators.objc.ObjCRestKitGenerator
+			mcconverter.generators.swift.SwiftRestKitGenerator
 	-->
-	<generator name="mcconverter.generators.objc.ObjCRestKitGenerator" />
+	<generator name="mcconverter.generators.swift.SwiftObjectMapperGenerator" />
 	
 	<!--
 		The Maven dependencies required by the classes.
 		Note that any related dependencies will automatically be resolved if required and possible.
 	-->
 	<dependencies>
-		<dependency name="nl.topicus.digdag:digdag-service-contract:40" />
+		<dependency name="nl.topicus.onderwijs.parnassys:parnassys-las-core:2.28-SNAPSHOT" />
 	</dependencies>
 	
 	
@@ -39,8 +39,7 @@
 		The packages containing the classes that should be converted.
 	-->
 	<packages>
-		<package name="nl.topicus.cobra.restcontract.model" />
-		<package name="nl.topicus.digdag.servicecontract.model" />
+		<package name="nl.topicus.bao.web.webservices.geon.model" />
 	</packages>
 	
 	<!--

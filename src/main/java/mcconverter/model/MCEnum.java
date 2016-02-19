@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
+import mcconverter.main.Main;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -48,11 +49,13 @@ public class MCEnum extends MCEntity {
 			
 		}
 		
-		public Map<String, Object> getModel(Generator generator) {
+		public Map<String, Object> getModel(AbstractGenerator generator) {
 			
 			Map<String, Object> model = super.getModel(generator);
 			
-			model.put("enum_value_name", generator.generateEnumValueName(this));
+			String valueName = generator.generateEnumValueName(this);
+			
+			model.put("enum_value_name", valueName);
 			model.put("enum_value_rawType", getRawType());
 			model.put("enum_value_rawValue", getRawValue());
 			
@@ -118,7 +121,7 @@ public class MCEnum extends MCEntity {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		

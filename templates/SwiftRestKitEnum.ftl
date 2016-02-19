@@ -8,11 +8,26 @@
 
 import Foundation
 
-public enum ${entity_name}Enum : String {
+public enum ${entity_name}Enum : Int {
 	
 	<#list enum_values as value>
-	case ${value.enum_value_name} = "${value.enum_value_rawValue}"
+	case ${value.enum_value_name}
 	</#list>
+	
+	public static let AllEnumValues = [
+		<#list enum_values as value>
+		${value.enum_value_name}<#sep>,</#sep>
+		</#list>
+	]
+	
+	public var stringValue : String {
+		switch ( self ) {
+		<#list enum_values as value>
+		case ${value.enum_value_name}:
+			return "${value.enum_value_rawValue}"
+		</#list>
+		}
+	}
 	
 	public var wrapper : ${entity_name} {
         
@@ -33,7 +48,31 @@ public class ${entity_name} : NSObject {
 	public var stringValue : String {
 		
 		get {
-			return value?.rawValue ?? ""
+			return value?.stringValue ?? ""		
+		}
+		set ( v ) {
+			
+			value = nil
+			
+			for current in ${entity_name}Enum.AllEnumValues {
+				
+				if ( current.stringValue == v ) {
+					
+					value = current
+					break
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	public var integerValue : Int {
+		
+		get {
+			return value?.rawValue ?? 0
 		}
 		
 		set ( v ) {
@@ -44,7 +83,21 @@ public class ${entity_name} : NSObject {
 	
 	public override var hash : Int {
 		
-		return value?.rawValue.hash ?? 0
+		return value?.stringValue.hash ?? 0
+		
+	}
+	
+	public init(stringValue: String) {
+		
+		super.init()
+		self.stringValue = stringValue
+		
+	}
+	
+	public init(integerValue: Int) {
+		
+		super.init()
+		self.integerValue = integerValue
 		
 	}
 	

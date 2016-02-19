@@ -3,7 +3,7 @@ package mcconverter.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 
 public class MCEntity implements MCModelable {
 	
@@ -29,7 +29,7 @@ public class MCEntity implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		

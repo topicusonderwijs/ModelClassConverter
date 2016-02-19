@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 
 public class MCPackage implements MCModelable {
 	
@@ -95,7 +95,7 @@ public class MCPackage implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(Generator generator) {
+	public Map<String, Object> getModel(AbstractGenerator generator) {
 		
 		List<Map<String, Object>> entities = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> classes = new ArrayList<Map<String, Object>>();

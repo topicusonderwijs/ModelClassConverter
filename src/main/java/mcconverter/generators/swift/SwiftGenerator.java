@@ -115,7 +115,7 @@ public class SwiftGenerator extends Generator {
 			}
 				
 		}
-			
+		
 		return name;	
 		
 	}
@@ -191,43 +191,69 @@ public class SwiftGenerator extends Generator {
 		literal += ( property.isConstant() ? "let " : "var " );
 		literal += generatePropertyName(property);
 		
-		if ( property.hasValue() ) {
+		String propertyValue = generatePropertyValue(property);
+		
+		if ( !property.isConstant() ) {
 			
-			literal += " = ";
+			literal += " : " + generateTypeLiteral(property.getType());
+			
+		}
+		
+		if ( propertyValue != null ) {
+			
+			literal += " = " + propertyValue;
+			
+		}
+		
+		return literal;
+		
+	}
+	
+	public String generatePropertyValue(MCProperty property) {
+		
+		String value = null;
+		
+		if ( property.hasValue() ) {
 			
 			switch ( property.getType().getNativeType() ) {
 				
 			case String:
-				literal += "\"" + property.getValue() + "\"";
+				value = "\"" + property.getValue() + "\"";
 				break;
 			default:
-				literal += property.getValue();
+				value = property.getValue();
 				break;
 			}
 			
 		} else {
 			
-			literal += " : " + generateTypeLiteral(property.getType());
-			
-			String propertyValue = null;
-			
 			switch ( property.getType().getNativeType() ) {
+			
 			case List:
-				propertyValue = "[]";
+				value = "[]";
+				break;
+			case Boolean:
+				value = "false";
+				break;
+			case Integer:
+			case Long:
+			case BigInteger:
+			case Double:
+			case Float:
+			case BigDecimal:
+				value = "0";
+				break;
+			case String:
+				value = "\"\"";
 				break;
 			default:
 				break;
-			}
-			
-			if ( propertyValue != null ) {
-				
-				literal += " = " + propertyValue;
 				
 			}
 			
 		}
 		
-		return literal;
+		return value;
 		
 	}
 	
@@ -237,19 +263,13 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public String generateEnumValueName(MCEnum.MCEnumValue value) {
-		
-		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, replacePropertyName(value.getName()));
-		
-	}
-	
 	public String generateFileName(MCPackage pack) {
 		
 		return null;
 		
 	}
 	
-	public String generateFileName(MCEntity entity) {
+	public String generateFileName(MCEntity entity, String template) {
 		
 		String name = entity.getName() + ".swift";;
 		
@@ -281,46 +301,9 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public boolean validateModel(MCEntity entity, Map<String, Object> model) {
-		
-		boolean valid = true;
-		
-		if ( entity instanceof MCClass ) {
-			
-			MCClass c = (MCClass)entity;
-			
-			if ( getConfiguration().getIgnoreProtocols() ) {
-				
-				valid = !c.isProtocol();
-				model.remove("class_protocols");
-				
-			}
-			
-		}
-		
-		return valid;
-		
-	}
-	
 	
 	
 	/* ===== Private Functions ===== */
-	
-	private String replacePropertyName(String name) {
-		
-		if ( name.equals("id") ) {
-			
-			name = "objectId";
-			
-		} else if ( name.toLowerCase().equals("self") ) {
-			
-			name = "zelf";
-			
-		}
-		
-		return name;
-		
-	}
 	
 	private String generateTypeParameterLiteral(MCTypeParameter parameter, boolean applyType) {
 		
