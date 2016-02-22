@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mcconverter.configuration.Configuration;
+import mcconverter.configuration.CustomClass;
 import mcconverter.generators.Generator;
 import mcconverter.main.Main;
 import mcconverter.model.MCEntity;
@@ -22,7 +23,7 @@ public class ObjCRestKitGenerator extends Generator {
 	
 	public List<String> getTemplates(MCPackage pack) {
 		
-		return new ArrayList<String>();
+		return Arrays.asList("ObjCRestKitRegistry.ftl", "ObjCRestKitRegistryHeader.ftl");
 		
 	}
 	
@@ -142,13 +143,16 @@ public class ObjCRestKitGenerator extends Generator {
 						Main.warning("Ignoring identifier: " + type.getIdentifier());
 						
 					}
+
 					
-					if ( getConfiguration().hasMappedEntity(name) ) {
+					CustomClass c = getConfiguration().getCustomClass(name);
+					
+					if ( c != null && c.hasRename() ) {
 						
-						name = getConfiguration().getMappedEntity(name);
+						name = c.getRename();
 						
 					}
-					
+				
 					break;
 					
 			}
@@ -178,21 +182,18 @@ public class ObjCRestKitGenerator extends Generator {
 		return generateTypeLiteral(parameter.getType());
 	}
 	
-	public String generateFileName(MCPackage pack) {
+	public String generateFileName(MCPackage pack, String template) {
 		
-		return null;
+		return "EntityRegistry" + extension(template);
 	}
 	
 	public String generateFileName(MCEntity entity, String template) {
 		
-		String name = entity.getName();
+		return entity.getName() + extension(template);
 		
-		name += template.contains("Header") ? ".h" : ".m";
-		
-		return name;
 	}
 	
-	public void validateEntity(MCEntity entity) {
+	public boolean validateEntity(MCEntity entity) {
 		
 		if ( entity instanceof MCClass ) {
 			
@@ -211,11 +212,13 @@ public class ObjCRestKitGenerator extends Generator {
 			
 		}
 		
+		return super.validateEntity(entity);
+		
 	}
 	
 	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
 		
-		return false;
+		return true;
 	}
 
 	public boolean validateModel(MCEntity entity, Map<String, Object> model) {
@@ -233,7 +236,16 @@ public class ObjCRestKitGenerator extends Generator {
 				
 				Map<String, Object> m = property.getModel(this);
 				
-				if ( property.getType().isNativeType() || getPackage().hasEnum(property.getType().getIdentifier() ) ) {
+				//The dominant type of the property is determined as RestKit requires this for mapping lists.
+				Object dominantType = generateTypeName(property.getType());
+				MCTypeParameter firstParameter = property.getType().getParameter(0);
+				
+				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
+					
+					dominantType = firstParameter.hasName() ? firstParameter.getName() : generateTypeName(firstParameter.getType());
+					relations.add(m);
+					
+				} else if ( isRawType(property.getType()) ) {
 					
 					natives.add(m);
 					
@@ -243,11 +255,8 @@ public class ObjCRestKitGenerator extends Generator {
 					
 				}
 				
-				if ( !property.getType().isNativeType() ) {
-					
-					imports.add(generateTypeName(property.getType()));
-					
-				}
+				m.put("property_dominant_type", dominantType);
+				importType(imports, property.getType());
 				
 			}
 			
@@ -302,6 +311,48 @@ public class ObjCRestKitGenerator extends Generator {
 		}
 		
 		return pointer;
+		
+	}
+	
+	private static String extension(String template) {
+		
+		return template.contains("Header") ? ".h" : ".m";
+		
+	}
+	
+	private boolean isRawType(MCType type) {
+		
+		return type.isNativeType() || getPackage().hasEnum(type.getIdentifier());
+		
+	}
+	
+	private void importType(List<String> imports, MCType type) {
+		
+		if ( !type.isNativeType() ) {
+			
+			String name = generateTypeName(type);
+			
+			if ( !name.equals("NSObject") ) {
+				
+				imports.add(generateTypeName(type));
+				
+			}
+			
+		}
+		
+		if ( type.hasParameters() ) {
+			
+			for ( MCTypeParameter parameter : type.getParameters() ) {
+				
+				if ( parameter.hasType() ) {
+					
+					importType(imports, parameter.getType());
+					
+				}
+				
+			}
+			
+		}
 		
 	}
 	

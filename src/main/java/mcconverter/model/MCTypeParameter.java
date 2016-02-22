@@ -88,6 +88,8 @@ public class MCTypeParameter implements MCModelable {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		
+		model.put("parameter_name", getName());
+		model.put("parameter_type", type.getModel(generator));
 		model.put("parameter_literal", generator.generateTypeParameterLiteral(this));
 		
 		return model;

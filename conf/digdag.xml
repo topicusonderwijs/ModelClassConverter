@@ -51,31 +51,45 @@
 	</deepestSuperClasses>
 	
 	<!--
-		The classes that will be completely ignored.
-		Note that subclasses of these will indeed be converted.
-	-->
-	<ignoredClasses>
-		<ignoredClass name="KindBean" />
-	</ignoredClasses>
-	
-	<!--
-		The property that will be completely ignored.
-	-->
-	<ignoredProperties>
-		<ignoredProperty name="" />
-	</ignoredProperties>
-	
-	<!--
 		A flag indicating whether protocols (or interfaces) should be ignored.
 	-->
 	<ignoreProtocols value="true" />
 	
 	<!--
-		Entities that require custom mapping.
-		Note that native entities are mapped automatically and do not have to be listed.
+		A set of custom entities to add, rename or ignore properties or classes.
 	-->
-	<mappedEntities>
-		<mappedEntity from="ILinkable" to="Linkable" />
-	</mappedEntities>
+	<customEntities>
+		
+		<customClass name="KindBean" ignored="true" />
+		<customClass name="ILinkable" as="Linkable" />
+		
+		<customClass name="nl.topicus.cobra.restcontract.model.Linkable">
+			<customProperty name="dtype" key="$type" type="String" />
+		</customClass>
+		
+		<customClass name="LinkableWrapper">
+			<customProperty name="items" ignored="true" />
+		</customClass>
+		
+		<customClass name="Events" descriptor="event.Events" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.event.AbstractEvent)" />
+		</customClass>
+		<customClass name="KindPasfotoFiles" descriptor="kind.KindPasfotoFiles" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindPasfotoFile)" />
+		</customClass>
+		<customClass name="KindAanwezigheden" descriptor="kind.KindAanwezigheden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindAanwezigheid)" />
+		</customClass>
+		<customClass name="Ontwikkelstappen" descriptor="opvang.Ontwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.opvang.Ontwikkelstap)" />
+		</customClass>
+		<customClass name="KindOntwikkelstappen" descriptor="kind.KindOntwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindOntwikkelstap)" />
+		</customClass>
+		<customClass name="KindStandaardAanmeldtijden" descriptor="kind.KindStandaardAanmeldtijden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindStandaardAanmeldtijd)" />
+		</customClass>
+		
+	</customEntities>
 	
 </mcconverter>

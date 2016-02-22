@@ -18,7 +18,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		//Determine locatioon of configuration
+		//Determine location of configuration
 		String location = DefaultConfigurationLocation;
 		
 		if ( args.length > 0 ) {

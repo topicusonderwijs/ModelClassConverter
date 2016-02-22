@@ -5,20 +5,31 @@
 //  Automatically generated on ${file_date} at ${file_time}.
 //  
 
-import Foundation
+#import "EntityRegistry.h"
+<#list package_classes as class>
+#import "${class.entity_name}.h"
+</#list>
 
-public class EntityRegistry : NSObject {
+static NSDictionary* registry = nil;
+
+@implementation EntityRegistry
+
++ (RKObjectMapping*)mappingFor:(NSString*)type {
 	
-	public static let registry = [
-		<#list package_classes as class>
-		"${class.entity_descriptor}": ${class.entity_name}.responseMapping<#sep>,</#sep>
-		</#list>
-	]
-	
-	public static func mappingFor(type: String) -> RKObjectMapping? {
+	if ( registry == nil ) {
 		
-		return registry[type]
+		NSMutableDictionary* r = [NSMutableDictionary dictionary];
+		
+		<#list package_classes as class>
+		[r setObject:[${class.entity_name} responseMapping] forKey:@"${class.entity_descriptor}"];
+		</#list>
+		
+		registry = r;
 		
 	}
 	
+	return [registry objectForKey:type];
+	
 }
+
+@end

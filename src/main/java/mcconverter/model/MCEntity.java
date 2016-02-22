@@ -7,8 +7,14 @@ import mcconverter.generators.AbstractGenerator;
 
 public class MCEntity implements MCModelable {
 	
+	/* ===== Private Properties ===== */
+	
 	private String identifier;
 	private String name;
+	
+	
+	
+	/* ===== Construction ===== */
 	
 	public MCEntity(String identifier, String name) {
 		
@@ -16,6 +22,9 @@ public class MCEntity implements MCModelable {
 		this.name = name;
 		
 	}
+	
+	
+	/* ===== Private Properties ===== */
 	
 	public String getIdentifier() {
 		

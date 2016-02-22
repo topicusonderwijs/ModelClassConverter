@@ -187,7 +187,7 @@ public class Analyzer {
 			
 			String propertyName = property.getName();
 			
-			if ( !getConfiguration().getIgnoredProperties().contains(propertyName) ) {
+			if ( !getConfiguration().hasIgnoredProperty(propertyName) ) {
 
 				String propertyKey = propertyName;
 				boolean propertyTypeNonOptional = false;

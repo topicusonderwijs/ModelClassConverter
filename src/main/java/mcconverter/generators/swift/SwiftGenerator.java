@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.common.base.CaseFormat;
 
+import mcconverter.configuration.CustomClass;
 import mcconverter.generators.Generator;
 import mcconverter.main.Main;
 import mcconverter.model.*;
@@ -104,9 +105,11 @@ public class SwiftGenerator extends Generator {
 						
 					}
 					
-					if ( getConfiguration().hasMappedEntity(name) ) {
+					CustomClass c = getConfiguration().getCustomClass(name);
+					
+					if ( c != null && c.hasRename() ) {
 						
-						name = getConfiguration().getMappedEntity(name);
+						name = c.getRename();
 						
 					}
 					
@@ -263,7 +266,7 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public String generateFileName(MCPackage pack) {
+	public String generateFileName(MCPackage pack, String template) {
 		
 		return null;
 		
@@ -289,9 +292,9 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
-	public void validateEntity(MCEntity entity) {
+	public boolean validateEntity(MCEntity entity) {
 		
-		
+		return super.validateEntity(entity);
 		
 	}
 	

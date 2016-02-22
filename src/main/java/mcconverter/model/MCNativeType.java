@@ -81,15 +81,25 @@ public enum MCNativeType {
 	
 	public static MCNativeType fromName(String name) {
 		
-		MCNativeType type;
+		MCNativeType type = MCNativeType.NonNative;
 		
-		try {
+		if ( name != null ) {
 			
-			type = fromType(Class.forName(name));
+			try {
+				
+				type = MCNativeType.valueOf(name);
+				
+			} catch (IllegalArgumentException e) {}
 			
-		} catch (ClassNotFoundException e) {
-			
-			type = MCNativeType.NonNative;
+			if ( type == MCNativeType.NonNative ) {
+
+				try {
+					
+					type = fromType(Class.forName(name));
+					
+				} catch (ClassNotFoundException e) {}
+				
+			}
 			
 		}
 		

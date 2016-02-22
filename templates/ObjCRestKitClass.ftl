@@ -44,7 +44,7 @@
 	
 	[mapping addPropertyMappingsFromArray:@[
 		<#list class_properties_relations as property>
-		[RKRelationshipMapping relationshipMappingFromKeyPath:@"${property.property_key}" toKeyPath:@"${property.property_name}" withMapping:[${property.property_type.type_name} dynamicRequestMapping]]<#sep>,</#sep>
+		[RKRelationshipMapping relationshipMappingFromKeyPath:@"${property.property_key}" toKeyPath:@"${property.property_name}" withMapping:[${property.property_dominant_type} dynamicRequestMapping]]<#sep>,</#sep>
 		</#list>
 	]];
 	</#if>
@@ -70,7 +70,7 @@
 	RKObjectMapping* mapping = [RKObjectMapping mappingForClass:[${entity_name} class]];
 	<#if class_parent??>
 	
-	[mapping addAttributeMappingsFromArray:[[${class_parent} responseMapping] attributeMappings]];
+	[mapping addAttributeMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent} responseMapping] attributeMappings] copyItems:true]];
 	</#if>
 	<#if ( class_properties_natives?size > 0)><#t>
 	
@@ -84,7 +84,7 @@
 	
 	[mapping addPropertyMappingsFromArray:@[
 		<#list class_properties_relations as property>
-		[RKRelationshipMapping relationshipMappingFromKeyPath:@"${property.property_name}" toKeyPath:@"${property.property_key}" withMapping:[${property.property_type.type_name} dynamicResponseMapping]]<#sep>,</#sep>
+		[RKRelationshipMapping relationshipMappingFromKeyPath:@"${property.property_name}" toKeyPath:@"${property.property_key}" withMapping:[${property.property_dominant_type} dynamicResponseMapping]]<#sep>,</#sep>
 		</#list>
 	]];
 	</#if>

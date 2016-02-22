@@ -83,6 +83,20 @@ public class MCClass extends MCEntity {
 		
 	}
 	
+	public void removeProperty(MCProperty property) {
+		
+		if ( property.isConstant() ) {
+			
+			getConstants().remove(property);
+			
+		} else {
+			
+			getProperties().remove(property);
+			
+		}
+		
+	}
+	
 	public boolean hasProperties() {
 		
 		return getProperties().size() > 0;

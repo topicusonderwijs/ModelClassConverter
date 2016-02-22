@@ -83,7 +83,7 @@ public abstract class AbstractGenerator {
 		
 		boolean correct = false;
 		
-		if ( getPackage() != null ) {
+		if ( getPackage() != null && validatePackage(getPackage()) ) {
 
 			try {
 				
@@ -93,15 +93,21 @@ public abstract class AbstractGenerator {
 				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
 					MCEntity entity = getPackage().getEntity(identifier);
-					validateEntity(entity);
 					
-					//Generate entity
-					for (String templateName : getTemplates(entity)) {
-						
-						Map<String, Object> model = entity.getModel(this);
-						validateModel(entity, model);
-						
-						writeModel(templateName, generateFileName(entity, templateName), model);
+					if ( validateEntity(entity) ) {
+
+						//Generate entity
+						for (String templateName : getTemplates(entity)) {
+							
+							Map<String, Object> model = entity.getModel(this);
+							
+							if ( validateModel(entity, model) ) {
+								
+								writeModel(templateName, generateFileName(entity, templateName), model);
+								
+							}
+							
+						}
 						
 					}
 					
@@ -111,9 +117,12 @@ public abstract class AbstractGenerator {
 				for ( String templateName : getTemplates(getPackage()) ) {
 
 					Map<String, Object> model = getPackage().getModel(this);
-					validateModel(getPackage(), model);
 					
-					writeModel(templateName, generateFileName(getPackage()), model);
+					if ( validateModel(getPackage(), model) ) {
+						
+						writeModel(templateName, generateFileName(getPackage(), templateName), model);
+						
+					}
 					
 				}
 				
@@ -181,10 +190,10 @@ public abstract class AbstractGenerator {
 	public abstract String generateTypeParameterLiteral(MCTypeParameter parameter);
 
 	/**
-	 * Returns the file name that should be used for the given package.
+	 * Returns the file name that should be used for the given package and template.
 	 * If no file should be created for the given package then `null` should be returned.
 	 */
-	public abstract String generateFileName(MCPackage pack);
+	public abstract String generateFileName(MCPackage pack, String template);
 	
 	/**
 	 * Returns the file name that should be used for the given entity and template.
@@ -192,10 +201,16 @@ public abstract class AbstractGenerator {
 	 */
 	public abstract String generateFileName(MCEntity entity, String template);
 	
+
+	/**
+	 * Validates the given package.
+	 */
+	public abstract boolean validatePackage(MCPackage pack);
+	
 	/**
 	 * Validates the given entity.
 	 */
-	public abstract void validateEntity(MCEntity entity);
+	public abstract boolean validateEntity(MCEntity entity);
 
 	/**
 	 * Validates and potentially alters the model of the given package.

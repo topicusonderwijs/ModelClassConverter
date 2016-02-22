@@ -228,8 +228,8 @@ public class Loader {
 		}
 		
 		return valid &&
-				!Configuration.current().getIgnoredClasses().contains(c.getName()) &&
-				!Configuration.current().getIgnoredClasses().contains(c.getSimpleName());
+				!Configuration.current().hasIgnoredClass(c.getName()) &&
+				!Configuration.current().hasIgnoredClass(c.getSimpleName());
 		
 	}
 	

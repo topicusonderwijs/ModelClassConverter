@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Configuration {
 		
@@ -19,10 +20,9 @@ public class Configuration {
 	private List<String> dependencies;
 	private List<String> packages;
 	private List<String> deepestSuperClasses;
-	private List<String> ignoredClasses;
-	private List<String> ignoredProperties;
 	private boolean ignoreProtocols;
-	private Map<String, String> mappedEntities;
+	private Map<String, CustomClass> customClasses;
+	private Map<String, CustomProperty> customProperties;
 	
 	
 	
@@ -37,9 +37,8 @@ public class Configuration {
 		dependencies = new ArrayList<String>();
 		packages = new ArrayList<String>();
 		deepestSuperClasses = new ArrayList<String>();
-		ignoredClasses = new ArrayList<String>();
-		ignoredProperties = new ArrayList<String>();
-		mappedEntities = new HashMap<String, String>();
+		customClasses = new HashMap<String, CustomClass>();
+		customProperties = new HashMap<String, CustomProperty>();
 		
 	}
 	
@@ -201,9 +200,15 @@ public class Configuration {
 		
 	}
 	
-	public List<String> getIgnoredClasses() {
+	public boolean getIgnoreProtocols() {
 		
-		return ignoredClasses;
+		return ignoreProtocols;
+		
+	}
+	
+	public void setIgnoreProtocols(boolean ignore) {
+		
+		this.ignoreProtocols = ignore;
 		
 	}
 	
@@ -219,13 +224,19 @@ public class Configuration {
 	
 	public void addIgnoredClass(String ignoredClass) {
 		
-		getIgnoredClasses().add(ignoredClass);
+		addIgnoredEntity(new CustomClass(), ignoredClass);
 		
 	}
 	
-	public List<String> getIgnoredProperties() {
+	public boolean hasIgnoredClass(String name) {
 		
-		return ignoredProperties;
+		return hasCustomClass(name) && getCustomClass(name).isIgnored();
+		
+	}
+	
+	public List<CustomClass> getIgnoredClasses() {
+		
+		return getCustomClasses().values().stream().filter(c -> c.isIgnored()).collect(Collectors.toList());
 		
 	}
 	
@@ -241,65 +252,84 @@ public class Configuration {
 	
 	public void addIgnoredProperty(String ignoredProperty) {
 		
-		getIgnoredProperties().add(ignoredProperty);
+		addIgnoredEntity(new CustomProperty(), ignoredProperty);
 		
 	}
 	
-	public boolean getIgnoreProtocols() {
+	public boolean hasIgnoredProperty(String name) {
 		
-		return ignoreProtocols;
-		
-	}
-	
-	public void setIgnoreProtocols(boolean ignore) {
-		
-		this.ignoreProtocols = ignore;
+		return hasCustomProperty(name) && getCustomProperty(name).isIgnored();
 		
 	}
 	
-	/**
-	 * A map of entities that require custom mapping.
-	 */
-	public Map<String, String> getMappedEntities() {
+	public List<CustomProperty> getIgnoredProperties() {
 		
-		return mappedEntities;
+		return getCustomProperties().values().stream().filter(p -> p.isIgnored()).collect(Collectors.toList());
 		
 	}
 	
-	/**
-	 * Returns the mapped entity for the given name.
-	 * If there is no custom mapping for the given name then the given name is returned.
-	 */
-	public String getMappedEntity(String from) {
+	public void addCustomEntity(CustomEntity entity) {
 		
-		String to = from;
-		
-		if ( hasMappedEntity(from) ) {
+		if ( entity instanceof CustomClass ) {
 			
-			to = getMappedEntities().get(from);
+			getCustomClasses().put(entity.getName(), (CustomClass)entity);
+			
+		} else if ( entity instanceof CustomProperty ) {
+			
+			getCustomProperties().put(entity.getName(), (CustomProperty)entity);
 			
 		}
 		
-		return to;
+	}
+	
+	public boolean hasCustomClass(String name) {
+		
+		return getCustomClasses().containsKey(name);
 		
 	}
 	
-	/**
-	 * Determines and returns whether there is a custom mapping for the given entity name.
-	 */
-	public boolean hasMappedEntity(String from) {
+	public CustomClass getCustomClass(String name) {
 		
-		return getMappedEntities().containsKey(from);
+		return getCustomClasses().get(name);
 		
 	}
 	
-	/**
-	 * Adds custom mapping for the given entity (`from`) to the new name (`to`).
-	 */
-	public void addMappedEntity(String from, String to) {
+	public Map<String, CustomClass> getCustomClasses() {
 		
-		mappedEntities.put(from, to);
+		return customClasses;
 		
 	}
+	
+	public boolean hasCustomProperty(String name) {
+		
+		return getCustomProperties().containsKey(name);
+		
+	}
+	
+	public CustomProperty getCustomProperty(String name) {
+		
+		return getCustomProperties().get(name);
+		
+	}
+	
+	public Map<String, CustomProperty> getCustomProperties() {
+		
+		return customProperties;
+		
+	}
+	
+	
+	
+	/* ===== Private Functions ===== */
+	
+	private void addIgnoredEntity(CustomEntity entity, String name) {
+		
+		entity.setName(name);
+		entity.setIgnored(true);
+		
+		addCustomEntity(entity);
+		
+	}
+	
 	
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import mcconverter.generators.AbstractGenerator;
-import mcconverter.main.Main;
 
 import org.apache.commons.lang.StringUtils;
 

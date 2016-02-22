@@ -19,16 +19,18 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String DependencyTag = "dependency";
 	private static final String PackageTag = "package";
 	private static final String DeepestSuperClassTag = "deepestSuperClass";
-	private static final String IgnoredClassTag = "ignoredClass";
-	private static final String IgnoredPropertyTag = "ignoredProperty";
 	private static final String IgnoreProtocolsTag = "ignoreProtocols";
-	private static final String MappedEntityTag = "mappedEntity";
+	private static final String CustomClassTag = "customClass";
+	private static final String CustomPropertyTag = "customProperty";
 	
 	private static final String NameAttribute = "name";
 	private static final String PathAttribute = "path";
 	private static final String ValueAttribute = "value";
-	private static final String FromAttribute = "from";
-	private static final String ToAttribute = "to";
+	private static final String IgnoredAttribute = "ignored";
+	private static final String ParentAttribute = "ignored";
+	private static final String AsAttribute = "as";
+	private static final String KeyAttribute = "key";
+	private static final String TypeAttribute = "type";
 	
 	
 	
@@ -37,6 +39,8 @@ public class ConfigurationParser extends DefaultHandler {
 	private String location;
 	private SAXParser parser;
 	private Configuration configuration;
+	
+	private CustomClass currentClass;
 	
 	
 	
@@ -72,6 +76,7 @@ public class ConfigurationParser extends DefaultHandler {
 			
 		} catch (Exception e) {
 			
+			e.printStackTrace();
 			correct = false;
 			
 		}
@@ -105,6 +110,8 @@ public class ConfigurationParser extends DefaultHandler {
 		
 		String name = attributes.getValue(NameAttribute);
 		String path = attributes.getValue(PathAttribute);
+		String as = attributes.getValue(AsAttribute);
+		boolean ignored = getBoolean(attributes, IgnoredAttribute);
 		
 		switch ( qName ) {
 		
@@ -129,23 +136,53 @@ public class ConfigurationParser extends DefaultHandler {
 		case DeepestSuperClassTag:
 			getConfiguration().addDeepestSuperClass(name);
 			break;
-		case IgnoredClassTag:
-			getConfiguration().addIgnoredClass(name);
-			break;
-		case IgnoredPropertyTag:
-			getConfiguration().addIgnoredProperty(name);
-			break;
 		case IgnoreProtocolsTag:
 			getConfiguration().setIgnoreProtocols(getBoolean(attributes, ValueAttribute));
 			break;
-		case MappedEntityTag:
-			getConfiguration().addMappedEntity(
-				attributes.getValue(FromAttribute),
-				attributes.getValue(ToAttribute)
-			);
+		case CustomClassTag:
+			
+			CustomClass c = new CustomClass();
+			c.setName(name);
+			c.setIgnored(ignored);
+			c.setRename(as);
+			c.setParent(attributes.getValue(ParentAttribute));
+			
+			currentClass = c;
+			getConfiguration().addCustomEntity(c);
+			
+			break;
+		case CustomPropertyTag:
+			
+			CustomProperty p = new CustomProperty();
+			
+			p.setName(name);
+			p.setIgnored(ignored);
+			p.setRename(as);
+			p.setKey(attributes.getValue(KeyAttribute));
+			p.setType(CustomType.fromString(attributes.getValue(TypeAttribute)));
+			
+			if ( currentClass != null ) {
+				
+				currentClass.addProperty(p);
+				
+			} else {
+				
+				getConfiguration().addCustomEntity(p);
+				
+			}
 			break;
 		default:
 			break;
+			
+		}
+		
+	}
+	
+	public void endElement(String uri, String localName, String qName) {
+		
+		if ( qName.equals(CustomClassTag) && currentClass != null ) {
+			
+			currentClass = null;
 			
 		}
 		
@@ -157,7 +194,9 @@ public class ConfigurationParser extends DefaultHandler {
 	
 	private boolean getBoolean(Attributes attributes, String name) {
 		
-		return attributes.getValue(name).equals("true");
+		String value = attributes.getValue(name);
+		
+		return value != null && value.equals("true");
 		
 	}
 	
