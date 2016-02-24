@@ -5,6 +5,7 @@ public class CustomProperty extends CustomEntity {
 	/* ===== Private Properties ===== */
 	
 	private String key;
+	private boolean initialize;
 	
 	
 	
@@ -27,6 +28,18 @@ public class CustomProperty extends CustomEntity {
 	public void setKey(String key) {
 		
 		this.key = key;
+		
+	}
+	
+	public boolean isInitialized() {
+		
+		return initialize;
+		
+	}
+	
+	public void setInitialized(boolean initialize) {
+		
+		this.initialize = initialize;
 		
 	}
 	

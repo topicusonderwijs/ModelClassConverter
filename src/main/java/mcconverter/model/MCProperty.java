@@ -13,6 +13,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 	private String value;
 	private boolean isStatic;
 	private boolean isConstant;
+	private boolean isInitialized;
 	
 	public MCProperty(String identifier, String name, String key, MCType type) {
 		
@@ -30,6 +31,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		this.value = value;
 		this.isStatic = isStatic;
 		this.isConstant = isConstant;
+		this.isInitialized = true;
 		
 		type.setOwner(this);
 		
@@ -74,6 +76,18 @@ public class MCProperty extends MCEntity implements MCModelable {
 	public boolean isConstant() {
 		
 		return isConstant;
+		
+	}
+	
+	public boolean isInitialized() {
+		
+		return isInitialized;
+		
+	}
+	
+	public void setInitialized(boolean initialized) {
+		
+		isInitialized = initialized;
 		
 	}
 	

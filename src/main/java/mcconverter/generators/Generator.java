@@ -40,6 +40,8 @@ public abstract class Generator extends AbstractGenerator {
 		
 	}
 	
+	//TODO:
+	// Configuration should be a little refined, using subclasses from MCType for instance.
 	public boolean validateEntity(MCEntity entity) {
 		
 		boolean valid = true;
@@ -59,8 +61,16 @@ public abstract class Generator extends AbstractGenerator {
 			
 			if ( valid ) {
 				
-				//Remove properties that should be ignored
+				//Apply global configuration of properties
 				for ( MCProperty property : c.getProperties() ) {
+					
+					if ( getConfiguration().hasCustomProperty(property.getName()) ) {
+						
+						CustomProperty customProperty = getConfiguration().getCustomProperty(property.getName());
+						
+						property.setInitialized(customProperty.isInitialized());
+						
+					}
 					
 					if ( getConfiguration().hasIgnoredProperty(property.getName()) ) {
 						

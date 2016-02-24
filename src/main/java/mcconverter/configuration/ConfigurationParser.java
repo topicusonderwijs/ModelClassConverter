@@ -26,8 +26,9 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String NameAttribute = "name";
 	private static final String PathAttribute = "path";
 	private static final String ValueAttribute = "value";
+	private static final String InitializedAttribute = "initialized";
 	private static final String IgnoredAttribute = "ignored";
-	private static final String ParentAttribute = "ignored";
+	private static final String ParentAttribute = "parent";
 	private static final String AsAttribute = "as";
 	private static final String KeyAttribute = "key";
 	private static final String TypeAttribute = "type";
@@ -111,7 +112,7 @@ public class ConfigurationParser extends DefaultHandler {
 		String name = attributes.getValue(NameAttribute);
 		String path = attributes.getValue(PathAttribute);
 		String as = attributes.getValue(AsAttribute);
-		boolean ignored = getBoolean(attributes, IgnoredAttribute);
+		boolean ignored = getBoolean(attributes, IgnoredAttribute, false);
 		
 		switch ( qName ) {
 		
@@ -137,7 +138,7 @@ public class ConfigurationParser extends DefaultHandler {
 			getConfiguration().addDeepestSuperClass(name);
 			break;
 		case IgnoreProtocolsTag:
-			getConfiguration().setIgnoreProtocols(getBoolean(attributes, ValueAttribute));
+			getConfiguration().setIgnoreProtocols(getBoolean(attributes, ValueAttribute, false));
 			break;
 		case CustomClassTag:
 			
@@ -160,6 +161,7 @@ public class ConfigurationParser extends DefaultHandler {
 			p.setRename(as);
 			p.setKey(attributes.getValue(KeyAttribute));
 			p.setType(CustomType.fromString(attributes.getValue(TypeAttribute)));
+			p.setInitialized(getBoolean(attributes, InitializedAttribute, true));
 			
 			if ( currentClass != null ) {
 				
@@ -192,11 +194,18 @@ public class ConfigurationParser extends DefaultHandler {
 	
 	/* ===== Private Functions ===== */
 	
-	private boolean getBoolean(Attributes attributes, String name) {
+	private boolean getBoolean(Attributes attributes, String attributeName, boolean defaultValue) {
 		
-		String value = attributes.getValue(name);
+		boolean value = defaultValue;
+		String stringValue = attributes.getValue(attributeName);
 		
-		return value != null && value.equals("true");
+		if ( stringValue != null ) {
+			
+			value = stringValue.toLowerCase().equals("true");
+			
+		}
+		
+		return value;
 		
 	}
 	

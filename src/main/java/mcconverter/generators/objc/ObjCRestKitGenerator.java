@@ -121,7 +121,11 @@ public class ObjCRestKitGenerator extends Generator {
 			switch ( property.getType().getNativeType() ) {
 			
 			case List:
-				value = "@{}";
+			case Set:
+				value = "[NSMutableArray array]";
+				break;
+			case Map:
+				value = "[NSMutableDictionary dictionary]";
 				break;
 			case Boolean:
 				value = "false";
@@ -135,7 +139,14 @@ public class ObjCRestKitGenerator extends Generator {
 				value = "0";
 				break;
 			case String:
+			case URI:
+			case LocalTime:
 				value = "@\"\"";
+				break;
+			case Date:
+			case DateTime:
+			case LocalDate:
+				value = "[NSDate distantPast]";
 				break;
 			default:
 				break;
@@ -271,17 +282,46 @@ public class ObjCRestKitGenerator extends Generator {
 			List<Map<String, Object>> natives = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> relations = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> initializers = new ArrayList<Map<String, Object>>();
 			List<String> imports = new ArrayList<String>();
 			
 			for ( MCProperty property : c.getProperties() ) {
 				
 				Map<String, Object> m = property.getModel(this);
 				
+				//Determine initializers
+				if ( isRawType(property.getType()) ) {
+					
+					String propertyInitializer = null;
+					
+					if ( isEnum(property.getType()) ) {
+						
+						propertyInitializer = "[[" + generateTypeName(property.getType()) + " alloc] initWithValue:0]";
+						
+					} else {
+						
+						propertyInitializer = generatePropertyValue(property);
+						
+					}
+					
+					if ( propertyInitializer != null ) {
+						
+						initializers.add(m);
+						m.put("property_initializer", propertyInitializer);
+						
+					} else {
+						
+						Main.warning("Ignoring initializer for: " + property);
+						
+					}
+					
+				}
+				
+
 				//The dominant type of the property is determined as RestKit requires this for mapping lists.
 				Object dominantType = generateTypeName(property.getType());
 				String propertyPath = generatePropertyName(property);
 				MCTypeParameter firstParameter = property.getType().getParameter(0);
-				
 				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
 					
 					dominantType = firstParameter.hasName() ? firstParameter.getName() : generateTypeName(firstParameter.getType());
@@ -291,7 +331,7 @@ public class ObjCRestKitGenerator extends Generator {
 					
 					natives.add(m);
 					
-					if ( getPackage().hasEnum(property.getType().getIdentifier()) ) {
+					if ( isEnum(property.getType()) ) {
 						
 						propertyPath = property.getName() + ".stringValue";
 						enums.add(m);
@@ -313,6 +353,7 @@ public class ObjCRestKitGenerator extends Generator {
 			model.put("class_properties_natives", natives);
 			model.put("class_properties_relations", relations);
 			model.put("class_properties_enums", enums);
+			model.put("class_properties_initializers", initializers);
 			model.put("class_imports", imports);
 			
 		}
@@ -373,7 +414,13 @@ public class ObjCRestKitGenerator extends Generator {
 	
 	private boolean isRawType(MCType type) {
 		
-		return type.isNativeType() || getPackage().hasEnum(type.getIdentifier());
+		return type.isNativeType() || isEnum(type);
+		
+	}
+	
+	private boolean isEnum(MCType type) {
+		
+		return getPackage().hasEnum(type.getIdentifier());
 		
 	}
 	

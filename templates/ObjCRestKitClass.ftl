@@ -17,9 +17,12 @@
 	
 	if ( self ) {
 		
-		<#list class_properties_enums as property>
-		self.${property.property_name} = [[${property.property_dominant_type} alloc] initWithValue:0];
+		<#if ( class_properties_initializers?size > 0)><#t>
+		<#list class_properties_initializers as property>
+		self.${property.property_name} = ${property.property_initializer};
 		</#list>
+		
+		</#if><#t>
 		self = [EntityRegistry initializeEntity:self];
 		
 	}
