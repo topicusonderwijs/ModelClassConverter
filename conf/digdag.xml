@@ -60,8 +60,15 @@
 	-->
 	<customEntities>
 		
+		<customProperty name="id" as="objectId" />
+		<customProperty name="self" as="zelf" />
+		
 		<customClass name="KindBean" ignored="true" />
 		<customClass name="ILinkable" as="Linkable" />
+		<customClass name="AdditionalObjects" ignored="true" />
+		<customClass name="AdditionalObject" ignored="true" />
+		<customClass name="AdditionalObjectKey" ignored="true" />
+		<customClass name="LikeCommentCount" ignored="true" />
 		
 		<customClass name="nl.topicus.cobra.restcontract.model.Linkable">
 			<customProperty name="dtype" key="$type" type="String" />
@@ -71,22 +78,22 @@
 			<customProperty name="items" ignored="true" />
 		</customClass>
 		
-		<customClass name="Events" descriptor="event.Events" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="Events" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.event.AbstractEvent)" />
 		</customClass>
-		<customClass name="KindPasfotoFiles" descriptor="kind.KindPasfotoFiles" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="KindPasfotoFiles" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindPasfotoFile)" />
 		</customClass>
-		<customClass name="KindAanwezigheden" descriptor="kind.KindAanwezigheden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="KindAanwezigheden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindAanwezigheid)" />
 		</customClass>
-		<customClass name="Ontwikkelstappen" descriptor="opvang.Ontwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="Ontwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.opvang.Ontwikkelstap)" />
 		</customClass>
-		<customClass name="KindOntwikkelstappen" descriptor="kind.KindOntwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="KindOntwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindOntwikkelstap)" />
 		</customClass>
-		<customClass name="KindStandaardAanmeldtijden" descriptor="kind.KindStandaardAanmeldtijden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+		<customClass name="KindStandaardAanmeldtijden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindStandaardAanmeldtijd)" />
 		</customClass>
 		

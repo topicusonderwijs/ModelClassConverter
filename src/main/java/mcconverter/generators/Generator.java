@@ -27,7 +27,7 @@ public abstract class Generator extends AbstractGenerator {
 		//Insert custom classes
 		for ( CustomClass c : getConfiguration().getCustomClasses().values() ) {
 			
-			if ( !pack.hasClass(c.getName()) && !c.isIgnored() ) {
+			if ( !pack.hasClass(c.getName()) && !c.isIgnored() && !c.hasRename() ) {
 				
 				pack.addEntity(c.toClass());
 				
@@ -48,6 +48,12 @@ public abstract class Generator extends AbstractGenerator {
 			
 			MCClass c = (MCClass)entity;
 			CustomClass customClass = getConfiguration().getCustomClass(c.getName());
+			
+			if ( customClass == null ) {
+				
+				customClass = getConfiguration().getCustomClass(c.getIdentifier());
+				
+			}
 			
 			valid = !getConfiguration().hasIgnoredClass(c.getName());
 			
@@ -138,14 +144,13 @@ public abstract class Generator extends AbstractGenerator {
 	
 	protected String replacePropertyName(String name) {
 		
-		//TODO: Should be in configuration
-		if ( name.equals("id") ) {
+		for ( CustomProperty property : getConfiguration().getCustomProperties().values() ) {
 			
-			name = "objectId";
-			
-		} else if ( name.toLowerCase().equals("self") ) {
-			
-			name = "zelf";
+			if ( property.hasRename() && property.getName().toLowerCase().equals(name.toLowerCase()) ) {
+				
+				name = property.getRename();
+				
+			}
 			
 		}
 		

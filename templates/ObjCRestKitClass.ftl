@@ -3,7 +3,7 @@
 //  ${entity_identifier}
 //  ${product_name}
 //  
-//  Automatically generated on ${file_date} at ${file_time}.
+//  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
 #import "${entity_name}.h"
@@ -17,7 +17,10 @@
 	
 	if ( self ) {
 		
-		
+		<#list class_properties_enums as property>
+		self.${property.property_name} = [[${property.property_dominant_type} alloc] initWithValue:0];
+		</#list>
+		self = [EntityRegistry initializeEntity:self];
 		
 	}
 	
@@ -30,13 +33,13 @@
 	RKObjectMapping *mapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
 	<#if class_parent??>
 	
-	[mapping addAttributeMappingsFromArray:[[super requestMapping] attributeMappings]];
+	[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[super requestMapping] propertyMappings] copyItems:true]];
 	</#if>
 	<#if ( class_properties_natives?size > 0)><#t>
 	
 	[mapping addAttributeMappingsFromDictionary:@{
 		<#list class_properties_natives as property>
-		@"${property.property_name}": @"${property.property_key}"<#sep>,</#sep>
+		@"${property.property_path}": @"${property.property_key}"<#sep>,</#sep>
 		</#list>
 	}];
 	</#if>
@@ -53,15 +56,9 @@
 	
 }
 
-+ (RKDynamicMapping*)dynamicRequestMapping {
++ (RKMapping*)dynamicRequestMapping {
 	
-	RKDynamicMapping* mapping = [[RKDynamicMapping alloc] init];
-	
-	[mapping setObjectMappingForRepresentationBlock:^RKObjectMapping *(id representation) {
-		return [representation requestMapping];
-	}];
-	
-	return mapping;
+	return [EntityRegistry requestMappingFor:[self class]];
 	
 }
 
@@ -70,13 +67,13 @@
 	RKObjectMapping* mapping = [RKObjectMapping mappingForClass:[${entity_name} class]];
 	<#if class_parent??>
 	
-	[mapping addAttributeMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent} responseMapping] attributeMappings] copyItems:true]];
+	[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent} responseMapping] propertyMappings] copyItems:true]];
 	</#if>
 	<#if ( class_properties_natives?size > 0)><#t>
 	
 	[mapping addAttributeMappingsFromDictionary:@{
 		<#list class_properties_natives as property>
-		@"${property.property_key}": @"${property.property_name}"<#sep>,</#sep>
+		@"${property.property_key}": @"${property.property_path}"<#sep>,</#sep>
 		</#list>
 	}];
 	</#if>
@@ -95,11 +92,11 @@
 
 + (RKMapping*)dynamicResponseMapping {
 	
-	return [${entity_name} responseMapping];
+	return [EntityRegistry responseMappingFor:[self class]];
 	
 }
 
-+ (NSString*)typeName {
++ (NSString*)descriptor {
 	
 	return @"${entity_descriptor}";
 	

@@ -3,7 +3,7 @@
 //  ${entity_identifier}
 //  ${product_name}
 //  
-//  Automatically generated on ${file_date} at ${file_time}.
+//  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
 import Foundation

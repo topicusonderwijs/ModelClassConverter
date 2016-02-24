@@ -3,7 +3,7 @@
 //  ${entity_identifier}
 //  ${product_name}
 //  
-//  Automatically generated on ${file_date} at ${file_time}.
+//  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
 #ifndef ${entity_name}Header
@@ -11,11 +11,17 @@
 
 #import <Foundation/Foundation.h>
 #import <RestKit/RestKit.h>
+#import "EntityRegistry.h"
 <#if class_parent??>#import "${class_parent}.h"</#if>
 <#list class_imports as import>
 #import "${import}.h"
 </#list>
+<#if ( class_properties?size > 0)><#t>
+<#list class_constants as constant>
+#define ${entity_name}${constant.property_literal}
+</#list>
 
+</#if>
 @interface ${entity_name} : <#if class_parent??>${class_parent}<#else>NSObject</#if>
 
 <#if ( class_properties?size > 0)><#t>
@@ -25,10 +31,10 @@ ${property.property_literal};
 </#if>
 
 - (RKObjectMapping*)requestMapping;
-+ (RKDynamicMapping*)dynamicRequestMapping;
++ (RKMapping*)dynamicRequestMapping;
 + (RKObjectMapping*)responseMapping;
 + (RKMapping*)dynamicResponseMapping;
-+ (NSString*)typeName;
++ (NSString*)descriptor;
 
 
 @end

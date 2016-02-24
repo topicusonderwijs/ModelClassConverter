@@ -236,6 +236,7 @@ public abstract class AbstractGenerator {
 			File file = new File(OutputFolder.getAbsolutePath() + "/" + fileName);
 			FileWriter writer = new FileWriter(file);
 			
+			model.put("user", getUser());
 			model.put("product_name", getPackage().getName());
 			model.put("file_name", fileName);
 			model.put("file_date", date);
@@ -245,6 +246,20 @@ public abstract class AbstractGenerator {
 			Main.entry("Generated", fileName, 0);
 			
 		}
+		
+	}
+	
+	private String getUser() {
+		
+		String user = null;
+		
+		try {
+		
+			user = System.getProperty("user.name");
+			
+		} catch ( SecurityException e ) {}
+		
+		return user;
 		
 	}
 	

@@ -274,7 +274,7 @@ public class SwiftGenerator extends Generator {
 	
 	public String generateFileName(MCEntity entity, String template) {
 		
-		String name = entity.getName() + ".swift";;
+		String name = entity.getName() + ".swift";
 		
 		if ( entity instanceof MCClass ) {
 			

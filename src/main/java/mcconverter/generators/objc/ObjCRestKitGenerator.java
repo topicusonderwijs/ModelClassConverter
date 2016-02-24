@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.CaseFormat;
+
 import mcconverter.configuration.Configuration;
 import mcconverter.configuration.CustomClass;
 import mcconverter.generators.Generator;
@@ -51,28 +53,48 @@ public class ObjCRestKitGenerator extends Generator {
 	
 	public String generatePropertyName(MCProperty property) {
 		
-		return replacePropertyName(property.getName());
+		String name = replacePropertyName(property.getName());
+		
+		if ( property.isConstant() ) {
+			
+			name = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name);
+			
+		}
+		
+		return name;
 		
 	}
 	
 	public String generatePropertyLiteral(MCProperty property) {
 		
-		String literal = "@property (";
+		String literal = "";
 		
-		if ( isPointer(property.getType()) ) {
-			literal += "strong, ";
-		}
+		String propertyValue = generatePropertyValue(property);
 		
-		if ( property.isConstant() ) {
+		if ( property.isConstant() && property.isStatic() && propertyValue != null ) {
 			
-			literal += "readonly, ";
+			literal = generatePropertyName(property) + " " + propertyValue;
+			
+		} else {
+			
+			literal = "@property (";
+			
+			if ( isPointer(property.getType()) ) {
+				literal += "strong, ";
+			}
+			
+			if ( property.isConstant() ) {
+				
+				literal += "readonly, ";
+				
+			}
+			
+			literal += "nonatomic) ";
+			literal += generateTypeLiteral(property.getType());
+			literal += " ";
+			literal += generatePropertyName(property);
 			
 		}
-		
-		literal += "nonatomic) ";
-		literal += generateTypeLiteral(property.getType());
-		literal += " ";
-		literal += generatePropertyName(property);
 		
 		return literal;
 		
@@ -80,7 +102,50 @@ public class ObjCRestKitGenerator extends Generator {
 	
 	public String generatePropertyValue(MCProperty property) {
 		
-		return null;
+		String value = null;
+		
+		if ( property.hasValue() ) {
+			
+			switch ( property.getType().getNativeType() ) {
+				
+			case String:
+				value = "@\"" + property.getValue() + "\"";
+				break;
+			default:
+				value = property.getValue();
+				break;
+			}
+			
+		} else {
+			
+			switch ( property.getType().getNativeType() ) {
+			
+			case List:
+				value = "@{}";
+				break;
+			case Boolean:
+				value = "false";
+				break;
+			case Integer:
+			case Long:
+			case BigInteger:
+			case Double:
+			case Float:
+			case BigDecimal:
+				value = "0";
+				break;
+			case String:
+				value = "@\"\"";
+				break;
+			default:
+				break;
+				
+			}
+			
+		}
+		
+		return value;
+		
 	}
 	
 	public String generatePropertyMapping(MCProperty property) {
@@ -119,10 +184,8 @@ public class ObjCRestKitGenerator extends Generator {
 					name = "NSString";
 					break;
 				case List:
-					name = "NSMutableArray";
-					break;
 				case Set:
-					name = "NSSet";
+					name = "NSMutableArray";
 					break;
 				case Map:
 					name = "NSMutableDictionary";
@@ -193,29 +256,6 @@ public class ObjCRestKitGenerator extends Generator {
 		
 	}
 	
-	public boolean validateEntity(MCEntity entity) {
-		
-		if ( entity instanceof MCClass ) {
-			
-			MCClass c = (MCClass)entity;
-			
-			//All properties need to be optional since RestKit likes it that way.
-			for (MCProperty property : c.getProperties() ) {
-				
-				if ( getPackage().hasEnum(property.getType().getIdentifier()) ) {
-					
-					property.setKey(property.getKey() + ".stringValue");
-					
-				}
-				
-			}
-			
-		}
-		
-		return super.validateEntity(entity);
-		
-	}
-	
 	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
 		
 		return true;
@@ -230,6 +270,7 @@ public class ObjCRestKitGenerator extends Generator {
 			//Two separate model properties are required as RestKit likes the relations separated from the other properties.
 			List<Map<String, Object>> natives = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> relations = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
 			List<String> imports = new ArrayList<String>();
 			
 			for ( MCProperty property : c.getProperties() ) {
@@ -238,6 +279,7 @@ public class ObjCRestKitGenerator extends Generator {
 				
 				//The dominant type of the property is determined as RestKit requires this for mapping lists.
 				Object dominantType = generateTypeName(property.getType());
+				String propertyPath = generatePropertyName(property);
 				MCTypeParameter firstParameter = property.getType().getParameter(0);
 				
 				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
@@ -249,12 +291,20 @@ public class ObjCRestKitGenerator extends Generator {
 					
 					natives.add(m);
 					
+					if ( getPackage().hasEnum(property.getType().getIdentifier()) ) {
+						
+						propertyPath = property.getName() + ".stringValue";
+						enums.add(m);
+						
+					}
+					
 				} else {
 					
 					relations.add(m);
 					
 				}
 				
+				m.put("property_path", propertyPath);
 				m.put("property_dominant_type", dominantType);
 				importType(imports, property.getType());
 				
@@ -262,6 +312,7 @@ public class ObjCRestKitGenerator extends Generator {
 			
 			model.put("class_properties_natives", natives);
 			model.put("class_properties_relations", relations);
+			model.put("class_properties_enums", enums);
 			model.put("class_imports", imports);
 			
 		}
