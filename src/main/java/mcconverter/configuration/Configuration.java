@@ -13,6 +13,7 @@ public class Configuration {
 	
 	private static Configuration current;
 	
+	private String modelVersion;
 	private String productName;
 	private File templateLocation;
 	private File outputLocation;
@@ -30,6 +31,7 @@ public class Configuration {
 	
 	private Configuration() {
 		
+		setModelVersion("");
 		setProductName("");
 		setOutputLocation("");
 		setGeneratorName("");
@@ -94,6 +96,24 @@ public class Configuration {
 	public void setProductName(String productName) {
 		
 		this.productName = productName;
+		
+	}
+	
+	/**
+	 * The version of the model that is to be generated.
+	 */
+	public String getModelVersion() {
+		
+		return modelVersion;
+		
+	}
+	
+	/**
+	 * Sets the version of the model that is to be generated.
+	 */
+	public void setModelVersion(String modelVersion) {
+		
+		this.modelVersion = modelVersion;
 		
 	}
 	

@@ -1,6 +1,6 @@
 //  
 //  ${file_name}
-//  ${product_name}
+//  ${product_name} (${model_version})
 //  
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
@@ -13,6 +13,7 @@
 
 @protocol EntityRegistryDelegate <NSObject>
 
+- (BOOL)validateVersion:(NSString*)version;
 - (RKMapping*)responseMappingFor:(Class)c;
 - (RKMapping*)requestMappingFor:(Class)c;
 - (id)initializeEntity:(id)entity;
@@ -21,7 +22,11 @@
 
 @interface EntityRegistry : NSObject
 
++ (NSString*)version;
+
 + (void)setDelegate:(id<EntityRegistryDelegate>)registryDelegate;
++ (BOOL)hasDelegate;
++ (id<EntityRegistryDelegate>)delegate;
 
 + (Class)classForDescriptor:(NSString*)descriptor;
 

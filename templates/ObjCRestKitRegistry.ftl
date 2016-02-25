@@ -1,7 +1,7 @@
 //  
 //  ${file_name}
-//  ${product_name}
-//  
+//  ${product_name} (${model_version})
+//
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
@@ -15,9 +15,31 @@ static id<EntityRegistryDelegate> delegate = nil;
 
 @implementation EntityRegistry
 
++ (NSString*)version {
+	
+	return @"${model_version}";
+	
+}
+
 + (void)setDelegate:(id<EntityRegistryDelegate>)registryDelegate {
 	
 	delegate = registryDelegate;
+	
+	NSAssert([[self delegate] validateVersion:[self version]], @"EntityRegistry is generated with invalid version");
+	
+}
+
++ (BOOL)hasDelegate {
+	
+	return delegate != nil;
+	
+}
+
++ (id<EntityRegistryDelegate>)delegate {
+	
+	NSAssert([self hasDelegate], @"EntityRegistry requires a delegate");
+	
+	return delegate;
 	
 }
 
@@ -41,41 +63,19 @@ static id<EntityRegistryDelegate> delegate = nil;
 
 + (RKMapping*)responseMappingFor:(Class)c {
 	
-	RKMapping* mapping = nil;
-	
-	if ( delegate != nil ) {
-		
-		mapping = [delegate responseMappingFor:c];
-		
-	}
-	
-	return mapping;
+	return [[self delegate] responseMappingFor:c];
 	
 }
 
 + (RKMapping*)requestMappingFor:(Class)c {
 	
-	RKMapping* mapping = nil;
-	
-	if ( delegate != nil ) {
-		
-		mapping = [delegate requestMappingFor:c];
-		
-	}
-	
-	return mapping;
+	return [[self delegate] requestMappingFor:c];
 	
 }
 
 + (id)initializeEntity:(id)entity {
 	
-	if ( delegate != nil ) {
-		
-		entity = [delegate initializeEntity:entity];
-		
-	}
-	
-	return entity;
+	return [[self delegate] initializeEntity:entity];
 	
 }
 

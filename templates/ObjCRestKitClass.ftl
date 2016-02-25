@@ -1,7 +1,7 @@
 //  
 //  ${file_name}
 //  ${entity_identifier}
-//  ${product_name}
+//  ${product_name} (${model_version})
 //  
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  

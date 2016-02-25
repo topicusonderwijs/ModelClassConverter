@@ -7,6 +7,11 @@
 	<product name="Digdag" />
 	
 	<!--
+		The version of the model that is to be generated.
+	-->
+	<model version="40" />
+	
+	<!--
 		The path to read the templates from.
 		This can be relative to the working directory or absolute.
 	-->
@@ -95,6 +100,15 @@
 		</customClass>
 		<customClass name="KindStandaardAanmeldtijden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
 			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindStandaardAanmeldtijd)" />
+		</customClass>
+		<customClass name="DagboekPdfExportProcesses" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.process.DagboekPdfExportProcess)" />
+		</customClass>
+		<customClass name="SoortContactgegevens" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.identiteit.SoortContactgegeven)" />
+		</customClass>
+		<customClass name="Contactgegevens" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
+			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.identiteit.Contactgegeven)" />
 		</customClass>
 		
 	</customEntities>

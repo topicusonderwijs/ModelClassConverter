@@ -1,7 +1,7 @@
 //  
 //  ${file_name}
 //  ${entity_identifier}
-//  ${product_name}
+//  ${product_name} (${model_version})
 //  
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
@@ -14,13 +14,23 @@
 	
 	return @{
 		<#list enum_values as value>
-		@"${value.enum_value_rawValue}": @(${entity_name}Value${value.enum_value_name})<#sep>,</#sep>
+		@"${value.enum_value_rawName}": @(${entity_name}Value${value.enum_value_name})<#sep>,</#sep>
 		</#list>	
 	};
 	
 }
 
 + (NSDictionary*)fromDictionary {
+	
+	return @{
+		<#list enum_values as value>
+		@(${entity_name}Value${value.enum_value_name}): @"${value.enum_value_rawName}"<#sep>,</#sep>
+		</#list>	
+	};
+	
+}
+
++ (NSDictionary*)rawDictionary {
 	
 	return @{
 		<#list enum_values as value>
@@ -53,6 +63,12 @@
 - (NSString*)stringValue {
 	
 	return [[${entity_name} fromDictionary] objectForKey:@(self.value)];
+	
+}
+
+- (NSString*)rawValue {
+	
+	return [[${entity_name} rawDictionary] objectForKey:@(self.value)];
 	
 }
 

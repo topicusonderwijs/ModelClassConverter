@@ -1,7 +1,7 @@
 //  
 //  ${file_name}
 //  ${entity_identifier}
-//  ${product_name}
+//  ${product_name} (${model_version})
 //  
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
@@ -21,8 +21,9 @@ typedef NS_ENUM(NSInteger, ${entity_name}Value) {
 
 - (BOOL)isEqualTo${entity_name}:(${entity_name}*)other;
 
-@property (nonatomic, strong) NSString* stringValue;
 @property ${entity_name}Value value;
+@property (nonatomic, strong) NSString* stringValue;
+@property (nonatomic, readonly) NSString* rawValue;
 
 @end
 

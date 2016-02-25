@@ -138,18 +138,29 @@ public class ObjCRestKitGenerator extends Generator {
 			case BigDecimal:
 				value = "0";
 				break;
-			case String:
-			case URI:
-			case LocalTime:
-				value = "@\"\"";
-				break;
-			case Date:
-			case DateTime:
-			case LocalDate:
-				value = "[NSDate distantPast]";
-				break;
 			default:
 				break;
+				
+			}
+			
+			if ( value == null && !property.getType().isOptional() ) {
+				
+				switch ( property.getType().getNativeType() ) {
+				
+				case String:
+				case URI:
+				case LocalTime:
+					value = "@\"\"";
+					break;
+				case Date:
+				case DateTime:
+				case LocalDate:
+					value = "[NSDate distantPast]";
+					break;
+				default:
+					break;
+					
+				}
 				
 			}
 			

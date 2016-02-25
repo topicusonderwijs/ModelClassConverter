@@ -55,6 +55,7 @@ public class MCEnum extends MCEntity {
 			String valueName = generator.generateEnumValueName(this);
 			
 			model.put("enum_value_name", valueName);
+			model.put("enum_value_rawName", getName());
 			model.put("enum_value_rawType", getRawType());
 			model.put("enum_value_rawValue", getRawValue());
 			

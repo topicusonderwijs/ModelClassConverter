@@ -13,6 +13,7 @@ public class ConfigurationParser extends DefaultHandler {
 	/* ===== Constants ===== */
 	
 	private static final String ProductTag = "product";
+	private static final String ModelTag = "model";
 	private static final String TemplateTag = "template";
 	private static final String OutputTag = "output";
 	private static final String GeneratorTag = "generator";
@@ -25,6 +26,7 @@ public class ConfigurationParser extends DefaultHandler {
 	
 	private static final String NameAttribute = "name";
 	private static final String PathAttribute = "path";
+	private static final String VersionAttribute = "version";
 	private static final String ValueAttribute = "value";
 	private static final String InitializedAttribute = "initialized";
 	private static final String IgnoredAttribute = "ignored";
@@ -118,6 +120,9 @@ public class ConfigurationParser extends DefaultHandler {
 		
 		case ProductTag:
 			getConfiguration().setProductName(name);
+			break;
+		case ModelTag:
+			getConfiguration().setModelVersion(attributes.getValue(VersionAttribute));
 			break;
 		case TemplateTag:
 			getConfiguration().setTemplateLocation(path);
