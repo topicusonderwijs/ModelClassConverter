@@ -1,9 +1,12 @@
 package mcconverter.configuration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import mcconverter.main.Main;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -76,6 +79,10 @@ public class ConfigurationParser extends DefaultHandler {
 			
 			parser = SAXParserFactory.newInstance().newSAXParser();
 			parser.parse(new File(location), this);
+			
+		} catch (FileNotFoundException e) {
+			
+			Main.fatal("Could not find configuration file");
 			
 		} catch (Exception e) {
 			

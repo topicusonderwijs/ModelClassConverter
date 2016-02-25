@@ -14,7 +14,7 @@ import mcconverter.model.MCPackage;
 
 public class Main {
 	
-	public static final String DefaultConfigurationLocation = "conf/digdag.xml";
+	public static final String DefaultConfigurationLocation = "conf/configuration.xml";
 	
 	public static void main(String[] args) {
 		
