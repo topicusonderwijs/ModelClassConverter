@@ -9,26 +9,40 @@ import mcconverter.configuration.ConfigurationParser;
 import mcconverter.conversion.Analyzer;
 import mcconverter.conversion.Loader;
 import mcconverter.generators.*;
+import mcconverter.main.commands.*;
 import mcconverter.model.MCPackage;
 
 
 public class Main {
 	
+	/* ===== Constants ===== */
+	
+	public static final String Version = "0.0.1";
 	public static final String DefaultConfigurationLocation = "conf/configuration.xml";
 	
-	public static void main(String[] args) {
+	private static final Command[] Commands = {
+		new FormattedCommand(),
+		new HelpCommand(),
+		new ConfigurationCommand()
+	};
+	
+	
+	
+	/* ===== Public Properties ===== */
+	
+	public static String ConfigurationLocation = DefaultConfigurationLocation;
+	
+	
+	
+	/* ===== Public Functions ===== */
+	
+	public static void main(String[] arguments) {
 		
-		//Determine location of configuration
-		String location = DefaultConfigurationLocation;
-		
-		if ( args.length > 0 ) {
-			
-			location = args[0];
-			
-		}
+		//Parse argument
+		parseArguments(arguments);
 		
 		//Parse configuration
-		ConfigurationParser parser = new ConfigurationParser(location);
+		ConfigurationParser parser = new ConfigurationParser(ConfigurationLocation);
 		if ( !parser.parse() ) {
 			
 			fatal("Could not parse configuration");
@@ -98,7 +112,7 @@ public class Main {
 						if ( generator.generate() ) {
 							
 							header("Finished");
-							info("✅ Finished generating to " + Configuration.current().getOutputLocation());
+							info(Format.format("✅ Finished generating to " + Configuration.current().getOutputLocation(), Format.Light, Format.Green));
 							
 						}
 						
@@ -117,7 +131,7 @@ public class Main {
 	 */
 	public static void header(String title) {
 		
-		info("\n\n\n ━━━━━━━━━━ " + title + " ━━━━━━━━━━ \n");
+		info(Format.format("\n\n\n ━━━━━━━━━━ " + title + " ━━━━━━━━━━ \n", Format.Dark, Format.Magenta));
 		
 	}
 	
@@ -128,7 +142,7 @@ public class Main {
 	 */
 	public static void entry(String name, String content, int indent) {
 		
-		info(StringUtils.repeat("\t", indent) +  "→ " + name + ": " + content);
+		info(Format.format(StringUtils.repeat("\t", indent) +  "→ " + name + ": " + content, Format.Dark, Format.Blue));
 		
 	}
 	
@@ -146,7 +160,7 @@ public class Main {
 	 */
 	public static void warning(String message) {
 		
-		System.err.println("Warning: " + message);
+		System.err.println(Format.format("Warning: " + message, Format.Light, Format.Black));
 		
 	}
 	
@@ -156,9 +170,84 @@ public class Main {
 	 */
 	public static void fatal(String message) {
 		
-		System.err.println("❌️ Error: " + message);
+		System.err.println(Format.format("❌️ Error: " + message, Format.Dark, Format.Red));
 		System.exit(0);
 		
 	}
+	
+	
+	
+	/**
+	 * Exits the application.
+	 */
+	public static void exit() {
+		
+		System.exit(0);
+		
+	}
+	
+	
+	
+	/* ===== Private Functions ===== */
+	
+	private static void parseArguments(String[] arguments) {
+		
+		Command current = null;
+		
+		for ( String argument : arguments ) {
+			
+			if ( argument.startsWith(Command.CommandPrefix) ) {
+				
+				if ( current != null && current.getArgumentCount() != current.getArguments().size() ) {
+					
+					Main.fatal("Invalid number of argument for '" + Command.CommandPrefix + current.getName() + "' command");
+					
+				}
+				
+				current = getCommand(argument.substring(Command.CommandPrefix.length()));
+				
+				if ( current != null ) {
+					
+					current.reset();
+					
+				} else {
+					
+					Main.fatal("Invalid command: '" + argument + "'");
+					
+				}
+				
+			} else if ( current != null ) {
+				
+				if ( !current.addArgument(argument) ) {
+					
+					Main.fatal("Invalid argument for '" + Command.CommandPrefix + current.getName() + "' command");
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	private static Command getCommand(String name) {
+		
+		Command command = null;
+		
+		for ( Command current : Commands ) {
+			
+			if ( current.getName().equals(name) ) {
+				
+				command = current;
+				break;
+				
+			}
+			
+		}
+		
+		return command;
+		
+	}
+	
 	
 }

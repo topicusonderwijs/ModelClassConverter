@@ -50,7 +50,6 @@ public abstract class AbstractGenerator {
 		try {
 			freemarker.setDirectoryForTemplateLoading(getConfiguration().getTemplateLocation());
 		} catch (IOException e) {
-			e.printStackTrace();
 			Main.fatal("Could not find location for templates");
 		}
 		
