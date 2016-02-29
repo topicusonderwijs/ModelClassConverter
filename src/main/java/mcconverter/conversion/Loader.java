@@ -1,7 +1,5 @@
 package mcconverter.conversion;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -15,8 +13,6 @@ import java.util.jar.JarFile;
 import mcconverter.configuration.Configuration;
 import mcconverter.main.Main;
 
-import com.tobedevoured.naether.DependencyException;
-import com.tobedevoured.naether.URLException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 
@@ -108,18 +104,24 @@ public class Loader {
 					
 					String path = paths.get(key);
 					
-					JarFile file = new JarFile(path);
-					Enumeration<JarEntry> fileEntries = file.entries();
-					
-					while ( fileEntries.hasMoreElements() ) {
+					try {
 						
-						entries.add(fileEntries.nextElement());
+						JarFile file = new JarFile(path);
+						Enumeration<JarEntry> fileEntries = file.entries();
 						
+						while ( fileEntries.hasMoreElements() ) {
+							
+							entries.add(fileEntries.nextElement());
+							
+						}
+						
+						locations.add( new URL("jar:file:" + path + "!/") );
+						
+						file.close();
+						
+					} catch ( Exception e ) {
+						Main.warning("Could not load: " + path);
 					}
-					
-					locations.add( new URL("jar:file:" + path + "!/") );
-					
-					file.close();
 					
 				}
 				
@@ -135,13 +137,7 @@ public class Loader {
 				loaded = true;
 				correct = true;
 				
-			} catch (URLException e) {
-				correct = false;
-			} catch (DependencyException e) {
-				correct = false;
-			} catch (MalformedURLException e) {
-				correct = false;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				correct = false;
 			}
 			
@@ -169,22 +165,40 @@ public class Loader {
 		
 	}
 	
-	private boolean loadClass(String name, int indent) {
+	/**
+	 * Converts and returns the given class name to its simple name.
+	 */
+	private String getSimpleName(String className) {
+		
+		String simpleName = null;
+		String[] components = className.split("\\.");
+		
+		if ( components.length > 0 ) {
+			
+			simpleName = components[components.length - 1];
+			
+		}
+		
+		return simpleName;
+		
+	}
+	
+	private boolean loadClass(String className, int indent) {
 		
 		boolean correct = false;
 		
-		if ( name != null && !hasClass(name) ) {
+		if ( className != null && !hasClass(className) ) {
 			
 			try {
 				
-				//Load class
-				Class<?> c = loader.loadClass(name);
-				
-				//Determine if it needs conversion
-				if ( verifyClass(c, indent) ) {
+				//Determine if class needs to be loaded
+				if ( verifyClass(className, indent) ) {
 					
-					classes.put(name, c);
-					Main.entry("Loaded", name, indent);
+					//Load class
+					Class<?> c = loader.loadClass(className);
+					
+					classes.put(className, c);
+					Main.entry("Loaded", className, indent);
 					
 					Class<?> s = determineSuperClass(c);
 					
@@ -199,7 +213,7 @@ public class Loader {
 				
 			} catch (ClassNotFoundException e) {
 				
-				Main.fatal("Could not find: " + name);
+				Main.warning("Could not find: " + className);
 				
 			}
 			
@@ -209,7 +223,7 @@ public class Loader {
 		
 	}
 	
-	private boolean verifyClass(Class<?> c, int indent) {
+	private boolean verifyClass(String className, int indent) {
 		
 		boolean valid = false;
 		
@@ -217,7 +231,7 @@ public class Loader {
 			
 			for ( String pack : Configuration.current().getPackages() ) {
 				
-				valid = valid || c.getName().startsWith( pack ); //Also need super classes!
+				valid = valid || className.startsWith( pack );
 				
 			}
 			
@@ -228,8 +242,8 @@ public class Loader {
 		}
 		
 		return valid &&
-				!Configuration.current().hasIgnoredClass(c.getName()) &&
-				!Configuration.current().hasIgnoredClass(c.getSimpleName());
+				!Configuration.current().hasIgnoredClass(className) &&
+				!Configuration.current().hasIgnoredClass(getSimpleName(className));
 		
 	}
 	
