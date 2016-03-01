@@ -55,6 +55,12 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
+	public void setType(MCType type) {
+		
+		this.type = type;
+		
+	}
+	
 	public boolean hasValue() {
 		
 		return getValue() != null;
@@ -99,7 +105,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		model.put("property_name", generator.generatePropertyName(this));
 		model.put("property_key", getKey());
 		model.put("property_type", getType().getModel(generator));
-		model.put("property_value", getValue());
+		model.put("property_value", generator.generatePropertyValue(this));
 		model.put("property_isStatic", isStatic());
 		model.put("property_isConstant", isConstant());
 		model.put("property_mapping", generator.generatePropertyMapping(this));

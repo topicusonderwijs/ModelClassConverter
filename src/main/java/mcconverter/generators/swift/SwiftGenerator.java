@@ -82,14 +82,8 @@ public class SwiftGenerator extends Generator {
 					name = "Dictionary";
 					break;
 				case Date:
-					name = "NSDate";
-					break;
 				case LocalTime:
-					name = "NSDate";
-					break;
 				case DateTime:
-					name = "NSDate";
-					break;
 				case LocalDate:
 					name = "NSDate";
 					break;
@@ -150,11 +144,7 @@ public class SwiftGenerator extends Generator {
 				
 			}
 			
-			if ( type.isOptional() ) {
-				
-				t += "?";
-				
-			}
+			t += generateOptionalLiteral(type);
 			
 		}
 		
@@ -194,17 +184,19 @@ public class SwiftGenerator extends Generator {
 		literal += ( property.isConstant() ? "let " : "var " );
 		literal += generatePropertyName(property);
 		
-		String propertyValue = generatePropertyValue(property);
-		
 		if ( !property.isConstant() ) {
 			
 			literal += " : " + generateTypeLiteral(property.getType());
 			
-		}
-		
-		if ( propertyValue != null ) {
+		} else {
 			
-			literal += " = " + propertyValue;
+			String propertyValue = generatePropertyValue(property);
+			
+			if ( propertyValue != null ) {
+				
+				literal += " = " + propertyValue;
+				
+			}
 			
 		}
 		
@@ -235,6 +227,12 @@ public class SwiftGenerator extends Generator {
 			case List:
 				value = "[]";
 				break;
+			case Map:
+				value = "[:]";
+				break;
+			case Set:
+				value = "[]";
+				break;
 			case Boolean:
 				value = "false";
 				break;
@@ -249,7 +247,20 @@ public class SwiftGenerator extends Generator {
 			case String:
 				value = "\"\"";
 				break;
+			case Date:
+			case LocalTime:
+			case DateTime:
+			case LocalDate:
+				value = "NSDate.distantPast()";
+				break;
 			default:
+				MCEnum e = getPackage().getEnum(property.getType().getIdentifier());
+				
+				if ( e != null && e.hasValues() ) {
+					
+					value = "." + generateEnumValueName(e.getValues().get(0));
+					
+				}
 				break;
 				
 			}
@@ -306,9 +317,15 @@ public class SwiftGenerator extends Generator {
 	
 	
 	
-	/* ===== Private Functions ===== */
+	/* ===== Protected Functions ===== */
 	
-	private String generateTypeParameterLiteral(MCTypeParameter parameter, boolean applyType) {
+	protected String generateOptionalLiteral(MCType type) {
+		
+		return type != null && type.isOptional() ? "?" : "";
+		
+	}
+	
+	protected String generateTypeParameterLiteral(MCTypeParameter parameter, boolean applyType) {
 		
 		String name = "";
 		

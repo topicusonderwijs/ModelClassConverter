@@ -13,6 +13,7 @@ public class CustomType {
 	
 	private String name;
 	private MCNativeType nativeType;
+	private boolean optional;
 	private List<CustomType> parameters;
 	
 	
@@ -23,6 +24,7 @@ public class CustomType {
 		
 		nativeType = MCNativeType.NonNative;
 		parameters = new ArrayList<CustomType>();
+		setOptional(false);
 		
 	}
 	
@@ -82,6 +84,18 @@ public class CustomType {
 		
 	}
 	
+	public boolean isOptional() {
+		
+		return optional;
+		
+	}
+	
+	public void setOptional(boolean optional) {
+		
+		this.optional = optional;
+		
+	}
+	
 	public boolean hasParameters() {
 		
 		return getParameters() != null && getParameters().size() > 0;
@@ -137,6 +151,8 @@ public class CustomType {
 			type = new MCType(getName(), parameters, false);
 			
 		}
+		
+		type.setOptional(isOptional());
 		
 		return type;
 		

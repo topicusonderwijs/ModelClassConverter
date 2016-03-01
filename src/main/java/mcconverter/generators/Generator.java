@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.google.common.base.CaseFormat;
 
+import mcconverter.configuration.Configuration;
 import mcconverter.configuration.CustomClass;
 import mcconverter.configuration.CustomProperty;
 import mcconverter.configuration.CustomType;
@@ -82,7 +83,7 @@ public abstract class Generator extends AbstractGenerator {
 				
 				//Apply custom entities
 				if ( customClass != null && customClass.hasProperties() ) {
-
+					
 					for ( CustomProperty customProperty : customClass.getProperties() ) {
 						
 						String customPropertyName = customProperty.getName();
@@ -91,9 +92,17 @@ public abstract class Generator extends AbstractGenerator {
 							
 							MCProperty p = c.getProperty(customPropertyName);
 							
+							//Remove if property is ignored
 							if ( customProperty.isIgnored() ) {
 								
 								c.removeProperty(p);
+								
+							}
+							
+							//Add type if custom type is set
+							if ( customProperty.hasType() ) {
+								
+								p.setType(customProperty.getType().toType());
 								
 							}
 							
@@ -147,6 +156,22 @@ public abstract class Generator extends AbstractGenerator {
 			}
 			
 		}
+		
+		//Find descriptor of entity
+		String descriptor = entity.getIdentifier();
+		
+		for( String prefix : Configuration.current().getPackages() ) {
+			
+			if ( descriptor.startsWith(prefix) && descriptor.length() > prefix.length() ) {
+				
+				descriptor = descriptor.substring(prefix.length() + 1);
+				break;
+				
+			}
+			
+		}
+		
+		model.put("entity_descriptor", descriptor);
 		
 		return valid;
 		

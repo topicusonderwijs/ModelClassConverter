@@ -52,9 +52,7 @@ public class MCEnum extends MCEntity {
 			
 			Map<String, Object> model = super.getModel(generator);
 			
-			String valueName = generator.generateEnumValueName(this);
-			
-			model.put("enum_value_name", valueName);
+			model.put("enum_value_name", generator.generateEnumValueName(this));
 			model.put("enum_value_rawName", getName());
 			model.put("enum_value_rawType", getRawType());
 			model.put("enum_value_rawValue", getRawValue());
@@ -118,6 +116,12 @@ public class MCEnum extends MCEntity {
 	public List<MCEnumValue> getValues() {
 		
 		return values;
+		
+	}
+	
+	public boolean hasValues() {
+		
+		return getValues() != null && !getValues().isEmpty();
 		
 	}
 	

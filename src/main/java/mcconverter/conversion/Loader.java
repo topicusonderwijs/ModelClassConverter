@@ -18,6 +18,12 @@ import com.tobedevoured.naether.impl.NaetherImpl;
 
 public class Loader {
 	
+	/* ===== Constants ===== */
+	
+	private static final String InnerClassSymbol = "$";
+	
+	
+	
 	/* ===== Private Properties ===== */
 	
 	private URLClassLoader loader;
@@ -200,15 +206,6 @@ public class Loader {
 					classes.put(className, c);
 					Main.entry("Loaded", className, indent);
 					
-					Class<?> s = determineSuperClass(c);
-					
-					if ( s != null ) {
-						
-						correct = loadClass(s.getName(), indent + 1);
-						
-					}
-					
-					
 				}
 				
 			} catch (ClassNotFoundException e) {
@@ -242,26 +239,9 @@ public class Loader {
 		}
 		
 		return valid &&
+				!className.contains(InnerClassSymbol) &&
 				!Configuration.current().hasIgnoredClass(className) &&
 				!Configuration.current().hasIgnoredClass(getSimpleName(className));
-		
-	}
-	
-	private Class<?> determineSuperClass(Class<?> c) {
-		
-		Class<?> s = c.getSuperclass();
-		
-		if ( s != null && (
-			Configuration.current().getDeepestSuperClasses().contains(c.getName())
-			||
-			Configuration.current().getDeepestSuperClasses().contains(c.getSimpleName())
-		)) {
-			
-			s = null;
-			
-		}
-		
-		return s;
 		
 	}
 	

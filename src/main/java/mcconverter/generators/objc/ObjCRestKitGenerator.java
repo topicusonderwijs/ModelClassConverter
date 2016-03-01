@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.google.common.base.CaseFormat;
 
-import mcconverter.configuration.Configuration;
 import mcconverter.configuration.CustomClass;
 import mcconverter.generators.Generator;
 import mcconverter.main.Main;
@@ -368,22 +367,6 @@ public class ObjCRestKitGenerator extends Generator {
 			model.put("class_imports", imports);
 			
 		}
-		
-		//Find descriptor of entity
-		String descriptor = entity.getIdentifier();
-		
-		for( String prefix : Configuration.current().getPackages() ) {
-			
-			if ( descriptor.startsWith(prefix) && descriptor.length() > prefix.length() ) {
-				
-				descriptor = descriptor.substring(prefix.length() + 1);
-				break;
-				
-			}
-			
-		}
-		
-		model.put("entity_descriptor", descriptor);
 		
 		return super.validateModel(entity, model);
 		

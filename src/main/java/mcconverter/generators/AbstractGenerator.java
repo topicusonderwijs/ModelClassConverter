@@ -88,7 +88,7 @@ public abstract class AbstractGenerator {
 				
 				FileUtils.cleanDirectory(OutputFolder);
 				
-				//Generate entities
+				//Validate entities
 				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
 					MCEntity entity = getPackage().getEntity(identifier);

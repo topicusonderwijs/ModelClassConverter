@@ -154,12 +154,16 @@ public class Analyzer {
 		MCClass dataClass = new MCClass( dataType, name, c.isInterface() );
 		
 		//Determine parent
-		MCEntity parentEntity = analyze(c.getSuperclass(), indent + 1);
-		
-		if ( parentEntity != null && parentEntity instanceof MCClass ) {
+		if ( !getConfiguration().hasDeepestSuperClass(name) ) {
+
+			MCEntity parentEntity = analyze(c.getSuperclass(), indent + 1);
 			
-			dataClass.setParent(((MCClass)parentEntity).getType());
-			
+			if ( parentEntity != null && parentEntity instanceof MCClass ) {
+				
+				dataClass.setParent(((MCClass)parentEntity).getType());
+				
+			}
+				
 		}
 		
 		//Determine protocols
@@ -314,6 +318,16 @@ public class Analyzer {
 				}
 				
 				parameters.add(new MCTypeParameter(name, analyzeType(aType), depth));
+				
+			}
+			
+		} else if ( type instanceof Class<?> ) {
+			
+			Class<?> cType = ((Class<?>)type).getComponentType();
+			
+			if ( cType != null ) {
+				
+				parameters.add(new MCTypeParameter(null, analyzeType(cType), depth));
 				
 			}
 			

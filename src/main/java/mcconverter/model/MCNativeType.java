@@ -110,8 +110,19 @@ public enum MCNativeType {
 	public static MCNativeType fromType(Type t) {
 		
 		MCNativeType type = MCNativeType.NonNative;
+		Class<?> c = null;
 		
-		if ( nativeTypeMap.containsKey(t) ) {
+		if ( t instanceof Class ) {
+			
+			c = (Class<?>)t;
+			
+		}
+		
+		if ( c != null && c.isArray() ) {
+			
+			type = MCNativeType.List;
+			
+		} else if ( nativeTypeMap.containsKey(t) ) {
 			
 			type = nativeTypeMap.get(t);
 			

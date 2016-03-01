@@ -214,6 +214,12 @@ public class Configuration {
 		
 	}
 	
+	public boolean hasDeepestSuperClass(String parent) {
+		
+		return getDeepestSuperClasses().contains(parent);
+		
+	}
+	
 	public void addDeepestSuperClass(String parent) {
 		
 		getDeepestSuperClasses().add(parent);

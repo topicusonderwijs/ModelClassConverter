@@ -14,6 +14,7 @@ public class CustomTypeParser {
 	private static final char ParameterOpenToken = '(';
 	private static final char ParameterSeperatorToken = ',';
 	private static final char ParameterCloseToken = ')';
+	private static final String ParameterOptionalToken = "?";
 	private static final char[] TypeEndingTokens = {ParameterOpenToken, ParameterSeperatorToken, ParameterCloseToken};
 	
 	
@@ -80,6 +81,13 @@ public class CustomTypeParser {
 					type.setNativeType(nativeType);
 					
 				} else {
+					
+					if ( name.endsWith(ParameterOptionalToken) ) {
+						
+						type.setOptional(true);
+						name = name.substring(0, name.length() - ParameterOptionalToken.length());
+						
+					}
 					
 					type.setName(name);
 					
