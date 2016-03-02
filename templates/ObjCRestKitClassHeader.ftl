@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <RestKit/RestKit.h>
 #import "EntityRegistry.h"
-<#if class_parent??>#import "${class_parent}.h"</#if>
+<#if class_parent??>#import "${class_parent_literal}.h"</#if>
 <#list class_imports as import>
 #import "${import}.h"
 </#list>
@@ -22,7 +22,7 @@
 </#list>
 
 </#if>
-@interface ${entity_name} : <#if class_parent??>${class_parent}<#else>NSObject</#if>
+@interface ${entity_name} : <#if class_parent_literal??>${class_parent_literal}<#else>NSObject</#if>
 
 <#if ( class_properties?size > 0)><#t>
 <#list class_properties as property>

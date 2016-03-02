@@ -107,9 +107,9 @@ public class MCPackage implements MCModelable {
 		for ( String entityIdentifier : entityIdentifiers ) {
 			
 			MCEntity entity = getEntity(entityIdentifier);
-			Map<String, Object> entityModel = entity.getModel(generator);
+			Map<String, Object> entityModel = generator.generateModel(entity);
 			
-			if ( generator.validateModel(entity, entityModel) ) {
+			if ( entityModel != null ) {
 				
 				entities.add(entityModel);
 				

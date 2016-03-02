@@ -16,7 +16,7 @@ import mcconverter.configuration.Configuration;
 import mcconverter.main.Main;
 import mcconverter.model.*;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 
 public class Analyzer {
@@ -160,7 +160,7 @@ public class Analyzer {
 			
 			if ( parentEntity != null && parentEntity instanceof MCClass ) {
 				
-				dataClass.setParent(((MCClass)parentEntity).getType());
+				dataClass.setParent(((MCClass)parentEntity));
 				
 			}
 				
@@ -207,7 +207,7 @@ public class Analyzer {
 				int modifiers = property.getModifiers();
 				
 				MCType propertyType = analyzeType(property.getGenericType(), !propertyTypeNonOptional, 0);
-				String propertyValue = null;
+				MCPropertyValue propertyValue = null;
 				boolean propertyStatic = Modifier.isStatic(modifiers);
 				boolean propertyConstant = Modifier.isFinal(modifiers);
 				
@@ -217,7 +217,7 @@ public class Analyzer {
 					if ( propertyType.isNativeType(MCNativeType.String, MCNativeType.Integer) ) {
 						
 						try {
-							propertyValue = property.get(null).toString();
+							propertyValue = new MCPropertyValue(property.get(null).toString(), false);
 						} catch (Exception e) {}
 						
 					}

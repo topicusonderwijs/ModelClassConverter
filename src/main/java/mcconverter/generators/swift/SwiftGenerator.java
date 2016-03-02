@@ -210,14 +210,22 @@ public class SwiftGenerator extends Generator {
 		
 		if ( property.hasValue() ) {
 			
-			switch ( property.getType().getNativeType() ) {
+			if ( property.getValue().isLiteral() ) {
 				
-			case String:
-				value = "\"" + property.getValue() + "\"";
-				break;
-			default:
-				value = property.getValue();
-				break;
+				value = property.getValue().getValue();
+				
+			} else {
+				
+				switch ( property.getType().getNativeType() ) {
+					
+				case String:
+					value = "\"" + property.getValue().getValue() + "\"";
+					break;
+				default:
+					value = property.getValue().getValue();
+					break;
+				}
+				
 			}
 			
 		} else {
@@ -225,42 +233,13 @@ public class SwiftGenerator extends Generator {
 			switch ( property.getType().getNativeType() ) {
 			
 			case List:
+			case Set:
 				value = "[]";
 				break;
 			case Map:
 				value = "[:]";
 				break;
-			case Set:
-				value = "[]";
-				break;
-			case Boolean:
-				value = "false";
-				break;
-			case Integer:
-			case Long:
-			case BigInteger:
-			case Double:
-			case Float:
-			case BigDecimal:
-				value = "0";
-				break;
-			case String:
-				value = "\"\"";
-				break;
-			case Date:
-			case LocalTime:
-			case DateTime:
-			case LocalDate:
-				value = "NSDate.distantPast()";
-				break;
 			default:
-				MCEnum e = getPackage().getEnum(property.getType().getIdentifier());
-				
-				if ( e != null && e.hasValues() ) {
-					
-					value = "." + generateEnumValueName(e.getValues().get(0));
-					
-				}
 				break;
 				
 			}

@@ -1,27 +1,29 @@
 package mcconverter.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import mcconverter.generators.AbstractGenerator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class MCProperty extends MCEntity implements MCModelable {
 
 	private String key;
 	private MCType type;
-	private String value;
+	private MCPropertyValue value;
 	private boolean isStatic;
 	private boolean isConstant;
 	private boolean isInitialized;
 	
-	public MCProperty(String identifier, String name, String key, MCType type) {
+	public MCProperty(String identifier, String name, String key, MCType type, MCPropertyValue value) {
 		
-		this(identifier, name, key, type, null, false, false);
+		this(identifier, name, key, type, value, false, false);
 		
 	}
 	
-	public MCProperty(String identifier, String name, String key, MCType type, String value, boolean isStatic, boolean isConstant) {
+	public MCProperty(String identifier, String name, String key, MCType type, MCPropertyValue value, boolean isStatic, boolean isConstant) {
 		
 		super( identifier, name );
 		
@@ -67,9 +69,15 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
-	public String getValue() {
+	public MCPropertyValue getValue() {
 		
 		return value;
+		
+	}
+	
+	public void setValue(MCPropertyValue value) {
+		
+		this.value = value;
 		
 	}
 	
@@ -94,6 +102,20 @@ public class MCProperty extends MCEntity implements MCModelable {
 	public void setInitialized(boolean initialized) {
 		
 		isInitialized = initialized;
+		
+	}
+	
+	public static List<Map<String, Object>> getModel(AbstractGenerator generator, List<MCProperty> properties) {
+		
+		List<Map<String, Object>> model = new ArrayList<Map<String, Object>>();
+		
+		for ( MCProperty property : properties ) {
+			
+			model.add(property.getModel(generator));
+			
+		}
+		
+		return model;
 		
 	}
 	

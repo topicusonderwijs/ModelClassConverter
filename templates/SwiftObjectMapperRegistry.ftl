@@ -11,10 +11,37 @@ import ObjectMapper
 
 public class EntityRegistry {
 	
-	private static let registry : [String: Mappable.Type] = [
-		<#list package_classes as class>
-		"${class.entity_descriptor}": ${class.entity_name}.self<#sep>,</#sep>
+	private static let descriptors : [String: Mappable.Type] = [
+		<#list package_classes><#items as class>
+		${class.entity_name}.descriptor: ${class.entity_name}.self<#sep>,</#sep>
+		</#items><#else>
+		:
 		</#list>
 	]
+	
+	public class func toType(descriptor: String) -> Mappable.Type? {
+		
+		return descriptors[descriptor]
+		
+	}
+	
+	public class func fromType(type: Mappable.Type) -> String? {
+		
+		var descriptor : String?
+        
+        for (key, value) in descriptors {
+            
+            if ( value == type ) {
+                
+                descriptor = key
+                break
+                
+            }
+            
+        }
+		
+        return descriptor
+		
+	}
 	
 }

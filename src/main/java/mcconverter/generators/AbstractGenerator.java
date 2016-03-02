@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,23 +89,31 @@ public abstract class AbstractGenerator {
 				
 				FileUtils.cleanDirectory(OutputFolder);
 				
+				List<MCEntity> entities = new ArrayList<>();
+				
 				//Validate entities
 				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
 					MCEntity entity = getPackage().getEntity(identifier);
 					
 					if ( validateEntity(entity) ) {
-
-						//Generate entity
-						for (String templateName : getTemplates(entity)) {
+						
+						entities.add(entity);
+						
+					}
+					
+				}
+				
+				//Generate entities
+				for ( MCEntity entity : entities ) {
+					
+					Map<String, Object> model = generateModel(entity);
+					
+					if ( model != null ) {
+						
+						for ( String templateName : getTemplates(entity) ) {
 							
-							Map<String, Object> model = entity.getModel(this);
-							
-							if ( validateModel(entity, model) ) {
-								
-								writeModel(templateName, generateFileName(entity, templateName), model);
-								
-							}
+							writeModel(templateName, generateFileName(entity, templateName), model);
 							
 						}
 						
@@ -200,28 +209,51 @@ public abstract class AbstractGenerator {
 	 */
 	public abstract String generateFileName(MCEntity entity, String template);
 	
-
+	/**
+	 * Generates and validates a model for the given package.
+	 * If the model for the given package is invalidated then `null` is returned.
+	 */
+	public final Map<String, Object> generateModel(MCPackage pack) {
+		
+		Map<String, Object> model = pack.getModel(this);
+		
+		return validateModel(pack, model) ? model : null;
+		
+	}
+	
+	/**
+	 * Generates and validates a model for the given entity.
+	 * If the model for the given entity is invalidated then `null` is returned.
+	 */
+	public final Map<String, Object> generateModel(MCEntity entity) {
+		
+		Map<String, Object> model = entity.getModel(this);
+		
+		return validateModel(entity, model) ? model : null;
+		
+	}
+	
 	/**
 	 * Validates the given package.
 	 */
-	public abstract boolean validatePackage(MCPackage pack);
+	protected abstract boolean validatePackage(MCPackage pack);
 	
 	/**
 	 * Validates the given entity.
 	 */
-	public abstract boolean validateEntity(MCEntity entity);
+	protected abstract boolean validateEntity(MCEntity entity);
 
 	/**
 	 * Validates and potentially alters the model of the given package.
 	 * The returned value should indicate whether the model is valid (`true`) or not (`false`).
 	 */
-	public abstract boolean validateModel(MCPackage pack, Map<String, Object> model);
+	protected abstract boolean validateModel(MCPackage pack, Map<String, Object> model);
 	
 	/**
 	 * Validates and potentially alters the model of the given entity.
 	 * The returned value should indicate whether the model is valid (`true`) or not (`false`).
 	 */
-	public abstract boolean validateModel(MCEntity entity, Map<String, Object> model);
+	protected abstract boolean validateModel(MCEntity entity, Map<String, Object> model);
 	
 	
 	

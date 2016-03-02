@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mcconverter.model.MCClass;
+import mcconverter.model.MCPackage;
 import mcconverter.model.MCType;
 
 public class CustomClass extends CustomEntity {
@@ -96,7 +97,7 @@ public class CustomClass extends CustomEntity {
 		
 	}
 	
-	public MCClass toClass() {
+	public MCClass toClass(MCPackage pack) {
 		
 		MCType type;
 		
@@ -112,9 +113,9 @@ public class CustomClass extends CustomEntity {
 		
 		MCClass c = new MCClass(type, getName(), false);
 		
-		if ( hasParent() ) {
+		if ( hasParent() && pack.hasClass(getParent()) ) {
 			
-			c.setParent(new MCType(getParent(), false));
+			c.setParent(pack.getClass(getParent()));
 			
 		}
 		

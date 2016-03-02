@@ -6,6 +6,7 @@ public class CustomProperty extends CustomEntity {
 	
 	private String key;
 	private boolean initialize;
+	private CustomValue value;
 	
 	
 	
@@ -40,6 +41,24 @@ public class CustomProperty extends CustomEntity {
 	public void setInitialized(boolean initialize) {
 		
 		this.initialize = initialize;
+		
+	}
+	
+	public boolean hasValue() {
+		
+		return getValue() != null;
+		
+	}
+	
+	public CustomValue getValue() {
+		
+		return value;
+		
+	}
+	
+	public void setValue(CustomValue value) {
+		
+		this.value = value;
 		
 	}
 	

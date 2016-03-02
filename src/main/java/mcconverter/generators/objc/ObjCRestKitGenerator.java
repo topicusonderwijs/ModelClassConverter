@@ -105,14 +105,22 @@ public class ObjCRestKitGenerator extends Generator {
 		
 		if ( property.hasValue() ) {
 			
-			switch ( property.getType().getNativeType() ) {
+			if ( property.getValue().isLiteral() ) {
 				
-			case String:
-				value = "@\"" + property.getValue() + "\"";
-				break;
-			default:
-				value = property.getValue();
-				break;
+				value = property.getValue().getValue();
+				
+			} else {
+				
+				switch ( property.getType().getNativeType() ) {
+					
+				case String:
+					value = "@\"" + property.getValue().getValue() + "\"";
+					break;
+				default:
+					value = property.getValue().getValue();
+					break;
+				}
+				
 			}
 			
 		} else {

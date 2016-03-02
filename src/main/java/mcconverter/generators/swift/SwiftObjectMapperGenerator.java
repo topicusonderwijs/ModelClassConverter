@@ -11,6 +11,7 @@ import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
 import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
+import mcconverter.utils.ListUtils;
 
 public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	
@@ -122,37 +123,14 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 			
 			MCClass c = (MCClass)entity;
 			
-			List<Map<String, Object>> optional = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> required = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> valued = new ArrayList<Map<String, Object>>();
-			
-			for ( MCProperty property : c.getProperties() ) {
-				
-				Map<String, Object> m = property.getModel(this);
-				
-				//Determine initializers
-				if ( property.getType().isOptional() ) {
-					
-					optional.add(m);
-					
-				} else {
-					
-					required.add(m);
-					
-					if ( generatePropertyValue(property) != null ) {
-						
-						valued.add(m);
-						
-					}
-					
-				}
-				
-			}
-			
-			model.put("class_properties_optional", optional);
-			model.put("class_properties_required", required);
-			model.put("class_properties_valued", valued);
-			model.put("class_initialize", applyInitialize(c));
+			model.put(
+				"class_properties_all_notvalued",
+				MCProperty.getModel(this, ListUtils.filter(c.getAllProperties(), p -> generatePropertyValue(p) == null))
+			);
+			model.put(
+				"class_properties_all_required_notvalued",
+				MCProperty.getModel(this, ListUtils.filter(c.getAllRequiredProperties(), p -> generatePropertyValue(p) == null))
+			);
 			
 		}
 		
@@ -163,37 +141,6 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	
 	
 	/* ===== Private Functions ===== */
-	
-	private boolean applyInitialize(MCClass c) {
-		
-		boolean initialize = true;
-		
-		if ( c.hasParent() ) {
-			
-			MCClass s = getPackage().getClass(c.getParent().getIdentifier());
-			
-			initialize = s == null || (validateEntity(s) && applyInitialize(s));
-			
-		}
-		
-		if ( initialize ) {
-			
-			for ( MCProperty property : c.getProperties() ) {
-				
-				if ( !property.getType().isOptional() && generatePropertyValue(property) == null ) {
-						
-					initialize = false;
-					break;
-					
-				}
-				
-			}
-			
-		}
-		
-		return initialize;
-		
-	}
 	
 	private void applyOptional(MCType type) {
 		

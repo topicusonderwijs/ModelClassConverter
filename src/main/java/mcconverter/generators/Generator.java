@@ -11,6 +11,7 @@ import mcconverter.configuration.CustomType;
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCPackage;
+import mcconverter.model.MCPropertyValue;
 import mcconverter.model.MCType;
 import mcconverter.model.MCEnum.MCEnumValue;
 import mcconverter.model.MCProperty;
@@ -30,7 +31,7 @@ public abstract class Generator extends AbstractGenerator {
 			
 			if ( !pack.hasClass(c.getName()) && !c.isIgnored() && !c.hasRename() ) {
 				
-				pack.addEntity(c.toClass());
+				pack.addEntity(c.toClass(pack));
 				
 			}
 			
@@ -71,6 +72,12 @@ public abstract class Generator extends AbstractGenerator {
 						
 						property.setInitialized(customProperty.isInitialized());
 						
+						if ( property.hasValue() ) {
+							
+							property.setValue(customProperty.getValue().toValue());
+							
+						}
+						
 					}
 					
 					if ( getConfiguration().hasIgnoredProperty(property.getName()) ) {
@@ -99,6 +106,13 @@ public abstract class Generator extends AbstractGenerator {
 								
 							}
 							
+							//Set custom value if set
+							if ( customProperty.hasValue() ) {
+								
+								p.setValue(customProperty.getValue().toValue());
+								
+							}
+							
 							//Add type if custom type is set
 							if ( customProperty.hasType() ) {
 								
@@ -108,19 +122,20 @@ public abstract class Generator extends AbstractGenerator {
 							
 						} else {
 							
-
 							CustomType customPropertyType = customProperty.getType();
 							
 							if ( customPropertyType != null ) {
 								
 								MCType customType = customPropertyType.toType();
+								MCPropertyValue customValue = customProperty.hasValue() ? customProperty.getValue().toValue() : null;
 								
 								c.addProperty(
 									new MCProperty(
 										c.getIdentifier() + "." + customPropertyName,
 										customPropertyName,
 										customProperty.getKey(),
-										customType
+										customType,
+										customValue
 									)
 								);
 								

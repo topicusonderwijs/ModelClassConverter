@@ -175,6 +175,14 @@ public class ConfigurationParser extends DefaultHandler {
 			p.setType(CustomType.fromString(attributes.getValue(TypeAttribute)));
 			p.setInitialized(getBoolean(attributes, InitializedAttribute, true));
 			
+			String value = attributes.getValue(ValueAttribute);
+			
+			if ( value != null ) {
+				
+				p.setValue(new CustomValue(value));
+				
+			}
+			
 			if ( currentClass != null ) {
 				
 				currentClass.addProperty(p);

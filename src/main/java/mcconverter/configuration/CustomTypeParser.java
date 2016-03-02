@@ -5,7 +5,7 @@ import java.util.List;
 
 import mcconverter.model.MCNativeType;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class CustomTypeParser {
 
@@ -74,6 +74,13 @@ public class CustomTypeParser {
 			
 			if ( name.length() > 0 ) {
 				
+				if ( name.endsWith(ParameterOptionalToken) ) {
+					
+					type.setOptional(true);
+					name = name.substring(0, name.length() - ParameterOptionalToken.length());
+					
+				}
+				
 				MCNativeType nativeType = MCNativeType.fromName(name);
 				
 				if ( nativeType != MCNativeType.NonNative ) {
@@ -81,13 +88,6 @@ public class CustomTypeParser {
 					type.setNativeType(nativeType);
 					
 				} else {
-					
-					if ( name.endsWith(ParameterOptionalToken) ) {
-						
-						type.setOptional(true);
-						name = name.substring(0, name.length() - ParameterOptionalToken.length());
-						
-					}
 					
 					type.setName(name);
 					

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import mcconverter.generators.AbstractGenerator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class MCEnum extends MCEntity {
 	
