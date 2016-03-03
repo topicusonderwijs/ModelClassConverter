@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import mcconverter.configuration.CustomProperty;
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
 import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
+import mcconverter.model.MCTypeParameter;
 import mcconverter.utils.ListUtils;
 
 public class SwiftObjectMapperGenerator extends SwiftGenerator {
@@ -71,6 +73,20 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		
 	}
 	
+	public String generatePropertyLiteral(MCProperty property) {
+		
+		String literal = super.generatePropertyLiteral(property);
+		
+		if ( !property.getType().isOptional() && !property.isConstant() ) {
+			
+			literal += "!";
+			
+		}
+		
+		return literal;
+		
+	}
+	
 	public String generatePropertyValue(MCProperty property) {
 		
 		String value = super.generatePropertyValue(property);
@@ -94,6 +110,26 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	}
 	
 	public String generatePropertyMapping(MCProperty property) {
+		
+		String mapping = generatePropertyName(property) + " <- ";
+		
+		CustomProperty customProperty = getConfiguration().getCustomTransformForType(property.getType());
+		
+		if ( customProperty != null && customProperty.hasTransform() ) {
+			
+			mapping += "(map[\"" + property.getKey() + "\"], Map." + customProperty.getType().getName() + "Transform)";
+			
+		} else {
+			
+			mapping += "map[\"" + property.getKey() + "\"]";
+			
+		}
+		
+		return mapping;
+		
+	}
+	
+	public String generatePropertyTransform(MCProperty property) {
 		
 		return "";
 		
@@ -160,6 +196,38 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 			}
 			
 		}
+		
+	}
+	
+	/**
+	 * Determines and returns whether the given property is native.
+	 * A property is native when its type and all its parameters are native.
+	 */
+	private boolean isNativeProperty(MCProperty property) {
+		
+		return isNativeType(property.getType());
+		
+	}
+	
+	/**
+	 * Determines and returns whether the given type is native.
+	 * A type is native when it and all its parameters are native.
+	 */
+	private boolean isNativeType(MCType type) {
+		
+		boolean plain = type.isNativeType();
+		
+		if ( type.hasParameters() ) {
+			
+			for ( MCTypeParameter parameter : type.getParameters() ) {
+				
+				plain &= (!parameter.hasType() || isNativeType(parameter.getType()));
+				
+			}
+			
+		}
+		
+		return plain;
 		
 	}
 	

@@ -181,6 +181,12 @@ public class ObjCRestKitGenerator extends Generator {
 		
 		return property.getName();
 	}
+
+	public String generatePropertyTransform(MCProperty property) {
+		
+		return "";
+		
+	}
 	
 	public String generateTypeName(MCType type) {
 		

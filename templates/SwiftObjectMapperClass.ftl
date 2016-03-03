@@ -54,22 +54,27 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	}
 	
 	public required init?(_ map: Map) {
-		<#list class_properties_required><#t>
-		
-		<#items as property>
-		${property.property_name} = map["${property.property_key}"].valueOrFail()
-		</#items>
-		</#list><#t>
 		<#if class_parent??>
 		
 		super.init(map)
 		</#if><#t>
-		<#if ( class_properties_required?size > 0)>
+		<#list class_properties_required><#t>
 		
-		if ( !map.isValid ) {
+		<#items as property>
+		var ${property.property_name}: ${property.property_type.type_literal}?
+		${property.property_mapping}
+		</#items>
+		</#list><#t>
+		<#list class_properties_required><#t>
+		
+		if let <#items as property>${property.property_name} = ${property.property_name}<#sep>, </#sep></#items> {
+			<#list class_properties_required as property>
+			self.${property.property_name} = ${property.property_name}
+			</#list>
+		} else {
 			return nil
 		}
-		</#if>
+		</#list>
 		
 	}
 	
@@ -81,7 +86,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		${property.property_name} <- map["${property.property_key}"]
+		${property.property_mapping}
 		</#items>
 		</#list>
 		

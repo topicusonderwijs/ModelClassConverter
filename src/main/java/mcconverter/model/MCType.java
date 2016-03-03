@@ -394,4 +394,24 @@ public class MCType implements MCModelable {
 		
 	}
 	
+	public boolean equals(Object other) {
+		
+		boolean equal = false;
+		
+		if ( other != null && other instanceof MCType ) {
+			
+			MCType otherType = (MCType)other;
+			
+			equal = (
+				(otherType.isNativeType() && isNativeType() && otherType.getNativeType() == getNativeType())
+				||
+				(otherType.getIdentifier().equals(getIdentifier()))
+			);
+			
+		}
+		
+		return equal;
+		
+	}
+	
 }

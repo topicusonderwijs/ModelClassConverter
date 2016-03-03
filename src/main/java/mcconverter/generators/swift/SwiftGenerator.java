@@ -256,6 +256,13 @@ public class SwiftGenerator extends Generator {
 		
 	}
 	
+	public String generatePropertyTransform(MCProperty property) {
+		
+		return "";
+		
+	}
+	
+	
 	public String generateFileName(MCPackage pack, String template) {
 		
 		return null;

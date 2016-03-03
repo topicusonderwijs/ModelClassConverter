@@ -2,10 +2,10 @@ package mcconverter.configuration;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+
+import mcconverter.model.MCType;
 
 public class Configuration {
 		
@@ -22,8 +22,8 @@ public class Configuration {
 	private List<String> packages;
 	private List<String> deepestSuperClasses;
 	private boolean ignoreProtocols;
-	private Map<String, CustomClass> customClasses;
-	private Map<String, CustomProperty> customProperties;
+	private List<CustomClass> customClasses;
+	private List<CustomProperty> customProperties;
 	
 	
 	
@@ -39,8 +39,8 @@ public class Configuration {
 		dependencies = new ArrayList<String>();
 		packages = new ArrayList<String>();
 		deepestSuperClasses = new ArrayList<String>();
-		customClasses = new HashMap<String, CustomClass>();
-		customProperties = new HashMap<String, CustomProperty>();
+		customClasses = new ArrayList<CustomClass>();
+		customProperties = new ArrayList<CustomProperty>();
 		
 	}
 	
@@ -262,7 +262,7 @@ public class Configuration {
 	
 	public List<CustomClass> getIgnoredClasses() {
 		
-		return getCustomClasses().values().stream().filter(c -> c.isIgnored()).collect(Collectors.toList());
+		return getCustomClasses().stream().filter(c -> c.isIgnored()).collect(Collectors.toList());
 		
 	}
 	
@@ -290,7 +290,7 @@ public class Configuration {
 	
 	public List<CustomProperty> getIgnoredProperties() {
 		
-		return getCustomProperties().values().stream().filter(p -> p.isIgnored()).collect(Collectors.toList());
+		return getCustomProperties().stream().filter(p -> p.isIgnored()).collect(Collectors.toList());
 		
 	}
 	
@@ -298,11 +298,11 @@ public class Configuration {
 		
 		if ( entity instanceof CustomClass ) {
 			
-			getCustomClasses().put(entity.getName(), (CustomClass)entity);
+			getCustomClasses().add((CustomClass)entity);
 			
 		} else if ( entity instanceof CustomProperty ) {
 			
-			getCustomProperties().put(entity.getName(), (CustomProperty)entity);
+			getCustomProperties().add((CustomProperty)entity);
 			
 		}
 		
@@ -310,17 +310,17 @@ public class Configuration {
 	
 	public boolean hasCustomClass(String name) {
 		
-		return getCustomClasses().containsKey(name);
+		return getCustomClass(name) != null;
 		
 	}
 	
 	public CustomClass getCustomClass(String name) {
 		
-		return getCustomClasses().get(name);
+		return getEntity(getCustomClasses(), name);
 		
 	}
 	
-	public Map<String, CustomClass> getCustomClasses() {
+	public List<CustomClass> getCustomClasses() {
 		
 		return customClasses;
 		
@@ -328,17 +328,36 @@ public class Configuration {
 	
 	public boolean hasCustomProperty(String name) {
 		
-		return getCustomProperties().containsKey(name);
+		return getCustomProperty(name) != null;
 		
 	}
 	
 	public CustomProperty getCustomProperty(String name) {
 		
-		return getCustomProperties().get(name);
+		return getEntity(getCustomProperties(), name);
 		
 	}
 	
-	public Map<String, CustomProperty> getCustomProperties() {
+	public CustomProperty getCustomTransformForType(MCType type) {
+		
+		CustomProperty property = null;
+		
+		for ( CustomProperty current : getCustomProperties() ) {
+			
+			if ( current.hasType() && current.getType().toType().equals(type) ) {
+				
+				property = current;
+				break;
+				
+			}
+			
+		}
+		
+		return property;
+		
+	}
+	
+	public List<CustomProperty> getCustomProperties() {
 		
 		return customProperties;
 		
@@ -357,5 +376,23 @@ public class Configuration {
 		
 	}
 	
+	private <T extends CustomEntity> T getEntity(List<T> entities, String name) {
+		
+		T entity = null;
+		
+		for (T current : entities) {
+			
+			if ( name.equals(current.getName()) ) {
+				
+				entity = current;
+				break;
+				
+			}
+			
+		}
+		
+		return entity;
+		
+	}
 	
 }

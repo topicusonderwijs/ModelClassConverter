@@ -27,7 +27,7 @@ public abstract class Generator extends AbstractGenerator {
 	public boolean validatePackage(MCPackage pack) {
 		
 		//Insert custom classes
-		for ( CustomClass c : getConfiguration().getCustomClasses().values() ) {
+		for ( CustomClass c : getConfiguration().getCustomClasses() ) {
 			
 			if ( !pack.hasClass(c.getName()) && !c.isIgnored() && !c.hasRename() ) {
 				
@@ -194,7 +194,7 @@ public abstract class Generator extends AbstractGenerator {
 	
 	protected String replacePropertyName(String name) {
 		
-		for ( CustomProperty property : getConfiguration().getCustomProperties().values() ) {
+		for ( CustomProperty property : getConfiguration().getCustomProperties() ) {
 			
 			if ( property.hasRename() && property.getName().toLowerCase().equals(name.toLowerCase()) ) {
 				

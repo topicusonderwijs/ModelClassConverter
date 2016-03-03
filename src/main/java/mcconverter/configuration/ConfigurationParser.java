@@ -31,6 +31,7 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String PathAttribute = "path";
 	private static final String VersionAttribute = "version";
 	private static final String ValueAttribute = "value";
+	private static final String TransformAttribute = "transform";
 	private static final String InitializedAttribute = "initialized";
 	private static final String IgnoredAttribute = "ignored";
 	private static final String ParentAttribute = "parent";
@@ -174,6 +175,7 @@ public class ConfigurationParser extends DefaultHandler {
 			p.setKey(attributes.getValue(KeyAttribute));
 			p.setType(CustomType.fromString(attributes.getValue(TypeAttribute)));
 			p.setInitialized(getBoolean(attributes, InitializedAttribute, true));
+			p.setTransform(attributes.getValue(TransformAttribute));
 			
 			String value = attributes.getValue(ValueAttribute);
 			

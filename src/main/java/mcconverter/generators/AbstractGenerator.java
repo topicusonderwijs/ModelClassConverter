@@ -182,6 +182,8 @@ public abstract class AbstractGenerator {
 	
 	public abstract String generatePropertyMapping(MCProperty property);
 	
+	public abstract String generatePropertyTransform(MCProperty property);
+	
 	
 	public abstract String generateEnumValueName(MCEnum.MCEnumValue value);
 	

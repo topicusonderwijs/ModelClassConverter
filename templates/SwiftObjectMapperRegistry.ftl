@@ -45,3 +45,24 @@ public class EntityRegistry {
 	}
 	
 }
+
+extension DateFormatterTransform {
+	
+	internal convenience init(format: String) {
+		
+		let formatter = NSDateFormatter()
+		formatter.dateFormat = format
+		
+		self.init(dateFormatter: formatter)
+		
+	}
+	
+}
+
+extension Map {
+	
+	internal static let DateTransform = DateFormatterTransform(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ")
+	
+}
+
+
