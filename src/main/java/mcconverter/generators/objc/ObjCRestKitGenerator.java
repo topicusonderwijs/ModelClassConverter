@@ -123,6 +123,10 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 				
 			}
 			
+		} else if ( isEnum(property.getType()) ) {
+			
+			value = "[[" + generateTypeName(property.getType()) + " alloc] initWithValue:0]";
+			
 		} else {
 			
 			switch ( property.getType().getNativeType() ) {
@@ -147,27 +151,6 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 				break;
 			default:
 				break;
-				
-			}
-			
-			if ( value == null && !property.getType().isOptional() ) {
-				
-				switch ( property.getType().getNativeType() ) {
-				
-				case String:
-				case URI:
-				case LocalTime:
-					value = "@\"\"";
-					break;
-				case Date:
-				case DateTime:
-				case LocalDate:
-					value = "[NSDate distantPast]";
-					break;
-				default:
-					break;
-					
-				}
 				
 			}
 			
@@ -312,42 +295,12 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 			List<Map<String, Object>> natives = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> relations = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> initializers = new ArrayList<Map<String, Object>>();
 			List<String> imports = new ArrayList<String>();
 			
 			for ( MCProperty property : c.getProperties() ) {
 				
 				Map<String, Object> m = property.getModel(this);
 				
-				//Determine initializers
-				if ( isRawType(property.getType()) ) {
-					
-					String propertyInitializer = null;
-					
-					if ( isEnum(property.getType()) ) {
-						
-						propertyInitializer = "[[" + generateTypeName(property.getType()) + " alloc] initWithValue:0]";
-						
-					} else {
-						
-						propertyInitializer = generatePropertyValue(property);
-						
-					}
-					
-					if ( propertyInitializer != null ) {
-						
-						initializers.add(m);
-						m.put("property_initializer", propertyInitializer);
-						
-					} else {
-						
-						Main.warning("Ignoring initializer for: " + property);
-						
-					}
-					
-				}
-				
-
 				//The dominant type of the property is determined as RestKit requires this for mapping lists.
 				Object dominantType = generateTypeName(property.getType());
 				String propertyPath = generatePropertyName(property);
@@ -383,7 +336,6 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 			model.put("class_properties_natives", natives);
 			model.put("class_properties_relations", relations);
 			model.put("class_properties_enums", enums);
-			model.put("class_properties_initializers", initializers);
 			model.put("class_imports", imports);
 			
 		}

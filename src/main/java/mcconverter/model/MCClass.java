@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import mcconverter.generators.Generator;
+import mcconverter.utils.ListUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -226,6 +227,9 @@ public class MCClass extends MCEntity {
 		model.put("class_isProtocol", isProtocol());
 		model.put("class_constants", MCProperty.getModel(generator, getConstants()));
 		model.put("class_properties", MCProperty.getModel(generator, getProperties()));
+		model.put("class_properties_valued",
+			MCProperty.getModel(generator, ListUtils.filter(getProperties(), p -> generator.generatePropertyValue(p) != null))
+		);
 		model.put("class_properties_required", MCProperty.getModel(generator, getRequiredProperties()));
 		model.put("class_properties_optional", MCProperty.getModel(generator, getOptionalProperties()));
 		model.put("class_properties_inherited", MCProperty.getModel(generator, getInheritedProperties()));

@@ -17,12 +17,12 @@
 	
 	if ( self ) {
 		
-		<#if ( class_properties_initializers?size > 0)><#t>
-		<#list class_properties_initializers as property>
-		self.${property.property_name} = ${property.property_initializer};
-		</#list>
+		<#list class_properties_valued><#t>
+		<#items as property>
+		self.${property.property_name} = ${property.property_value};
+		</#items>
 		
-		</#if><#t>
+		</#list><#t>
 		self = [EntityRegistry initializeEntity:self];
 		
 	}

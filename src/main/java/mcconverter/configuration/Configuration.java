@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mcconverter.model.MCClass;
 import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
 
@@ -321,6 +322,20 @@ public class Configuration {
 		
 	}
 	
+	public CustomClass getCustomClass(MCClass classs) {
+		
+		CustomClass c = getCustomClass(classs.getIdentifier());
+		
+		if ( c == null ) {
+			
+			c = getCustomClass(classs.getName());
+			
+		}
+		
+		return c;
+		
+	}
+	
 	public List<CustomClass> getCustomClasses() {
 		
 		return customClasses;
@@ -343,10 +358,8 @@ public class Configuration {
 		
 		CustomProperty customProperty = null;
 		
-		MCType type = property.getType();
-		
 		//Find specific property transform
-		CustomClass customClass = getCustomClass(property.getClasss().getIdentifier());
+		CustomClass customClass = getCustomClass(property.getClasss());
 		
 		if ( customClass != null ) {
 			
@@ -365,7 +378,7 @@ public class Configuration {
 			//Find generic property transform
 			for ( CustomProperty current : getCustomProperties() ) {
 				
-				if ( current.hasType() && current.getType().toType().equals(type) ) {
+				if ( current.hasType() && current.getType().toType().equals(property.getType()) ) {
 					
 					customProperty = current;
 					break;
