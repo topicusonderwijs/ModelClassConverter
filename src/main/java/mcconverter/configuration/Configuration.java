@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
 
 public class Configuration {
@@ -338,22 +339,44 @@ public class Configuration {
 		
 	}
 	
-	public CustomProperty getCustomTransformForType(MCType type) {
+	public CustomProperty getCustomTransformForProperty(MCProperty property) {
 		
-		CustomProperty property = null;
+		CustomProperty customProperty = null;
 		
-		for ( CustomProperty current : getCustomProperties() ) {
+		MCType type = property.getType();
+		
+		//Find specific property transform
+		CustomClass customClass = getCustomClass(property.getClasss().getIdentifier());
+		
+		if ( customClass != null ) {
 			
-			if ( current.hasType() && current.getType().toType().equals(type) ) {
+			customProperty = customClass.getProperty(property.getName());
+			
+			if ( customProperty != null && !customProperty.hasTransform() ) {
 				
-				property = current;
-				break;
+				customProperty = null;
 				
 			}
 			
 		}
 		
-		return property;
+		if ( customProperty == null ) {
+			
+			//Find generic property transform
+			for ( CustomProperty current : getCustomProperties() ) {
+				
+				if ( current.hasType() && current.getType().toType().equals(type) ) {
+					
+					customProperty = current;
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		return customProperty;
 		
 	}
 	

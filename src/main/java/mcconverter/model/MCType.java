@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 public class MCType implements MCModelable {
 	
@@ -276,7 +276,7 @@ public class MCType implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(AbstractGenerator generator) {
+	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		

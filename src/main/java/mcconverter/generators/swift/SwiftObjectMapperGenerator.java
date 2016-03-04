@@ -2,8 +2,11 @@ package mcconverter.generators.swift;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomProperty;
 import mcconverter.model.MCClass;
@@ -12,7 +15,6 @@ import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
 import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
-import mcconverter.model.MCTypeParameter;
 import mcconverter.utils.ListUtils;
 
 public class SwiftObjectMapperGenerator extends SwiftGenerator {
@@ -112,12 +114,11 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	public String generatePropertyMapping(MCProperty property) {
 		
 		String mapping = generatePropertyName(property) + " <- ";
+		String transformName = generatePropertyTransformName(property);
 		
-		CustomProperty customProperty = getConfiguration().getCustomTransformForType(property.getType());
-		
-		if ( customProperty != null && customProperty.hasTransform() ) {
+		if ( transformName != null ) {
 			
-			mapping += "(map[\"" + property.getKey() + "\"], Map." + customProperty.getType().getName() + "Transform)";
+			mapping += "(map[\"" + property.getKey() + "\"], Map." + transformName + "Transform)";
 			
 		} else {
 			
@@ -131,7 +132,61 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	
 	public String generatePropertyTransform(MCProperty property) {
 		
-		return "";
+		String transform = "";
+		
+		CustomProperty customProperty = getConfiguration().getCustomTransformForProperty(property);
+		
+		if ( customProperty != null ) {
+			
+			switch ( property.getType().getNativeType() ) {
+				
+			case Date:
+			case LocalTime:
+			case DateTime:
+			case LocalDate:
+				transform = "DateFormatterTransform(format: \"" + customProperty.getTransform() + "\")";
+				break;
+			default:
+				transform = customProperty.getTransform();
+				break;
+				
+			}
+			
+		}
+		
+		return transform;
+		
+	}
+
+	public String generatePropertyTransformName(MCProperty property) {
+		
+		String name = null;
+
+		CustomProperty customProperty = getConfiguration().getCustomTransformForProperty(property);
+		
+		if ( customProperty != null ) {
+			
+			name = "";
+			
+			if ( customProperty.hasClasss() ) {
+
+				MCClass c = property.getClasss();
+				
+				name += c.getName() + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property.getName());
+				
+			} else if ( customProperty.hasName() ) {
+				
+				name += CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, customProperty.getName());
+				
+			} else {
+				
+				name += generateTypeName(property.getType());
+				
+			}
+			
+		}
+		
+		return name;
 		
 	}
 	
@@ -174,6 +229,32 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		
 	}
 	
+	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
+		
+		//Determine all transforms
+		Map<String, String> transforms = new HashMap<>();
+		
+		for( MCClass c : pack.getClasses() ) {
+			
+			for ( MCProperty p : c.getProperties() ) {
+				
+				CustomProperty customProperty = getConfiguration().getCustomTransformForProperty(p);
+				
+				if ( customProperty != null && customProperty.hasTransform() ) {
+					
+					transforms.put(generatePropertyTransformName(p), generatePropertyTransform(p));
+					
+				}
+				
+			}
+			
+		}
+		
+		model.put("package_transforms", transforms);
+		
+		return super.validateModel(pack, model);
+		
+	}
 	
 	
 	/* ===== Private Functions ===== */
@@ -196,38 +277,6 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 			}
 			
 		}
-		
-	}
-	
-	/**
-	 * Determines and returns whether the given property is native.
-	 * A property is native when its type and all its parameters are native.
-	 */
-	private boolean isNativeProperty(MCProperty property) {
-		
-		return isNativeType(property.getType());
-		
-	}
-	
-	/**
-	 * Determines and returns whether the given type is native.
-	 * A type is native when it and all its parameters are native.
-	 */
-	private boolean isNativeType(MCType type) {
-		
-		boolean plain = type.isNativeType();
-		
-		if ( type.hasParameters() ) {
-			
-			for ( MCTypeParameter parameter : type.getParameters() ) {
-				
-				plain &= (!parameter.hasType() || isNativeType(parameter.getType()));
-				
-			}
-			
-		}
-		
-		return plain;
 		
 	}
 	

@@ -7,11 +7,11 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomClass;
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 import mcconverter.main.Main;
 import mcconverter.model.*;
 
-public class SwiftGenerator extends Generator {
+public class SwiftGenerator extends AbstractGenerator {
 	
 	public List<String> getTemplates(MCPackage pack) {
 		
@@ -257,6 +257,12 @@ public class SwiftGenerator extends Generator {
 	}
 	
 	public String generatePropertyTransform(MCProperty property) {
+		
+		return "";
+		
+	}
+	
+	public String generatePropertyTransformName(MCProperty property) {
 		
 		return "";
 		

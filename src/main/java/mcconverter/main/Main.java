@@ -75,14 +75,14 @@ public class Main {
 					MCPackage pack = analyzer.analyze(Configuration.current().getProductName(), classes);
 					
 					//Find generator
-					Generator generator = null;
+					AbstractGenerator generator = null;
 					
 					try {
 						
 						Object gen = Class.forName(Configuration.current().getGeneratorName()).newInstance();
 						
-						if ( gen instanceof Generator ) {
-							generator = (Generator)gen;
+						if ( gen instanceof AbstractGenerator ) {
+							generator = (AbstractGenerator)gen;
 						}
 						
 					} catch (ClassNotFoundException e) {

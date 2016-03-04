@@ -19,6 +19,8 @@ public class EntityRegistry {
 		</#list>
 	]
 	
+	public static let Version = "${model_version}"
+	
 	public class func toType(descriptor: String) -> Mappable.Type? {
 		
 		return descriptors[descriptor]
@@ -61,7 +63,9 @@ extension DateFormatterTransform {
 
 extension Map {
 	
-	internal static let DateTransform = DateFormatterTransform(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ")
+	<#list package_transforms?keys as name>
+	internal static let ${name}Transform = ${package_transforms[name]}
+	</#list>
 	
 }
 

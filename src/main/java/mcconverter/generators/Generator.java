@@ -1,145 +1,119 @@
 package mcconverter.generators;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.CaseFormat;
+import org.codehaus.plexus.util.FileUtils;
 
-import mcconverter.configuration.Configuration;
-import mcconverter.configuration.CustomClass;
-import mcconverter.configuration.CustomProperty;
-import mcconverter.configuration.CustomType;
-import mcconverter.model.MCClass;
-import mcconverter.model.MCEntity;
-import mcconverter.model.MCPackage;
-import mcconverter.model.MCPropertyValue;
-import mcconverter.model.MCType;
-import mcconverter.model.MCEnum.MCEnumValue;
-import mcconverter.model.MCProperty;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import mcconverter.main.Main;
+import mcconverter.model.*;
 
-public abstract class Generator extends AbstractGenerator {
+public abstract class Generator {
+
+	/* ===== Constants ===== */
 	
-	public String generateEnumValueName(MCEnumValue value) {
-		
-		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, replacePropertyName(value.getName()));
-		
-	}
+	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-YYYY");
+	private static final SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
 	
-	public boolean validatePackage(MCPackage pack) {
+	
+	
+	/* ===== Private Properties ===== */
+	
+	private MCPackage pack;
+	
+	private freemarker.template.Configuration freemarker;
+	private String date;
+	private String time;
+	
+	public static final File OutputFolder = getConfiguration().getOutputLocation();
+	
+	
+	
+	/* ===== Construction ===== */
+	
+	public Generator() {
 		
-		//Insert custom classes
-		for ( CustomClass c : getConfiguration().getCustomClasses() ) {
-			
-			if ( !pack.hasClass(c.getName()) && !c.isIgnored() && !c.hasRename() ) {
-				
-				pack.addEntity(c.toClass(pack));
-				
-			}
-			
+		freemarker = new Configuration(Configuration.VERSION_2_3_23);
+		
+		Date now = new Date();
+		date = dateFormatter.format(now);
+		time = timeFormatter.format(now);
+		
+		try {
+			freemarker.setDirectoryForTemplateLoading(getConfiguration().getTemplateLocation());
+		} catch (IOException e) {
+			Main.fatal("Could not find location for templates");
 		}
 		
+	}
+	
+	
+	
+	/* ===== Public Functions ===== */
+	
+	public final void setPackage(MCPackage pack) {
 		
-		return true;
+		this.pack = pack;
 		
 	}
 	
-	//TODO:
-	// Configuration should be a little refined, using subclasses from MCType for instance.
-	public boolean validateEntity(MCEntity entity) {
+	public final MCPackage getPackage() {
 		
-		boolean valid = true;
+		return pack;
+		
+	}
+	
+	public static mcconverter.configuration.Configuration getConfiguration() {
+		
+		return mcconverter.configuration.Configuration.current();
+		
+	}
+	
+	
+	public final boolean generate() {
+		
+		boolean correct = false;
+		
+		if ( getPackage() != null && validatePackage(getPackage()) ) {
 
-		if ( entity instanceof MCClass ) {
-			
-			MCClass c = (MCClass)entity;
-			CustomClass customClass = getConfiguration().getCustomClass(c.getName());
-			
-			if ( customClass == null ) {
+			try {
 				
-				customClass = getConfiguration().getCustomClass(c.getIdentifier());
+				FileUtils.cleanDirectory(OutputFolder);
 				
-			}
-			
-			valid = !getConfiguration().hasIgnoredClass(c.getName());
-			
-			if ( valid ) {
+				List<MCEntity> entities = new ArrayList<>();
 				
-				//Apply global configuration of properties
-				for ( MCProperty property : c.getProperties() ) {
+				//Validate entities
+				for ( String identifier : getPackage().getEntityIdentifiers() ) {
 					
-					if ( getConfiguration().hasCustomProperty(property.getName()) ) {
-						
-						CustomProperty customProperty = getConfiguration().getCustomProperty(property.getName());
-						
-						property.setInitialized(customProperty.isInitialized());
-						
-						if ( property.hasValue() ) {
-							
-							property.setValue(customProperty.getValue().toValue());
-							
-						}
-						
-					}
+					MCEntity entity = getPackage().getEntity(identifier);
 					
-					if ( getConfiguration().hasIgnoredProperty(property.getName()) ) {
+					if ( validateEntity(entity) ) {
 						
-						c.removeProperty(property);
+						entities.add(entity);
 						
 					}
 					
 				}
 				
-				//Apply custom entities
-				if ( customClass != null && customClass.hasProperties() ) {
+				//Generate entities
+				for ( MCEntity entity : entities ) {
 					
-					for ( CustomProperty customProperty : customClass.getProperties() ) {
+					Map<String, Object> model = generateModel(entity);
+					
+					if ( model != null ) {
 						
-						String customPropertyName = customProperty.getName();
-						
-						if ( c.hasProperty(customPropertyName) ) {
+						for ( String templateName : getTemplates(entity) ) {
 							
-							MCProperty p = c.getProperty(customPropertyName);
-							
-							//Remove if property is ignored
-							if ( customProperty.isIgnored() ) {
-								
-								c.removeProperty(p);
-								
-							}
-							
-							//Set custom value if set
-							if ( customProperty.hasValue() ) {
-								
-								p.setValue(customProperty.getValue().toValue());
-								
-							}
-							
-							//Add type if custom type is set
-							if ( customProperty.hasType() ) {
-								
-								p.setType(customProperty.getType().toType());
-								
-							}
-							
-						} else {
-							
-							CustomType customPropertyType = customProperty.getType();
-							
-							if ( customPropertyType != null ) {
-								
-								MCType customType = customPropertyType.toType();
-								MCPropertyValue customValue = customProperty.hasValue() ? customProperty.getValue().toValue() : null;
-								
-								c.addProperty(
-									new MCProperty(
-										c.getIdentifier() + "." + customPropertyName,
-										customPropertyName,
-										customProperty.getKey(),
-										customType,
-										customValue
-									)
-								);
-								
-							}
+							writeModel(templateName, generateFileName(entity, templateName), model);
 							
 						}
 						
@@ -147,64 +121,206 @@ public abstract class Generator extends AbstractGenerator {
 					
 				}
 				
-			}
-			
-		}
-		
-		return valid;
-		
-	}
-	
-	public boolean validateModel(MCEntity entity, Map<String, Object> model) {
+				//Generate registry
+				for ( String templateName : getTemplates(getPackage()) ) {
 
-		boolean valid = true;
-		
-		if ( entity instanceof MCClass ) {
-			
-			MCClass c = (MCClass)entity;
-			
-			if ( getConfiguration().getIgnoreProtocols() ) {
+					Map<String, Object> model = getPackage().getModel(this);
+					
+					if ( validateModel(getPackage(), model) ) {
+						
+						writeModel(templateName, generateFileName(getPackage(), templateName), model);
+						
+					}
+					
+				}
 				
-				valid = !c.isProtocol();
-				model.remove("class_protocols");
+				correct = true;
 				
-			}
-			
-		}
-		
-		//Find descriptor of entity
-		String descriptor = entity.getIdentifier();
-		
-		for( String prefix : Configuration.current().getPackages() ) {
-			
-			if ( descriptor.startsWith(prefix) && descriptor.length() > prefix.length() ) {
+			} catch (IOException e) {
 				
-				descriptor = descriptor.substring(prefix.length() + 1);
-				break;
+				e.printStackTrace();
+				
+			} catch (TemplateException e) {
+				
+				e.printStackTrace();
 				
 			}
 			
 		}
 		
-		model.put("entity_descriptor", descriptor);
-		
-		return valid;
+		return correct;
 		
 	}
 	
-	protected String replacePropertyName(String name) {
+	
+	/**
+	 * Returns the templates to be used for a potential registry of the package.
+	 * Note that an empty list should be returned if the generator does not require a registry.
+	 */
+	public abstract List<String> getTemplates(MCPackage pack);
+	
+	
+	/**
+	 * Returns the templates to be used for the given entity.
+	 * Note that an empty list should be returned if the generator does not require a template for the given entity.
+	 */
+	public abstract List<String> getTemplates(MCEntity entity);
+	
+	/**
+	 * Returns the name to be used for the given property.
+	 * This can be used to prevent from using names that are for instance keywords.
+	 */
+	public abstract String generatePropertyName(MCProperty property);
+	
+	/**
+	 * Returns the literal to be used for the given property.
+	 */
+	public abstract String generatePropertyLiteral(MCProperty property);
+	
+	/**
+	 * Returns the default value for the given property.
+	 * A value of `null` indicates that the property should not have a default value.
+	 */
+	public abstract String generatePropertyValue(MCProperty property);
+	
+	/**
+	 * Generates and returns the mapping for the given property.
+	 */
+	public abstract String generatePropertyMapping(MCProperty property);
+	
+	/**
+	 * Generates and returns the transform for the given property.
+	 */
+	public abstract String generatePropertyTransform(MCProperty property);
+	
+	/**
+	 * Generates and returns the name of the transform for the given property.
+	 */
+	public abstract String generatePropertyTransformName(MCProperty property);
+	
+	/**
+	 * Generates the name for the given enum value.
+	 */
+	public abstract String generateEnumValueName(MCEnumValue value);
+	
+	/**
+	 * Returns the name of the given type.
+	 */
+	public abstract String generateTypeName(MCType type);
+	
+	/**
+	 * Returns the property syntax for representing the given type.
+	 */
+	public abstract String generateTypeLiteral(MCType type);
+	
+	/**
+	 * Returns the literal for the given type parameter.
+	 */
+	public abstract String generateTypeParameterLiteral(MCTypeParameter parameter);
+
+	/**
+	 * Returns the file name that should be used for the given package and template.
+	 * If no file should be created for the given package then `null` should be returned.
+	 */
+	public abstract String generateFileName(MCPackage pack, String template);
+	
+	/**
+	 * Returns the file name that should be used for the given entity and template.
+	 * If no file should be created for the given entity then `null` should be returned.
+	 */
+	public abstract String generateFileName(MCEntity entity, String template);
+	
+	/**
+	 * Generates and validates a model for the given package.
+	 * If the model for the given package is invalidated then `null` is returned.
+	 */
+	public final Map<String, Object> generateModel(MCPackage pack) {
 		
-		for ( CustomProperty property : getConfiguration().getCustomProperties() ) {
+		Map<String, Object> model = pack.getModel(this);
+		
+		return validateModel(pack, model) ? model : null;
+		
+	}
+	
+	/**
+	 * Generates and validates a model for the given entity.
+	 * If the model for the given entity is invalidated then `null` is returned.
+	 */
+	public final Map<String, Object> generateModel(MCEntity entity) {
+		
+		Map<String, Object> model = entity.getModel(this);
+		
+		return validateModel(entity, model) ? model : null;
+		
+	}
+	
+	
+	
+	/* ===== Protected Functions ===== */
+	
+	/**
+	 * Validates the given package.
+	 */
+	protected abstract boolean validatePackage(MCPackage pack);
+	
+	/**
+	 * Validates the given entity.
+	 */
+	protected abstract boolean validateEntity(MCEntity entity);
+
+	/**
+	 * Validates and potentially alters the model of the given package.
+	 * The returned value should indicate whether the model is valid (`true`) or not (`false`).
+	 */
+	protected abstract boolean validateModel(MCPackage pack, Map<String, Object> model);
+	
+	/**
+	 * Validates and potentially alters the model of the given entity.
+	 * The returned value should indicate whether the model is valid (`true`) or not (`false`).
+	 */
+	protected abstract boolean validateModel(MCEntity entity, Map<String, Object> model);
+	
+	
+	
+	/* ===== Private Functions ===== */
+	
+	private void writeModel(String templateName, String fileName, Map<String, Object> model) throws TemplateException, IOException {
+		
+		if ( templateName != null && fileName != null ) {
+
+			Template template = freemarker.getTemplate(templateName);
+			File file = new File(OutputFolder.getAbsolutePath() + "/" + fileName);
+			FileWriter writer = new FileWriter(file);
 			
-			if ( property.hasRename() && property.getName().toLowerCase().equals(name.toLowerCase()) ) {
-				
-				name = property.getRename();
-				
-			}
+			model.put("user", getUser());
+			model.put("product_name", getPackage().getName());
+			model.put("model_version", getConfiguration().getModelVersion());
+			model.put("file_name", fileName);
+			model.put("file_date", date);
+			model.put("file_time", time);
+			
+			template.process(model, writer);
+			Main.entry("Generated", fileName, 0);
 			
 		}
 		
-		return name;
+	}
+	
+	/**
+	 * Determines and returns the name of the current user.
+	 * If the name could not be determines, a value of `null` will be returned.
+	 */
+	private String getUser() {
+		
+		String user = null;
+		
+		try {
+		
+			user = System.getProperty("user.name");
+			
+		} catch ( SecurityException e ) {}
+		
+		return user;
 		
 	}
 	

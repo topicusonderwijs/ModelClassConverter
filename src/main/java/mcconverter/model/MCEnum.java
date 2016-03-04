@@ -4,94 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class MCEnum extends MCEntity {
 	
-	public class MCEnumValue extends MCEntity {
-		
-		private MCType rawType;
-		private String rawValue;
-		
-		public MCEnumValue(String identifier, String name, MCType rawType, String rawValue) {
-			
-			super ( identifier, name );
-			
-			this.rawType = rawType;
-			this.rawValue = rawValue;
-			
-		}
-		
-		public MCType getRawType() {
-			
-			return rawType;
-			
-		}
-		
-		public boolean hasRawType() {
-			
-			return getRawType() != null;
-			
-		}
-		
-		public String getRawValue() {
-			
-			return rawValue;
-			
-		}
-		
-		public boolean hasRawValue() {
-			
-			return getRawValue() != null;
-			
-		}
-		
-		public Map<String, Object> getModel(AbstractGenerator generator) {
-			
-			Map<String, Object> model = super.getModel(generator);
-			
-			model.put("enum_value_name", generator.generateEnumValueName(this));
-			model.put("enum_value_rawName", getName());
-			model.put("enum_value_rawType", getRawType());
-			model.put("enum_value_rawValue", getRawValue());
-			
-			return model;
-			
-		}
-		
-		public String toString(int indent) {
-			
-			String s = StringUtils.repeat("\t", indent) + "Value(" + getName();
-			
-			if ( hasRawType() ) {
-				
-				s += " : " + getRawType().toString();
-				
-			}
-			
-			s += ")";
-			
-			if ( hasRawValue() ) {
-				
-				s += " = " + getRawValue();
-				
-			}
-			
-			return s;
-			
-		}
-		
-		public String toString() {
-			
-			return toString(0);
-			
-		}
-		
-	}
+	/* ===== Private Properties ===== */
 	
 	private List<MCEnumValue> values;
+	
+	
+	
+	/* ===== Construction ===== */
 	
 	public MCEnum(String identifier, String name) {
 		
@@ -100,6 +25,10 @@ public class MCEnum extends MCEntity {
 		values = new ArrayList<MCEnumValue>();
 		
 	}
+	
+	
+	
+	/* ===== Public Functions ===== */
 	
 	public void addValue(String name) {
 		
@@ -125,7 +54,7 @@ public class MCEnum extends MCEntity {
 		
 	}
 	
-	public Map<String, Object> getModel(AbstractGenerator generator) {
+	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		

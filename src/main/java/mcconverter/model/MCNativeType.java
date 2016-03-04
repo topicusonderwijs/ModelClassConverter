@@ -16,7 +16,7 @@ import org.joda.time.LocalTime;
 
 public enum MCNativeType {
 	
-	/* === Values === */
+	/* ===== Values ===== */
 	
 	NonNative,
 	
@@ -40,7 +40,7 @@ public enum MCNativeType {
 	LocalDate;
 	
 	
-	/* === Mapping === */
+	/* ===== Mapping ===== */
 	
 	private static final Map<Type, MCNativeType> nativeTypeMap;
 	
@@ -77,7 +77,7 @@ public enum MCNativeType {
 	
 	
 	
-	/* === Public Functions === */
+	/* ===== Public Functions ===== */
 	
 	public static MCNativeType fromName(String name) {
 		

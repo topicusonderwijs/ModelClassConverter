@@ -158,4 +158,10 @@ public class CustomType {
 		
 	}
 	
+	public String toString() {
+		
+		return "CustomType(" + getName() + ")";
+		
+	}
+	
 }

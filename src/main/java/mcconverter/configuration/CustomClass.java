@@ -1,6 +1,7 @@
 package mcconverter.configuration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mcconverter.model.MCClass;
@@ -94,6 +95,7 @@ public class CustomClass extends CustomEntity {
 	public void addProperty(CustomProperty property) {
 		
 		getProperties().add(property);
+		property.setClasss(this);
 		
 	}
 	
@@ -120,6 +122,37 @@ public class CustomClass extends CustomEntity {
 		}
 		
 		return c;
+		
+	}
+	
+	public String toString() {
+		
+		String s = "CustomClass(\n";
+		
+		s += "\tName = " + getName();
+		
+		if ( hasProperties() ) {
+			
+			s += "\n\tProperties = ";
+			
+			Iterator<CustomProperty> iterator = getProperties().iterator();
+			while ( iterator.hasNext() ) {
+				
+				s += iterator.next();
+				
+				if ( iterator.hasNext() ) {
+					
+					s += ", ";
+					
+				}
+				
+			}
+			
+		}
+		
+		s += "\n)";
+		
+		return s;
 		
 	}
 	

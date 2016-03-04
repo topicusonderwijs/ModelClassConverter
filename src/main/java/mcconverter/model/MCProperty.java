@@ -4,18 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class MCProperty extends MCEntity implements MCModelable {
-
+	
+	/* ===== Private Properties ===== */
+	
 	private String key;
 	private MCType type;
+	private MCClass classs;
 	private MCPropertyValue value;
 	private boolean isStatic;
 	private boolean isConstant;
 	private boolean isInitialized;
+	
+	
+	
+	/* ===== Construction ===== */
 	
 	public MCProperty(String identifier, String name, String key, MCType type, MCPropertyValue value) {
 		
@@ -39,6 +46,10 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
+	
+	
+	/* ===== Public Functions ===== */
+	
 	public String getKey() {
 		
 		return key;
@@ -48,6 +59,18 @@ public class MCProperty extends MCEntity implements MCModelable {
 	public void setKey(String key) {
 		
 		this.key = key;
+		
+	}
+	
+	public void setClasss(MCClass classs) {
+		
+		this.classs = classs;
+		
+	}
+	
+	public MCClass getClasss() {
+		
+		return classs;
 		
 	}
 	
@@ -105,7 +128,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
-	public static List<Map<String, Object>> getModel(AbstractGenerator generator, List<MCProperty> properties) {
+	public static List<Map<String, Object>> getModel(Generator generator, List<MCProperty> properties) {
 		
 		List<Map<String, Object>> model = new ArrayList<Map<String, Object>>();
 		
@@ -119,7 +142,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(AbstractGenerator generator) {
+	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		
@@ -131,6 +154,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 		model.put("property_isStatic", isStatic());
 		model.put("property_isConstant", isConstant());
 		model.put("property_mapping", generator.generatePropertyMapping(this));
+		model.put("property_transform", generator.generatePropertyTransform(this));
 		
 		return model;
 		

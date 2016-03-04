@@ -8,7 +8,7 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomClass;
-import mcconverter.generators.Generator;
+import mcconverter.generators.AbstractGenerator;
 import mcconverter.main.Main;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCClass;
@@ -18,7 +18,7 @@ import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
 import mcconverter.model.MCTypeParameter;
 
-public class ObjCRestKitGenerator extends Generator {
+public class ObjCRestKitGenerator extends AbstractGenerator {
 	
 	/* ===== Public Functions ===== */
 	
@@ -183,6 +183,12 @@ public class ObjCRestKitGenerator extends Generator {
 	}
 
 	public String generatePropertyTransform(MCProperty property) {
+		
+		return "";
+		
+	}
+	
+	public String generatePropertyTransformName(MCProperty property) {
 		
 		return "";
 		

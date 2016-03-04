@@ -68,9 +68,9 @@
 + (RKObjectMapping*)responseMapping {
 	
 	RKObjectMapping* mapping = [RKObjectMapping mappingForClass:[${entity_name} class]];
-	<#if class_parent??>
+	<#if class_parent_literal??>
 	
-	[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent} responseMapping] propertyMappings] copyItems:true]];
+	[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent_literal} responseMapping] propertyMappings] copyItems:true]];
 	</#if>
 	<#if ( class_properties_natives?size > 0)><#t>
 	

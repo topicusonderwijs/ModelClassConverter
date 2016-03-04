@@ -19,6 +19,12 @@ public class CustomEntity {
 		
 	}
 	
+	public boolean hasName() {
+		
+		return getName() != null;
+		
+	}
+	
 	public void setName(String name) {
 		
 		this.name = name;

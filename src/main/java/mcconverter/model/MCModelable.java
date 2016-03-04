@@ -2,13 +2,15 @@ package mcconverter.model;
 
 import java.util.Map;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 public interface MCModelable {
+	
+	/* ===== Public Functions ===== */
 	
 	/**
 	 * Generates a model from the entity using the given generator.
 	 */
-	public Map<String, Object> getModel(AbstractGenerator generator);
+	public Map<String, Object> getModel(Generator generator);
 	
 }

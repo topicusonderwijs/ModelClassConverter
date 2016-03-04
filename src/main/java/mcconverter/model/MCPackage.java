@@ -1,13 +1,15 @@
 package mcconverter.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 public class MCPackage implements MCModelable {
 	
@@ -45,6 +47,12 @@ public class MCPackage implements MCModelable {
 		
 	}
 	
+	public Collection<MCEntity> getEntities() {
+		
+		return entities.values();
+		
+	}
+	
 	public MCEntity getEntity(String identifier) {
 		
 		return entities.get(identifier);
@@ -73,6 +81,15 @@ public class MCPackage implements MCModelable {
 		
 	}
 	
+	public Collection<MCClass> getClasses() {
+		
+		return getEntities().stream()
+				.filter(e -> (e instanceof MCClass))
+				.map(c -> (MCClass)c)
+				.collect(Collectors.toSet());
+		
+	}
+	
 	public boolean hasEnum(String identifier) {
 		
 		return getEnum(identifier) != null;
@@ -95,7 +112,7 @@ public class MCPackage implements MCModelable {
 		
 	}
 	
-	public Map<String, Object> getModel(AbstractGenerator generator) {
+	public Map<String, Object> getModel(Generator generator) {
 		
 		List<Map<String, Object>> entities = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> classes = new ArrayList<Map<String, Object>>();

@@ -8,6 +8,7 @@ public class CustomProperty extends CustomEntity {
 	private String transform;
 	private boolean initialize;
 	private CustomValue value;
+	private CustomClass classs;
 	
 	
 	
@@ -78,6 +79,38 @@ public class CustomProperty extends CustomEntity {
 	public void setValue(CustomValue value) {
 		
 		this.value = value;
+		
+	}
+	
+	public boolean hasClasss() {
+		
+		return getClasss() != null;
+		
+	}
+	
+	public CustomClass getClasss() {
+		
+		return classs;
+		
+	}
+	
+	public void setClasss(CustomClass classs) {
+		
+		this.classs = classs;
+		
+	}
+	
+	public String toString() {
+		
+		String s = "CustomProperty(\n";
+		
+		s += "\tName = " + getName() + "\n";
+		s += "\tValue = " + getValue() + "\n";
+		s += "\tTransform = " + getTransform() + "\n";
+		
+		s += ")";
+		
+		return s;
 		
 	}
 	

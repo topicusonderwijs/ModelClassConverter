@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import <RestKit/RestKit.h>
 #import "EntityRegistry.h"
-<#if class_parent??>#import "${class_parent_literal}.h"</#if>
+<#if class_parent_literal??>#import "${class_parent_literal}.h"</#if>
 <#list class_imports as import>
 #import "${import}.h"
 </#list>

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import mcconverter.generators.AbstractGenerator;
+import mcconverter.generators.Generator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,6 +82,8 @@ public class MCClass extends MCEntity {
 			getProperties().add(property);
 			
 		}
+		
+		property.setClasss(this);
 		
 	}
 	
@@ -209,7 +211,7 @@ public class MCClass extends MCEntity {
 		
 	}
 	
-	public Map<String, Object> getModel(AbstractGenerator generator) {
+	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
 		
