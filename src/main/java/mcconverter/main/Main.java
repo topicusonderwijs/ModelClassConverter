@@ -171,7 +171,7 @@ public class Main {
 	public static void fatal(String message) {
 		
 		System.err.println(Format.format("❌️ Error: " + message, Format.Dark, Format.Red));
-		System.exit(0);
+		System.exit(1);
 		
 	}
 	
