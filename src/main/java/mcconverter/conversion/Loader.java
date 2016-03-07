@@ -99,7 +99,6 @@ public class Loader {
 				
 				n.resolveDependencies();
 				
-				
 				//Determine all entries
 				Map<String, String> paths = n.getDependenciesPath();
 				List<URL> locations = new ArrayList<URL>();

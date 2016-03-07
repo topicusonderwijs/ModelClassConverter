@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import mcconverter.model.MCClass;
 import mcconverter.model.MCProperty;
-import mcconverter.model.MCType;
 
 public class Configuration {
 		
@@ -210,12 +209,18 @@ public class Configuration {
 		
 	}
 	
+	/**
+	 * The names of the deepest super classes to consider for converting.
+	 */
 	public List<String> getDeepestSuperClasses() {
 		
 		return deepestSuperClasses;
 		
 	}
 	
+	/**
+	 * Determines and returns whether the given class name is one of the deepest super classes to consider for converting.
+	 */
 	public boolean hasDeepestSuperClass(String parent) {
 		
 		return getDeepestSuperClasses().contains(parent);

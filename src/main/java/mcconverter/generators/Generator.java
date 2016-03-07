@@ -87,7 +87,15 @@ public abstract class Generator {
 
 			try {
 				
-				FileUtils.cleanDirectory(OutputFolder);
+				if ( !OutputFolder.exists() ) {
+					
+					FileUtils.forceMkdir(OutputFolder);
+					
+				} else {
+					
+					FileUtils.cleanDirectory(OutputFolder);
+					
+				}
 				
 				List<MCEntity> entities = new ArrayList<>();
 				

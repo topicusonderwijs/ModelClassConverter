@@ -8,6 +8,7 @@ BRANCH="initial"
 CONFIGURATION="configuration.xml"
 DIRECTORY="converter"
 EXECUTABLE="ModelClassConverter"
+DOWNLOAD_ARTIFACTS="download"
 
 # Determine which action to perform
 if [ -n "$1" ]
@@ -27,6 +28,12 @@ then
 CONFIGURATION=$3
 fi
 
+# Determine whether to download the artifacts
+if [ -n "$4" ]
+then
+DOWNLOAD_ARTIFACTS=$4
+fi
+
 echo "converter.sh"
 echo "\tAction: $ACTION"
 echo "\tBranch: $BRANCH"
@@ -38,7 +45,7 @@ if [ "$ACTION" == "help" ]
 then
 
 echo "Usage:"
-echo "./converter.sh [help|run|clean] [branch] [configuration]"
+echo "./converter.sh [help|run|clean] [branch] [configuration] [download]"
 echo ""
 
 elif [ "$ACTION" == "clean" ]
@@ -86,8 +93,24 @@ fi
 cd ..
 
 
-java -cp "$DIRECTORY/target/$EXECUTABLE.jar" mcconverter.main.Main --formatted --configuration "$CONFIGURATION"
+# Download artifacts
+# This functionality should be moved into the generator itself.
+if [ "$DOWNLOAD_ARTIFACTS" == "download" ]
+then
 
+# Determine artifacts
+DEPENDENCIES=`perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < $CONFIGURATION`
+
+# Download artifacts
+for DEPENDENCY in $DEPENDENCIES
+do
+mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
+done
 
 fi
 
+
+# Run generator
+java -cp "$DIRECTORY/target/$EXECUTABLE.jar" mcconverter.main.Main --formatted --configuration "$CONFIGURATION"
+
+fi
