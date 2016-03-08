@@ -4,12 +4,12 @@
 	<!--
 		The name of the product that will be using the generated model classes.
 	-->
-	<product name="Digdag" />
+	<product name="ProductName" />
 	
 	<!--
 		The version of the model that is to be generated.
 	-->
-	<model version="40" />
+	<model version="1" />
 	
 	<!--
 		The path to read the templates from.
@@ -21,7 +21,7 @@
 		The path to write the generated classes to.
 		This can be relative to the working directory or absolute.
 	-->
-	<output path="/Users/Thomas/Development/Topicus/digdag/mobile/local-pods/ios-entities/generated/" />
+	<output path="/Path/To/Output/" />
 	
 	<!--
 		The class name of the generator to be used.
@@ -29,14 +29,14 @@
 			mcconverter.generators.swift.SwiftObjectMapperGenerator
 			mcconverter.generators.objc.ObjCRestKitGenerator
 	-->
-	<generator name="mcconverter.generators.objc.ObjCRestKitGenerator" />
+	<generator name="mcconverter.generators.swift.SwiftObjectMapperGenerator" />
 	
 	<!--
 		The Maven dependencies required by the classes.
 		Note that any related dependencies will automatically be resolved if required and possible.
 	-->
 	<dependencies>
-		<dependency name="nl.topicus.digdag:digdag-service-contract:40" />
+		<dependency name="group:artifact:version" />
 	</dependencies>
 	
 	
@@ -44,15 +44,14 @@
 		The packages containing the classes that should be converted.
 	-->
 	<packages>
-		<package name="nl.topicus.cobra.restcontract.model" />
-		<package name="nl.topicus.digdag.servicecontract.model" />
+		<package name="nl.topicus.model" />
 	</packages>
 	
 	<!--
 		The deepest super classes to consider for converting.
 	-->
 	<deepestSuperClasses>
-		<deepestSuperClass name="Linkable" />
+		<deepestSuperClass name="DeepestClassName" />
 	</deepestSuperClasses>
 	
 	<!--
@@ -68,47 +67,15 @@
 		<customProperty name="id" as="objectId" />
 		<customProperty name="self" as="zelf" />
 		
-		<customClass name="KindBean" ignored="true" />
-		<customClass name="ILinkable" as="Linkable" />
-		<customClass name="AdditionalObjects" ignored="true" />
-		<customClass name="AdditionalObject" ignored="true" />
-		<customClass name="AdditionalObjectKey" ignored="true" />
-		<customClass name="LikeCommentCount" ignored="true" />
+		<customClass name="IgnoredClass" ignored="true" />
+		<customClass name="PreviousClassName" as="CurrentClassName" />
 		
-		<customClass name="nl.topicus.cobra.restcontract.model.Linkable">
-			<customProperty name="dtype" key="$type" type="String" />
+		<customClass name="nl.topicus.ClassOne">
+			<customProperty name="addedProperty" key="propertyKey" type="String" />
 		</customClass>
 		
-		<customClass name="LinkableWrapper">
-			<customProperty name="items" ignored="true" />
-		</customClass>
-		
-		<customClass name="Events" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.event.AbstractEvent)" />
-		</customClass>
-		<customClass name="KindPasfotoFiles" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindPasfotoFile)" />
-		</customClass>
-		<customClass name="KindAanwezigheden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindAanwezigheid)" />
-		</customClass>
-		<customClass name="Ontwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.opvang.Ontwikkelstap)" />
-		</customClass>
-		<customClass name="KindOntwikkelstappen" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindOntwikkelstap)" />
-		</customClass>
-		<customClass name="KindStandaardAanmeldtijden" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.kind.KindStandaardAanmeldtijd)" />
-		</customClass>
-		<customClass name="DagboekPdfExportProcesses" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.process.DagboekPdfExportProcess)" />
-		</customClass>
-		<customClass name="SoortContactgegevens" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.identiteit.SoortContactgegeven)" />
-		</customClass>
-		<customClass name="Contactgegevens" parent="nl.topicus.cobra.restcontract.model.LinkableWrapper">
-			<customProperty name="items" type="List(nl.topicus.digdag.servicecontract.model.identiteit.Contactgegeven)" />
+		<customClass name="nl.topicus.ClassTwo">
+			<customProperty name="ignoredProperty" ignored="true" />
 		</customClass>
 		
 	</customEntities>

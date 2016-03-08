@@ -94,6 +94,8 @@ public class Loader {
 				for ( String dependency : Configuration.current().getDependencies()) {
 					
 					n.addDependency(dependency);
+					Main.entry("Loaded", dependency, 0);
+					
 					
 				}
 				
