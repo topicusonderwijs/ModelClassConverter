@@ -26,8 +26,9 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String IgnoreProtocolsTag = "ignoreProtocols";
 	private static final String CustomClassTag = "customClass";
 	private static final String CustomPropertyTag = "customProperty";
-	
+
 	private static final String NameAttribute = "name";
+	private static final String PackageAttribute = "package";
 	private static final String PathAttribute = "path";
 	private static final String VersionAttribute = "version";
 	private static final String ValueAttribute = "value";
@@ -128,6 +129,7 @@ public class ConfigurationParser extends DefaultHandler {
 		
 		case ProductTag:
 			getConfiguration().setProductName(name);
+			getConfiguration().setProductPackage(attributes.getValue(PackageAttribute));
 			break;
 		case ModelTag:
 			getConfiguration().setModelVersion(attributes.getValue(VersionAttribute));
