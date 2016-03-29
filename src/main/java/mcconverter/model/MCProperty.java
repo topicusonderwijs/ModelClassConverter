@@ -14,7 +14,7 @@ public class MCProperty extends MCEntity implements MCModelable {
 	
 	private String key;
 	private MCType type;
-	private MCClass classs;
+	private MCEntity entity;
 	private MCPropertyValue value;
 	private boolean isStatic;
 	private boolean isConstant;
@@ -62,15 +62,15 @@ public class MCProperty extends MCEntity implements MCModelable {
 		
 	}
 	
-	public void setClasss(MCClass classs) {
+	public void setEntity(MCEntity entity) {
 		
-		this.classs = classs;
+		this.entity = entity;
 		
 	}
 	
-	public MCClass getClasss() {
+	public MCEntity getEntity() {
 		
-		return classs;
+		return entity;
 		
 	}
 	

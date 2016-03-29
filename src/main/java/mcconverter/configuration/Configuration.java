@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import mcconverter.model.MCClass;
+import mcconverter.model.MCEntity;
 import mcconverter.model.MCProperty;
 
 public class Configuration {
@@ -364,15 +365,21 @@ public class Configuration {
 		CustomProperty customProperty = null;
 		
 		//Find specific property transform
-		CustomClass customClass = getCustomClass(property.getClasss());
+		MCEntity e = property.getEntity();
 		
-		if ( customClass != null ) {
+		if ( e instanceof MCClass ) {
+
+			CustomClass customClass = getCustomClass((MCClass)e);
 			
-			customProperty = customClass.getProperty(property.getName());
-			
-			if ( customProperty != null && !customProperty.hasTransform() ) {
+			if ( customClass != null ) {
 				
-				customProperty = null;
+				customProperty = customClass.getProperty(property.getName());
+				
+				if ( customProperty != null && !customProperty.hasTransform() ) {
+					
+					customProperty = null;
+					
+				}
 				
 			}
 			

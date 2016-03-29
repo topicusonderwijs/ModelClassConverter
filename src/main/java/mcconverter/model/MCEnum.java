@@ -1,8 +1,10 @@
 package mcconverter.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import mcconverter.generators.Generator;
 
@@ -54,10 +56,28 @@ public class MCEnum extends MCEntity {
 		
 	}
 	
+	public Set<MCType> getRawValueTypes() {
+		
+		Set<MCType> rawValueTypes = new HashSet<>();
+		
+		for ( MCEnumValue value : getValues() ) {
+			
+			if ( value.hasRawType() ) {
+				
+				rawValueTypes.add(value.getRawType());
+				
+			}
+			
+		}
+		
+		return rawValueTypes;
+		
+	}
+	
 	public Map<String, Object> getModel(Generator generator) {
 		
 		Map<String, Object> model = super.getModel(generator);
-		
+
 		List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 		
 		for ( MCEnumValue value : getValues() ) {
@@ -66,6 +86,16 @@ public class MCEnum extends MCEntity {
 			
 		}
 		
+		
+		List<Map<String, Object>> rawValueTypes = new ArrayList<Map<String, Object>>();
+		
+		for ( MCType rawValueType : getRawValueTypes() ) {
+			
+			rawValueTypes.add(rawValueType.getModel(generator));
+			
+		}
+		
+		model.put("enum_rawValueTypes", rawValueTypes);
 		model.put("enum_values", values);
 		
 		return model;

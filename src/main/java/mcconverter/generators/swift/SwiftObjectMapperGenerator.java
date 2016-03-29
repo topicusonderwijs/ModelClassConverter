@@ -167,10 +167,11 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		if ( customProperty != null ) {
 			
 			name = "";
+			MCEntity e = property.getEntity();
 			
-			if ( customProperty.hasClasss() ) {
-
-				MCClass c = property.getClasss();
+			if ( customProperty.hasClasss() && e instanceof MCClass ) {
+				
+				MCClass c = (MCClass)e;
 				
 				name += c.getName() + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property.getName());
 				

@@ -121,12 +121,35 @@ public class Analyzer {
 			
 			dataEnum = new MCEnum( identifier, name );
 			
+			//Analyze properties
+			analyzeProperties(dataEnum, c);
+
+			//Analyze enum values
 			for ( Object enumValue : enumValues ) {
 				
 				if ( enumValue instanceof Enum ) {
 					
 					Enum<?> eValue = (Enum<?>)enumValue;
-					
+					/*
+					//TODO: Extract data for construction
+					for ( MCProperty property : dataEnum.getProperties() ) {
+						
+						try {
+							
+							Field enumField = eValue.getDeclaringClass().getField(property.getName());
+							
+							if ( enumField != null ) {
+								
+								enumField.get(eValue);
+								
+							}
+							
+						} catch ( Exception e) {
+							
+						}
+						
+					}
+					*/
 					dataEnum.addValue(eValue.name(), MCNativeType.String.toType(), eValue.toString());
 					
 				}
@@ -184,6 +207,14 @@ public class Analyzer {
 		}
 		
 		//Analyze properties
+		analyzeProperties(dataClass, c);
+		
+		return dataClass;
+		
+	}
+	
+	private void analyzeProperties(MCEntity entity, Class<?> c) {
+		
 		@SuppressWarnings("unchecked")
 		Set<Field> properties = ReflectionUtils.getFields(c);
 		
@@ -224,8 +255,8 @@ public class Analyzer {
 					
 				}
 				
-				dataClass.addProperty(new MCProperty(
-					dataClass.getIdentifier() + "." + propertyName,
+				entity.addProperty(new MCProperty(
+					entity.getIdentifier() + "." + propertyName,
 					propertyName,
 					propertyKey,
 					propertyType,
@@ -237,8 +268,6 @@ public class Analyzer {
 			}
 			
 		}
-		
-		return dataClass;
 		
 	}
 	

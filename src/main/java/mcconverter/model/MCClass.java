@@ -3,13 +3,10 @@ package mcconverter.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import mcconverter.generators.Generator;
-import mcconverter.utils.ListUtils;
 
 import org.apache.commons.lang3.StringUtils;
+
+import mcconverter.generators.Generator;
 
 public class MCClass extends MCEntity {
 	
@@ -17,8 +14,6 @@ public class MCClass extends MCEntity {
 	
 	private MCType type;
 	private MCClass parent;
-	private List<MCProperty> properties;
-	private List<MCProperty> constants;
 	private boolean isProtocol;
 	
 	
@@ -30,8 +25,6 @@ public class MCClass extends MCEntity {
 		super ( type.getIdentifier(), name );
 		
 		this.type = type;
-		this.properties = new ArrayList<MCProperty>();
-		this.constants = new ArrayList<MCProperty>();
 		this.isProtocol = isProtocol;
 		
 		type.setOwner(this);
@@ -72,85 +65,6 @@ public class MCClass extends MCEntity {
 		
 	}
 	
-	public void addProperty(MCProperty property) {
-		
-		if ( property.isConstant() ) {
-			
-			getConstants().add(property);
-			
-		} else {
-			
-			getProperties().add(property);
-			
-		}
-		
-		property.setClasss(this);
-		
-	}
-	
-	public void removeProperty(MCProperty property) {
-		
-		if ( property.isConstant() ) {
-			
-			getConstants().remove(property);
-			
-		} else {
-			
-			getProperties().remove(property);
-			
-		}
-		
-	}
-	
-	public boolean hasProperties() {
-		
-		return getProperties().size() > 0;
-		
-	}
-	
-	public boolean hasProperty(String name) {
-		
-		return getProperty(name) != null;
-		
-	}
-	
-	public MCProperty getProperty(String name) {
-		
-		MCProperty property = null;
-		
-		for (MCProperty current : getProperties()) {
-			
-			if ( current.getName().equals(name) ) {
-				
-				property = current;
-				break;
-				
-			}
-			
-		}
-		
-		return property;
-		
-	}
-	
-	public List<MCProperty> getProperties() {
-		
-		return properties;
-		
-	}
-	
-	public List<MCProperty> getOptionalProperties() {
-		
-		return filter(getProperties(), p -> p.getType().isOptional());
-		
-	}
-	
-	public List<MCProperty> getRequiredProperties() {
-		
-		return filter(getProperties(), p -> !p.getType().isOptional());
-		
-	}
-	
 	public List<MCProperty> getInheritedProperties() {
 		
 		List<MCProperty> inherited = new ArrayList<MCProperty>();
@@ -164,7 +78,7 @@ public class MCClass extends MCEntity {
 		return inherited;
 		
 	}
-	
+
 	public List<MCProperty> getInheritedOptionalProperties() {
 		
 		return filter(getInheritedProperties(), p -> p.getType().isOptional());
@@ -186,7 +100,6 @@ public class MCClass extends MCEntity {
 		return all;
 		
 	}
-	
 
 	public List<MCProperty> getAllOptionalProperties() {
 		
@@ -200,17 +113,6 @@ public class MCClass extends MCEntity {
 		
 	}
 	
-	public boolean hasConstants() {
-		
-		return getConstants().size() > 0;
-		
-	}
-	
-	public List<MCProperty> getConstants() {
-		
-		return constants;
-		
-	}
 	
 	public Map<String, Object> getModel(Generator generator) {
 		
@@ -223,22 +125,15 @@ public class MCClass extends MCEntity {
 			
 		}
 		
-		model.put("class_properties", properties);
 		model.put("class_isProtocol", isProtocol());
-		model.put("class_constants", MCProperty.getModel(generator, getConstants()));
-		model.put("class_properties", MCProperty.getModel(generator, getProperties()));
-		model.put("class_properties_valued",
-			MCProperty.getModel(generator, ListUtils.filter(getProperties(), p -> generator.generatePropertyValue(p) != null))
-		);
-		model.put("class_properties_required", MCProperty.getModel(generator, getRequiredProperties()));
-		model.put("class_properties_optional", MCProperty.getModel(generator, getOptionalProperties()));
+		model.put("class_type", getType().getModel(generator));
+		
 		model.put("class_properties_inherited", MCProperty.getModel(generator, getInheritedProperties()));
 		model.put("class_properties_inherited_required", MCProperty.getModel(generator, getInheritedRequiredProperties()));
 		model.put("class_properties_inherited_optional", MCProperty.getModel(generator, getInheritedOptionalProperties()));
 		model.put("class_properties_all", MCProperty.getModel(generator, getAllProperties()));
 		model.put("class_properties_all_required", MCProperty.getModel(generator, getAllRequiredProperties()));
 		model.put("class_properties_all_optional", MCProperty.getModel(generator, getAllOptionalProperties()));
-		model.put("class_type", getType().getModel(generator));
 		
 		return model;
 		
@@ -275,16 +170,6 @@ public class MCClass extends MCEntity {
 	public String toString() {
 		
 		return toString(0);
-		
-	}
-	
-	
-	
-	/* ===== Private Functions ===== */
-	
-	private List<MCProperty> filter(List<MCProperty> properties, Predicate<MCProperty> predicate) {
-		
-		return properties.stream().filter(predicate).collect(Collectors.toList());
 		
 	}
 	
