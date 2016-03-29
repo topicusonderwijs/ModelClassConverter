@@ -2,9 +2,9 @@
 <mcconverter>
 	
 	<!--
-		The name of the product that will be using the generated model classes.
+		The name and package of the product that will be using the generated model classes.
 	-->
-	<product name="ProductName" />
+	<product name="ProductName" package="PackageName" />
 	
 	<!--
 		The version of the model that is to be generated.

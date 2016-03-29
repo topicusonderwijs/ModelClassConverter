@@ -6,6 +6,8 @@
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
+package ${product_package!};
+
 public enum ${entity_name} {
 	<#list enum_values>
 	

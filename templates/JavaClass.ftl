@@ -1,4 +1,12 @@
-package ${product_package};
+//  
+//  ${file_name!}
+//  ${entity_identifier!}
+//  ${product_name!} (${model_version!})
+//  
+//  Automatically generated on ${file_date} at ${file_time} by ${user}.
+//  
+
+package ${product_package!};
 
 import java.io.Serializable;
 import java.util.Set;
@@ -7,14 +15,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-
-//  
-//  ${file_name}
-//  ${entity_identifier}
-//  ${product_name} (${model_version})
-//  
-//  Automatically generated on ${file_date} at ${file_time} by ${user}.
-//  
 
 public class ${entity_name}<#list class_type.type_parameters><<#items as parameter><#t>
 ${parameter.parameter_literal}<#t><#sep>, </#sep></#items>></#list><#if class_parent_literal??> extends ${class_parent_literal}</#if> implements Serializable {
