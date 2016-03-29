@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.net.URI;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 public class ${entity_name}<#list class_type.type_parameters><<#items as parameter><#t>
 ${parameter.parameter_literal}<#t><#sep>, </#sep></#items>></#list><#if class_parent_literal??> extends ${class_parent_literal}</#if> implements Serializable {
@@ -23,7 +27,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#items>></#list><#if class_pa
 	<#list class_constants>
 	
 	<#items as constant>
-	public static final ${constant.property_literal};
+	public ${constant.property_literal};
 	</#items>
 	</#list><#t>
 	<#list class_properties><#t>
