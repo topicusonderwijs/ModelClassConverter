@@ -247,8 +247,10 @@ public class JavaGenerator extends AbstractGenerator {
 			switch ( property.getType().getNativeType() ) {
 			
 			case List:
-			case Set:
 				value = "new ArrayList<>()";
+				break;
+			case Set:
+				value = "new HashSet<>()";
 				break;
 			case Map:
 				value = "new HashMap<>()";
