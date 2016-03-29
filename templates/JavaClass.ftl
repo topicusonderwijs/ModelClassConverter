@@ -1,3 +1,13 @@
+package ${product_package};
+
+import java.io.Serializable;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+
 //  
 //  ${file_name}
 //  ${entity_identifier}
@@ -5,13 +15,6 @@
 //  
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 
 public class ${entity_name}<#list class_type.type_parameters><<#items as parameter><#t>
 ${parameter.parameter_literal}<#t><#sep>, </#sep></#items>></#list><#if class_parent_literal??> extends ${class_parent_literal}</#if> implements Serializable {

@@ -302,6 +302,7 @@ public abstract class Generator {
 			
 			model.put("user", getUser());
 			model.put("product_name", getPackage().getName());
+			model.put("product_package", getConfiguration().getProductPackage());
 			model.put("model_version", getConfiguration().getModelVersion());
 			model.put("file_name", fileName);
 			model.put("file_date", date);

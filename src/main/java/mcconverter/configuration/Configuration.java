@@ -17,6 +17,7 @@ public class Configuration {
 	
 	private String modelVersion;
 	private String productName;
+	private String productPackage;
 	private File templateLocation;
 	private File outputLocation;
 	private String generatorName;
@@ -98,6 +99,24 @@ public class Configuration {
 	public void setProductName(String productName) {
 		
 		this.productName = productName;
+		
+	}
+	
+	/**
+	 * The package that the generated model classes should be placed in.
+	 */
+	public String getProductPackage() {
+		
+		return productPackage;
+		
+	}
+	
+	/**
+	 * Sets the package that the generated model classes should be placed in.
+	 */
+	public void setProductPackage(String productPackage) {
+		
+		this.productPackage = productPackage;
 		
 	}
 	
