@@ -75,20 +75,6 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		
 	}
 	
-	public String generatePropertyLiteral(MCProperty property) {
-		
-		String literal = super.generatePropertyLiteral(property);
-		
-		if ( !property.getType().isOptional() && !property.isConstant() ) {
-			
-			literal += "!";
-			
-		}
-		
-		return literal;
-		
-	}
-	
 	public String generatePropertyValue(MCProperty property) {
 		
 		String value = super.generatePropertyValue(property);
