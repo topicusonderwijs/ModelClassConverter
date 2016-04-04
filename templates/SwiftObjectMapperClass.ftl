@@ -54,10 +54,6 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	}
 	
 	public required init?(_ map: Map) {
-		<#if class_parent??>
-		
-		super.init(map)
-		</#if><#t>
 		<#list class_properties_required><#t>
 		
 		<#items as property>
@@ -74,7 +70,10 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		} else {
 			return nil
 		}
-		</#list>
+		</#list><#if class_parent??>
+		
+		super.init(map)
+		</#if><#t>
 		
 	}
 	
