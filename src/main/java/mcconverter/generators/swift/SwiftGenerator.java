@@ -81,9 +81,8 @@ public class SwiftGenerator extends AbstractGenerator {
 				case Map:
 					name = "Dictionary";
 					break;
-				case Date:
-				case LocalTime:
 				case DateTime:
+				case LocalTime:
 				case LocalDate:
 					name = "NSDate";
 					break;

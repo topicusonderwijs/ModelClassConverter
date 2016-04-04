@@ -139,11 +139,11 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		if ( customProperty != null ) {
 			
 			switch ( property.getType().getNativeType() ) {
-				
-			case Date:
-			case LocalTime:
+
 			case DateTime:
+			case LocalTime:
 			case LocalDate:
+			case LocalDateTime:
 				transform = "DateFormatterTransform(format: \"" + customProperty.getTransform() + "\")";
 				break;
 			default:

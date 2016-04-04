@@ -4,15 +4,14 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import java.util.Date;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public enum MCNativeType {
 	
@@ -34,10 +33,26 @@ public enum MCNativeType {
 	Set,
 	URI,
 	Map,
-	Date,
-	LocalTime,
+	
+	/**
+	 * A native type describing a date and a time.
+	 */
 	DateTime,
-	LocalDate;
+	
+	/**
+	 * A native type describing only a time, possibly without a specific timezone.
+	 */
+	LocalTime,
+	
+	/**
+	 * A native type describing only a date, possibly without a specific timezone.
+	 */
+	LocalDate,
+	
+	/**
+	 * A native type describing both a date and a time, possibly without a specific timezone.
+	 */
+	LocalDateTime;
 	
 	
 	/* ===== Mapping ===== */
@@ -66,10 +81,14 @@ public enum MCNativeType {
 		m.put(Set.class, MCNativeType.Set);
 		m.put(URI.class, MCNativeType.URI);
 		m.put(Map.class, MCNativeType.Map);
-		m.put(Date.class, MCNativeType.Date);
+		m.put(Date.class, MCNativeType.DateTime);
 		m.put(LocalTime.class, MCNativeType.LocalTime);
-		m.put(DateTime.class, MCNativeType.DateTime);
 		m.put(LocalDate.class, MCNativeType.LocalDate);
+		m.put(LocalDateTime.class, MCNativeType.LocalDateTime);
+		m.put(org.joda.time.DateTime.class, MCNativeType.DateTime);
+		m.put(org.joda.time.LocalTime.class, MCNativeType.LocalTime);
+		m.put(org.joda.time.LocalDate.class, MCNativeType.LocalDate);
+		m.put(org.joda.time.LocalDateTime.class, MCNativeType.LocalDateTime);
 		
 		nativeTypeMap = m;
 		

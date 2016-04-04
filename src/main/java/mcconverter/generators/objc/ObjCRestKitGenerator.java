@@ -214,9 +214,9 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 				case Map:
 					name = "NSMutableDictionary";
 					break;
-				case Date:
 				case DateTime:
 				case LocalDate:
+				case LocalDateTime:
 					name = "NSDate";
 					break;
 				default:

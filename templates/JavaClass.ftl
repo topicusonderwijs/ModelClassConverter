@@ -20,11 +20,12 @@ import java.net.URI;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.LocalDateTime;
 
 public class ${entity_name}<#list class_type.type_parameters><<#items as parameter><#t>
 ${parameter.parameter_literal}<#t><#sep>, </#sep></#items>></#list><#if class_parent_literal??> extends ${class_parent_literal}</#if> implements Serializable {
 	
-	public static final String descriptor = "${entity_descriptor}";
+	public static final String Descriptor = "${entity_descriptor}";
 	<#list class_constants>
 	
 	<#items as constant>

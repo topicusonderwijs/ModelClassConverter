@@ -88,17 +88,17 @@ public class JavaGenerator extends AbstractGenerator {
 				case Map:
 					name = "Map";
 					break;
-				case Date:
-					name = "Date";
+				case DateTime:
+					name = "DateTime";
 					break;
 				case LocalTime:
 					name = "LocalTime";
 					break;
-				case DateTime:
-					name = "DateTime";
-					break;
 				case LocalDate:
 					name = "LocalDate";
+					break;
+				case LocalDateTime:
+					name = "LocalDateTime";
 					break;
 				default:
 					
