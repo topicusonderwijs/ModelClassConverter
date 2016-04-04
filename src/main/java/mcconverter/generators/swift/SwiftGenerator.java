@@ -84,6 +84,7 @@ public class SwiftGenerator extends AbstractGenerator {
 				case DateTime:
 				case LocalTime:
 				case LocalDate:
+				case LocalDateTime:
 					name = "NSDate";
 					break;
 				default:
