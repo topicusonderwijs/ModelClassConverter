@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.net.URI;
-import org.joda.time.DateTime;
+import java.util.Date;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.LocalDateTime;
