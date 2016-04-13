@@ -160,7 +160,40 @@ public class CustomType {
 	
 	public String toString() {
 		
-		return "CustomType(" + getName() + ")";
+		String type = "CustomType(" + getName();
+		
+		if ( hasParameters() ) {
+			
+			type += "<";
+			boolean first = true;
+			
+			for ( CustomType parameter : getParameters() ) {
+				
+				if ( !first ) {
+					
+					type += ",";
+					
+				}
+				
+				type += parameter.toString();
+				
+				first = false;
+				
+			}
+			
+			type += ">";
+			
+		}
+		
+		if ( isOptional() ) {
+			
+			type += "?";
+			
+		}
+		
+		type += ")";
+		
+		return type;
 		
 	}
 	

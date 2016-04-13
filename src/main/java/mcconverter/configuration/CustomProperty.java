@@ -107,6 +107,7 @@ public class CustomProperty extends CustomEntity {
 		s += "\tName = " + getName() + "\n";
 		s += "\tValue = " + getValue() + "\n";
 		s += "\tTransform = " + getTransform() + "\n";
+		s += "\tType = " + getType() + "\n";
 		
 		s += ")";
 		
