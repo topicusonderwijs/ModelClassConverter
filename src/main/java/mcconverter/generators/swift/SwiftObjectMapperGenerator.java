@@ -248,18 +248,26 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 	
 	private void applyOptional(MCType type) {
 		
-		// Use no optional for lists, maps and sets
+		// By default use no optional for lists, maps and sets
 		if ( type.getOwner() instanceof MCProperty ) {
 			
-			switch ( type.getNativeType() ) {
+			MCProperty property = (MCProperty)type.getOwner();
 			
-			case List:
-			case Map:
-			case Set:
-				type.setOptional(false);
-				break;
-			default:
-				break;
+			CustomProperty customProperty = getConfiguration().getSpecificCustomProperty(property);
+			
+			if ( customProperty == null || !customProperty.hasType() ) {
+
+				switch ( type.getNativeType() ) {
+				
+				case List:
+				case Map:
+				case Set:
+					type.setOptional(false);
+					break;
+				default:
+					break;
+					
+				}
 				
 			}
 			

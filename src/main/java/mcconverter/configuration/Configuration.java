@@ -9,7 +9,7 @@ import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCProperty;
 
-public class Configuration {
+public final class Configuration {
 		
 	/* ===== Private Properties ===== */
 	
@@ -379,24 +379,21 @@ public class Configuration {
 		
 	}
 	
-	public CustomProperty getCustomTransformForProperty(MCProperty property) {
+	public CustomProperty getSpecificCustomProperty(MCProperty property) {
 		
 		CustomProperty customProperty = null;
-		
-		//Find specific property transform
-		MCEntity e = property.getEntity();
-		
-		if ( e instanceof MCClass ) {
 
-			CustomClass customClass = getCustomClass((MCClass)e);
+		if ( property != null ) {
 			
-			if ( customClass != null ) {
+			MCEntity e = property.getEntity();
+			
+			if ( e instanceof MCClass ) {
+
+				CustomClass customClass = getCustomClass((MCClass)e);
 				
-				customProperty = customClass.getProperty(property.getName());
-				
-				if ( customProperty != null && !customProperty.hasTransform() ) {
+				if ( customClass != null ) {
 					
-					customProperty = null;
+					customProperty = customClass.getProperty(property.getName());
 					
 				}
 				
@@ -404,19 +401,24 @@ public class Configuration {
 			
 		}
 		
-		if ( customProperty == null ) {
+		return customProperty;
+		
+	}
+	
+	public CustomProperty getCustomTransformForProperty(MCProperty property) {
+		
+		CustomProperty customProperty = null;
+		
+		//Find specific property transform
+		customProperty = getSpecificCustomProperty(property);
+		
+		if ( customProperty == null || !customProperty.hasTransform() ) {
 			
 			//Find generic property transform
-			for ( CustomProperty current : getCustomProperties() ) {
-				
-				if ( current.hasType() && current.getType().toType().equals(property.getType()) ) {
-					
-					customProperty = current;
-					break;
-					
-				}
-				
-			}
+			customProperty = getCustomProperties()
+				.stream()
+				.filter(p -> p.hasType() && p.getType().toType().equals(property.getType()))
+				.findFirst().orElse(null);
 			
 		}
 		
