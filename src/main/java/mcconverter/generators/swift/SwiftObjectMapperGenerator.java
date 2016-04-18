@@ -165,6 +165,10 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 				
 				name += CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, customProperty.getName());
 				
+			} else if ( property.getType().isNativeType() ) {
+				
+				name += property.getType().getNativeType();
+				
 			} else {
 				
 				name += generateTypeName(property.getType());
