@@ -74,11 +74,11 @@ static RKObjectMapping* responseMapping;
 		responseMapping = [RKObjectMapping mappingForClass:[${entity_name} class]];
 		<#if class_parent_literal??>
 		
-		[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent_literal} responseMapping] propertyMappings] copyItems:true]];
+		[responseMapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent_literal} responseMapping] propertyMappings] copyItems:true]];
 		</#if>
 		<#if ( class_properties_natives?size > 0)><#t>
 		
-		[mapping addAttributeMappingsFromDictionary:@{
+		[responseMapping addAttributeMappingsFromDictionary:@{
 			<#list class_properties_natives as property>
 			@"${property.property_key}": @"${property.property_path}"<#sep>,</#sep>
 			</#list>
@@ -86,7 +86,7 @@ static RKObjectMapping* responseMapping;
 		</#if>
 		<#if ( class_properties_relations?size > 0)><#t>
 		
-		[mapping addPropertyMappingsFromArray:@[
+		[responseMapping addPropertyMappingsFromArray:@[
 			<#list class_properties_relations as property>
 			[RKRelationshipMapping relationshipMappingFromKeyPath:@"${property.property_name}" toKeyPath:@"${property.property_key}" withMapping:[${property.property_dominant_type} dynamicResponseMapping]]<#sep>,</#sep>
 			</#list>
