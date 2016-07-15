@@ -42,6 +42,7 @@ Pods
 build/**
 bin/**
 **/bin/**
+target/**
 tmp/**
 tmp/**/*
 *.tmp
@@ -61,3 +62,4 @@ local.properties
 .cproject
 # PDT-specific
 .buildpath
+/target/

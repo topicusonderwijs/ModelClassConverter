@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<mcconverter>
+	
+	<!--
+		The name and package of the product that will be using the generated model classes.
+	-->
+	<product name="ProductName" package="PackageName" />
+	
+	<!--
+		The version of the model that is to be generated.
+	-->
+	<model version="1" />
+	
+	<!--
+		The path to read the templates from.
+		This can be relative to the working directory or absolute.
+	-->
+	<template path="templates/" />
+	
+	<!--
+		The path to write the generated classes to.
+		This can be relative to the working directory or absolute.
+	-->
+	<output path="/Path/To/Output/" />
+	
+	<!--
+		The class name of the generator to be used.
+		Builtin generators are:
+			mcconverter.generators.swift.SwiftObjectMapperGenerator
+			mcconverter.generators.objc.ObjCRestKitGenerator
+	-->
+	<generator name="mcconverter.generators.swift.SwiftObjectMapperGenerator" />
+	
+	<!--
+		The Maven dependencies required by the classes.
+		Note that any related dependencies will automatically be resolved if required and possible.
+	-->
+	<dependencies>
+		<dependency name="group:artifact:version" />
+	</dependencies>
+	
+	
+	<!--
+		The packages containing the classes that should be converted.
+	-->
+	<packages>
+		<package name="nl.topicus.model" />
+	</packages>
+	
+	<!--
+		The deepest super classes to consider for converting.
+	-->
+	<deepestSuperClasses>
+		<deepestSuperClass name="DeepestClassName" />
+	</deepestSuperClasses>
+	
+	<!--
+		A flag indicating whether protocols (or interfaces) should be ignored.
+	-->
+	<ignoreProtocols value="true" />
+	
+	<!--
+		A set of custom entities to add, rename or ignore properties or classes.
+	-->
+	<customEntities>
+		
+		<customProperty name="id" as="objectId" />
+		<customProperty name="self" as="zelf" />
+		
+		<customClass name="IgnoredClass" ignored="true" />
+		<customClass name="PreviousClassName" as="CurrentClassName" />
+		
+		<customClass name="nl.topicus.ClassOne">
+			<customProperty name="addedProperty" key="propertyKey" type="String" />
+		</customClass>
+		
+		<customClass name="nl.topicus.ClassTwo">
+			<customProperty name="ignoredProperty" ignored="true" />
+		</customClass>
+		
+	</customEntities>
+	
+</mcconverter>
