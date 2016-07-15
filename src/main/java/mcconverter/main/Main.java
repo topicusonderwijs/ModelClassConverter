@@ -17,7 +17,7 @@ public class Main {
 	
 	/* ===== Constants ===== */
 	
-	public static final String Version = "0.0.1";
+	public static final String Version = "0.1";
 	public static final String DefaultConfigurationLocation = "conf/configuration.xml";
 	
 	private static final Command[] Commands = {
