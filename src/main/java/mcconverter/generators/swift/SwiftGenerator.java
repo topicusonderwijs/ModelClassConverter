@@ -37,6 +37,12 @@ public class SwiftGenerator extends AbstractGenerator {
 		
 	}
 	
+	public String generateEnumValueName(MCEnumValue value) {
+		
+		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, replacePropertyName(value.getName()));
+		
+	}
+	
 	public String generateTypeName(MCType type) {
 		
 		String name = "AnyObject";
