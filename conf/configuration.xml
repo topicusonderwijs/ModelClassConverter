@@ -27,7 +27,9 @@
 		The class name of the generator to be used.
 		Builtin generators are:
 			mcconverter.generators.swift.SwiftObjectMapperGenerator
+			mcconverter.generators.swift.v2.SwiftObjectMapperGenerator
 			mcconverter.generators.objc.ObjCRestKitGenerator
+			mcconverter.generators.java.JavaGenerator
 	-->
 	<generator name="mcconverter.generators.swift.SwiftObjectMapperGenerator" />
 	
