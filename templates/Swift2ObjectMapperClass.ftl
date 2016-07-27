@@ -77,7 +77,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 	}
 	
-	public <#if class_parent??>override </#if>func mapping(_ map: Map) {
+	public <#if class_parent??>override </#if>func mapping(map: Map) {
 		<#if class_parent??>
 		
 		super.mapping(map)
