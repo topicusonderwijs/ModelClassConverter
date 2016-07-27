@@ -8,8 +8,9 @@ import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
+import mcconverter.model.MCType;
 
-public class SwiftObjectMapperGenerator extends mcconverter.generators.swift.Swift2ObjectMapperGenerator {
+public class SwiftObjectMapperGenerator extends Swift2ObjectMapperGenerator {
 	
 	public List<String> getTemplates(MCPackage pack) {
 		
@@ -32,6 +33,31 @@ public class SwiftObjectMapperGenerator extends mcconverter.generators.swift.Swi
 		}
 		
 		return templates;
+		
+	}
+	
+	public String generateTypeName(MCType type) {
+		
+		String name = super.generateTypeName(type);
+		
+		if ( type != null ) {
+			
+			switch ( type.getNativeType() ) {
+				
+				case DateTime:
+				case LocalTime:
+				case LocalDate:
+				case LocalDateTime:
+					name = "Date";
+					break;
+				default:
+					break;
+					
+			}
+				
+		}
+		
+		return name;	
 		
 	}
 	
