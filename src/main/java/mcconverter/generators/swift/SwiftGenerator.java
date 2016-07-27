@@ -8,7 +8,7 @@ import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
 import mcconverter.model.MCType;
 
-public class SwiftGenerator extends mcconverter.generators.swift.v2.SwiftGenerator {
+public class SwiftGenerator extends mcconverter.generators.swift.Swift2Generator {
 	
 	public List<String> getTemplates(MCEntity entity) {
 		

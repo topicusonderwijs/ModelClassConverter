@@ -1,4 +1,4 @@
-package mcconverter.generators.swift.v2;
+package mcconverter.generators.swift;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import mcconverter.generators.AbstractGenerator;
 import mcconverter.main.Main;
 import mcconverter.model.*;
 
-public class SwiftGenerator extends AbstractGenerator {
+public class Swift2Generator extends AbstractGenerator {
 	
 	public List<String> getTemplates(MCPackage pack) {
 		

@@ -9,7 +9,7 @@ import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
 
-public class SwiftObjectMapperGenerator extends mcconverter.generators.swift.v2.SwiftObjectMapperGenerator {
+public class SwiftObjectMapperGenerator extends mcconverter.generators.swift.Swift2ObjectMapperGenerator {
 	
 	public List<String> getTemplates(MCPackage pack) {
 		

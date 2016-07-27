@@ -1,4 +1,4 @@
-package mcconverter.generators.swift.v2;
+package mcconverter.generators.swift;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,6 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomProperty;
-import mcconverter.generators.swift.SwiftGenerator;
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
@@ -18,7 +17,7 @@ import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
 import mcconverter.utils.ListUtils;
 
-public class SwiftObjectMapperGenerator extends SwiftGenerator {
+public class Swift2ObjectMapperGenerator extends SwiftGenerator {
 	
 	/* ===== Public Functions ===== */
 	
