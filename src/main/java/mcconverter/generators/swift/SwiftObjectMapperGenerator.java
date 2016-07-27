@@ -1,13 +1,21 @@
 package mcconverter.generators.swift;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
+import mcconverter.model.MCPackage;
 
 public class SwiftObjectMapperGenerator extends mcconverter.generators.swift.v2.SwiftObjectMapperGenerator {
+	
+	public List<String> getTemplates(MCPackage pack) {
+		
+		return Arrays.asList("SwiftObjectMapperRegistry.ftl");
+		
+	}
 	
 	public List<String> getTemplates(MCEntity entity) {
 		
