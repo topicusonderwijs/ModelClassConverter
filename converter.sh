@@ -4,7 +4,7 @@
 
 # Set default arguments
 ACTION="help"
-BRANCH="initial"
+BRANCH="0.1"
 CONFIGURATION="configuration.xml"
 DIRECTORY="converter"
 EXECUTABLE="ModelClassConverter"
