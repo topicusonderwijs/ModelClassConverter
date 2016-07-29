@@ -52,7 +52,7 @@ extension DateFormatterTransform {
 	
 	internal convenience init(format: String) {
 		
-		let formatter = DateFormatter()
+		let formatter = NSDateFormatter()
 		formatter.dateFormat = format
 		
 		self.init(dateFormatter: formatter)
