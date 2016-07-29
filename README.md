@@ -7,6 +7,7 @@ ModelClassConverter analyses your entities in Java and creates an internal model
 Currently available generators are listed below.
  * JavaGenerator (Generic Java generator)
  * ObjCRestKitGenerator (Objective-C generator for RestKit)
+ * JSEmberGenerator (Javascript generator for Ember)
  * SwiftGenerator (Generic Swift generator)
  	* SwiftObjectMapperGenerator (Swift generator for ObjectMapper)
  
