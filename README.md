@@ -8,8 +8,7 @@ Currently available generators are listed below.
  * JavaGenerator (Generic Java generator)
  * ObjCRestKitGenerator (Objective-C generator for RestKit)
  * JSEmberGenerator (Javascript generator for Ember)
- * SwiftGenerator (Generic Swift generator)
- 	* SwiftObjectMapperGenerator (Swift generator for ObjectMapper)
+ * SwiftObjectMapperGenerator (Swift generator for ObjectMapper)
  
 
 ## Todo
