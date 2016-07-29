@@ -202,4 +202,18 @@ public abstract class AbstractGenerator extends Generator {
 		
 	}
 	
+
+	
+	protected boolean isRawType(MCType type) {
+		
+		return type.isNativeType() || isEnum(type);
+		
+	}
+	
+	protected boolean isEnum(MCType type) {
+		
+		return getPackage().hasEnum(type.getIdentifier());
+		
+	}
+	
 }

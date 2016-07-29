@@ -378,18 +378,6 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 		
 	}
 	
-	private boolean isRawType(MCType type) {
-		
-		return type.isNativeType() || isEnum(type);
-		
-	}
-	
-	private boolean isEnum(MCType type) {
-		
-		return getPackage().hasEnum(type.getIdentifier());
-		
-	}
-	
 	private void importType(List<String> imports, MCType type) {
 		
 		if ( !type.isNativeType() ) {
