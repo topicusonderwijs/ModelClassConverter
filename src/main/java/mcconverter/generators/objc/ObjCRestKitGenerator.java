@@ -291,51 +291,14 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 			
 			MCClass c = (MCClass)entity;
 			
-			//Two separate model properties are required as RestKit likes the relations separated from the other properties.
-			List<Map<String, Object>> natives = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> relations = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
 			List<String> imports = new ArrayList<String>();
 			
 			for ( MCProperty property : c.getProperties() ) {
 				
-				Map<String, Object> m = property.getModel(this);
-				
-				//The dominant type of the property is determined as RestKit requires this for mapping lists.
-				Object dominantType = generateTypeName(property.getType());
-				String propertyPath = generatePropertyName(property);
-				MCTypeParameter firstParameter = property.getType().getParameter(0);
-				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
-					
-					dominantType = firstParameter.hasName() ? firstParameter.getName() : generateTypeName(firstParameter.getType());
-					relations.add(m);
-					
-				} else if ( isRawType(property.getType()) ) {
-					
-					natives.add(m);
-					
-					if ( isEnum(property.getType()) ) {
-						
-						propertyPath = property.getName() + ".stringValue";
-						enums.add(m);
-						
-					}
-					
-				} else {
-					
-					relations.add(m);
-					
-				}
-				
-				m.put("property_path", propertyPath);
-				m.put("property_dominant_type", dominantType);
 				importType(imports, property.getType());
 				
 			}
 			
-			model.put("class_properties_natives", natives);
-			model.put("class_properties_relations", relations);
-			model.put("class_properties_enums", enums);
 			model.put("class_imports", imports);
 			
 		}

@@ -40,10 +40,10 @@ static RKObjectMapping* responseMapping;
 	
 	[mapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[super requestMapping] propertyMappings] copyItems:true]];
 	</#if>
-	<#if ( class_properties_natives?size > 0)><#t>
+	<#if ( class_properties_raws?size > 0)><#t>
 	
 	[mapping addAttributeMappingsFromDictionary:@{
-		<#list class_properties_natives as property>
+		<#list class_properties_raws as property>
 		@"${property.property_path}": @"${property.property_key}"<#sep>,</#sep>
 		</#list>
 	}];
@@ -76,10 +76,10 @@ static RKObjectMapping* responseMapping;
 		
 		[responseMapping addPropertyMappingsFromArray:[[NSArray alloc] initWithArray:[[${class_parent_literal} responseMapping] propertyMappings] copyItems:true]];
 		</#if>
-		<#if ( class_properties_natives?size > 0)><#t>
+		<#if ( class_properties_raws?size > 0)><#t>
 		
 		[responseMapping addAttributeMappingsFromDictionary:@{
-			<#list class_properties_natives as property>
+			<#list class_properties_raws as property>
 			@"${property.property_key}": @"${property.property_path}"<#sep>,</#sep>
 			</#list>
 		}];
