@@ -22,6 +22,7 @@ Currently available generators are listed below.
  * Support for all properties of enums
  * Support for automatic resolving of imports in Java
  * Support for analysing getters and setters
+ * Support for the notion of relations
  * Better support for protocols
  * Further documentation
  

@@ -119,9 +119,30 @@ public class JSEmberGenerator extends AbstractGenerator {
 		
 	}
 	
+	public String generateRelationTypeName(MCRelationType type) {
+		
+		String name = "";
+		
+		switch ( type ) {
+		case ToOne:
+			name = "belongsTo";
+		case ToMany:
+			name = "hasMany";
+		}
+		
+		return name;
+		
+	}
+	
 	public String generateTypeName(MCType type) {
 		
-		return type.getNativeType().name();
+		String name = type.getNativeType().name();
+		
+		if ( !type.isNativeType() && getPackage().hasEntity(type.getIdentifier()) ) {
+			name = getPackage().getEntity(type.getIdentifier()).getName();
+		}
+		
+		return name;
 		
 	}
 	

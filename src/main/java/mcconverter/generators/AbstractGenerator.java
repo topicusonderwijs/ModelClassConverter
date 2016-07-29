@@ -20,6 +20,12 @@ public abstract class AbstractGenerator extends Generator {
 		
 	}
 	
+	public String generateRelationTypeName(MCRelationType type) {
+		
+		return type.name();
+		
+	}
+	
 	public boolean validatePackage(MCPackage pack) {
 		
 		//Insert custom classes
@@ -180,7 +186,7 @@ public abstract class AbstractGenerator extends Generator {
 				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
 					
 					dominantType = firstParameter.hasName() ? firstParameter.getName() : generateTypeName(firstParameter.getType());
-					m.put("relation_type", "toMany");
+					m.put("relation_type", generateRelationTypeName(MCRelationType.ToMany));
 					relations.add(m);
 					
 				} else if ( isRawType(property.getType()) ) {
@@ -195,7 +201,7 @@ public abstract class AbstractGenerator extends Generator {
 					
 				} else {
 					
-					m.put("relation_type", "toOne");
+					m.put("relation_type", generateRelationTypeName(MCRelationType.ToOne));
 					relations.add(m);
 					
 				}
