@@ -38,18 +38,6 @@ public class JSEmberGenerator extends AbstractGenerator {
 		
 	}
 	
-	public String generatePropertyLiteral(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	public String generatePropertyValue(MCProperty property) {
-		
-		return "";
-		
-	}
-	
 	public String generatePropertyMapping(MCProperty property) {
 		
 		String mapping = "";
@@ -113,12 +101,6 @@ public class JSEmberGenerator extends AbstractGenerator {
 		
 	}
 	
-	public String generatePropertyTransformName(MCProperty property) {
-		
-		return "";
-		
-	}
-	
 	public String generateRelationTypeName(MCRelationType type) {
 		
 		String name = "";
@@ -151,12 +133,6 @@ public class JSEmberGenerator extends AbstractGenerator {
 	public String generateTypeLiteral(MCType type) {
 		
 		return generateTypeName(type);
-		
-	}
-	
-	public String generateTypeParameterLiteral(MCTypeParameter parameter) {
-		
-		return "";
 		
 	}
 	

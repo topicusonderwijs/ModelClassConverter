@@ -182,29 +182,41 @@ public abstract class Generator {
 	
 	/**
 	 * Returns the literal to be used for the given property.
+	 * The default implementation returns an empty string.
 	 */
-	public abstract String generatePropertyLiteral(MCProperty property);
+	public String generatePropertyLiteral(MCProperty property) {
+		return "";
+	}
 	
 	/**
 	 * Returns the default value for the given property.
 	 * A value of `null` indicates that the property should not have a default value.
+	 * The default implementation returns `null`.
 	 */
-	public abstract String generatePropertyValue(MCProperty property);
+	public String generatePropertyValue(MCProperty property) {
+		return null;
+	}
 	
 	/**
 	 * Generates and returns the mapping for the given property.
 	 */
-	public abstract String generatePropertyMapping(MCProperty property);
+	public String generatePropertyMapping(MCProperty property) {
+		return null;
+	}
 	
 	/**
 	 * Generates and returns the transform for the given property.
 	 */
-	public abstract String generatePropertyTransform(MCProperty property);
+	public String generatePropertyTransform(MCProperty property) {
+		return null;
+	}
 	
 	/**
 	 * Generates and returns the name of the transform for the given property.
 	 */
-	public abstract String generatePropertyTransformName(MCProperty property);
+	public String generatePropertyTransformName(MCProperty property) {
+		return null;
+	}
 	
 	/**
 	 * Generates the name for the given enum value.
@@ -223,8 +235,11 @@ public abstract class Generator {
 	
 	/**
 	 * Returns the literal for the given type parameter.
+	 * The default implementation returns an empty string.
 	 */
-	public abstract String generateTypeParameterLiteral(MCTypeParameter parameter);
+	public String generateTypeParameterLiteral(MCTypeParameter parameter) {
+		return "";
+	}
 
 	/**
 	 * Returns the file name that should be used for the given package and template.
