@@ -126,8 +126,10 @@ public class JSEmberGenerator extends AbstractGenerator {
 		switch ( type ) {
 		case ToOne:
 			name = "belongsTo";
+			break;
 		case ToMany:
 			name = "hasMany";
+			break;
 		}
 		
 		return name;
@@ -166,7 +168,7 @@ public class JSEmberGenerator extends AbstractGenerator {
 	
 	public String generateFileName(MCEntity entity, String template) {
 		
-		return entity.getName().toLowerCase() + ".js";
+		return entity.getName() + ".js";
 		
 	}
 	

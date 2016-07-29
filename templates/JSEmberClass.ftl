@@ -14,8 +14,9 @@ import { hasMany } from 'ember-data/relationships';
 export default Model.extend({
 	
 	<#list class_properties_raws as raw><#t>
-	${raw.property_name}: attr(${raw.property_mapping})<#sep>,</#sep>
-	</#list>
+	${raw.property_name}: attr(${raw.property_mapping})<#sep>,
+	</#sep></#list><#if ( class_properties_raws?size > 0 && class_properties_relations?size > 0 ) ><#t>,
+	</#if>
 	
 	<#list class_properties_relations as relation>
 	${relation.property_name}: ${relation.relation_type}('${relation.property_dominant_type}')<#sep>,</#sep>
