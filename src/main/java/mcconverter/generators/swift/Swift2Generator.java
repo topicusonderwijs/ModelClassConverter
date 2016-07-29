@@ -256,25 +256,6 @@ public class Swift2Generator extends AbstractGenerator {
 		
 	}
 	
-	public String generatePropertyMapping(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	public String generatePropertyTransform(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	public String generatePropertyTransformName(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	
 	public String generateFileName(MCPackage pack, String template) {
 		
 		return null;
@@ -298,12 +279,6 @@ public class Swift2Generator extends AbstractGenerator {
 		}
 		
 		return name;
-		
-	}
-	
-	public boolean validateEntity(MCEntity entity) {
-		
-		return super.validateEntity(entity);
 		
 	}
 	

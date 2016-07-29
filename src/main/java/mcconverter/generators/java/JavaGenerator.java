@@ -266,25 +266,6 @@ public class JavaGenerator extends AbstractGenerator {
 		
 	}
 	
-	public String generatePropertyMapping(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	public String generatePropertyTransform(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	public String generatePropertyTransformName(MCProperty property) {
-		
-		return "";
-		
-	}
-	
-	
 	public String generateFileName(MCPackage pack, String template) {
 		
 		return null;

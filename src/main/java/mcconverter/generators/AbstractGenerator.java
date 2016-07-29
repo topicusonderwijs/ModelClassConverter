@@ -1,5 +1,7 @@
 package mcconverter.generators;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.CaseFormat;
@@ -15,6 +17,12 @@ public abstract class AbstractGenerator extends Generator {
 	public String generateEnumValueName(MCEnumValue value) {
 		
 		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, replacePropertyName(value.getName()));
+		
+	}
+	
+	public String generateRelationTypeName(MCRelationType type) {
+		
+		return type.name();
 		
 	}
 	
@@ -163,6 +171,49 @@ public abstract class AbstractGenerator extends Generator {
 				model.remove("class_protocols");
 				
 			}
+			
+			List<Map<String, Object>> raws = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> natives = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> enums = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> relations = new ArrayList<Map<String, Object>>();
+			
+			for ( MCProperty property : c.getProperties() ) {
+				
+				Map<String, Object> m = property.getModel(this);
+				
+				String dominantType = generateTypeName(property.getType());
+				MCTypeParameter firstParameter = property.getType().getParameter(0);
+				if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
+					
+					dominantType = firstParameter.hasName() ? firstParameter.getName() : generateTypeName(firstParameter.getType());
+					m.put("relation_type", generateRelationTypeName(MCRelationType.ToMany));
+					relations.add(m);
+					
+				} else if ( isRawType(property.getType()) ) {
+					
+					raws.add(m);
+					
+					if ( isEnum(property.getType()) ) {
+						enums.add(m);
+					} else {
+						natives.add(m);
+					}
+					
+				} else {
+					
+					m.put("relation_type", generateRelationTypeName(MCRelationType.ToOne));
+					relations.add(m);
+					
+				}
+				
+				m.put("property_dominant_type", dominantType);
+				
+			}
+
+			model.put("class_properties_raws", natives);
+			model.put("class_properties_natives", natives);
+			model.put("class_properties_enums", enums);
+			model.put("class_properties_relations", relations);
 			
 		}
 		
