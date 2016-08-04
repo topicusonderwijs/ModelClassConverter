@@ -28,14 +28,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	</#items>
 	</#list><#t>
 	
-	public <#if class_parent?? && class_properties?size==0 >override </#if>init(
-	<#list class_properties_all as property>
-		${property.property_name}: ${property.property_type.type_literal}
-		<#if ( property.property_value?? )> = ${property.property_value}
-		<#elseif ( property.property_type.type_optional )> = nil
-		<#/if>
-		<#sep>, </#sep>
-	</#list>) {
+	public <#if class_parent?? && class_properties?size==0 >override </#if>init(<#list class_properties_all as property>${property.property_name}: ${property.property_type.type_literal}<#if property.property_value??> = ${property.property_value}<#elseif property.property_type.type_optional> = nil</#if><#sep>, </#sep></#list>) {
 		<#list class_properties>
 		
 		<#items as property>
