@@ -33,7 +33,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 		self.init(
 			<#list class_properties_all as property>
-			${property.property_name}: <#if property.property_type.type_optional>nil<#elseif property.property_value??>${property.property_value}<#else>${property.property_name}</#if><#sep>, </#sep>
+			${property.property_name}: <#if property.property_value??>${property.property_value}<#elseif property.property_type.type_optional>nil<#else>${property.property_name}</#if><#sep>, </#sep>
 			</#list>
 		)
 		
