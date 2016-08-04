@@ -28,19 +28,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	</#items>
 	</#list><#t>
 	
-	<#if ( class_properties_required?size > 0 ) || ( class_properties_all_optional?size > 0 ) ><#t>
-	public convenience init(<#list class_properties_all_required_notvalued as property>${property.property_name}: ${property.property_type.type_literal}<#sep>, </#sep></#list>) {
-		
-		self.init(
-			<#list class_properties_all as property>
-			${property.property_name}: <#if property.property_value??>${property.property_value}<#elseif property.property_type.type_optional>nil<#else>${property.property_name}</#if><#sep>, </#sep>
-			</#list>
-		)
-		
-	}
-	</#if>
-	
-	public <#if class_parent?? && class_properties?size==0 >override </#if>init(<#list class_properties_all as property>${property.property_name}: ${property.property_type.type_literal}<#sep>, </#sep></#list>) {
+	public <#if class_parent?? && class_properties?size==0 >override </#if>init(<#list class_properties_all as property>${property.property_name}: ${property.property_type.type_literal}<#if property.property_value??> = ${property.property_value}<#elseif property.property_type.type_optional> = nil<#/if><#sep>, </#sep></#list>) {
 		<#list class_properties>
 		
 		<#items as property>
