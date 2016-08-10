@@ -56,6 +56,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 			self.${property.property_name} = ${property.property_name}
 			</#list>
 		} else {
+			print("Warning: Could not map to ${entity_name}")
 			return nil
 		}
 		</#list><#if class_parent??>
