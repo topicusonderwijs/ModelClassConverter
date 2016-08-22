@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import mcconverter.configuration.CustomProperty;
+import mcconverter.configuration.CustomTransform;
 import mcconverter.generators.AbstractGenerator;
 import mcconverter.model.*;
 
@@ -60,7 +61,13 @@ public class JSEmberGenerator extends AbstractGenerator {
 		
 		if ( customProperty != null ) {
 			
-			transform = customProperty.getTransform();
+			CustomTransform customTransform = customProperty.getTransform();
+			
+			if ( customTransform != null ) {
+				
+				transform = customTransform.getTransform();
+				
+			}
 			
 		} else {
 			

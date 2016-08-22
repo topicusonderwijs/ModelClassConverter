@@ -5,7 +5,7 @@ public class CustomProperty extends CustomEntity {
 	/* ===== Private Properties ===== */
 	
 	private String key;
-	private String transform;
+	private CustomTransform transform;
 	private boolean initialize;
 	private CustomValue value;
 	private CustomClass classs;
@@ -34,7 +34,7 @@ public class CustomProperty extends CustomEntity {
 		
 	}
 	
-	public String getTransform() {
+	public CustomTransform getTransform() {
 		
 		return transform;
 		
@@ -46,7 +46,7 @@ public class CustomProperty extends CustomEntity {
 		
 	}
 	
-	public void setTransform(String transform) {
+	public void setTransform(CustomTransform transform) {
 		
 		this.transform = transform;
 		

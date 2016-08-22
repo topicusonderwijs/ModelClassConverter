@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomProperty;
+import mcconverter.configuration.CustomTransform;
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
@@ -124,17 +125,28 @@ public class Swift2ObjectMapperGenerator extends SwiftGenerator {
 		
 		if ( customProperty != null ) {
 			
-			switch ( property.getType().getNativeType() ) {
+			CustomTransform customTransform = customProperty.getTransform();
+			
+			if ( customTransform != null ) {
+				
+				transform = customTransform.getTransform();
+				
+				if ( !customTransform.isLiteral() ) {
+					
+					switch ( property.getType().getNativeType() ) {
 
-			case DateTime:
-			case LocalTime:
-			case LocalDate:
-			case LocalDateTime:
-				transform = "DateFormatterTransform(format: \"" + customProperty.getTransform() + "\")";
-				break;
-			default:
-				transform = customProperty.getTransform();
-				break;
+					case DateTime:
+					case LocalTime:
+					case LocalDate:
+					case LocalDateTime:
+						transform = "DateFormatterTransform(format: \"" + customProperty.getTransform() + "\")";
+						break;
+					default:
+						break;
+						
+					}
+					
+				}
 				
 			}
 			
