@@ -253,7 +253,43 @@ public abstract class AbstractGenerator extends Generator {
 		
 	}
 	
-
+	protected MCRelationType getRelationType(MCProperty property) {
+		
+		MCRelationType relationType = null;
+		
+		MCTypeParameter firstParameter = property.getType().getParameter(0);
+		if ( firstParameter != null && !isRawType(firstParameter.getType()) ) {
+			relationType = MCRelationType.ToMany;
+		} else if ( !isRawType(property.getType()) ) {
+			relationType = MCRelationType.ToOne;
+		}
+		
+		return relationType;
+		
+	}
+	
+	protected boolean isRelation(MCProperty property) {
+	
+		return getRelationType(property) != null;
+		
+	}
+	
+	protected boolean hasNonRelationProperties(MCClass c) {
+		
+		boolean result = false;
+		
+		for (MCProperty property : c.getProperties()) {
+			
+			if ( !isRelation(property) ) {
+				result = true;
+				break;
+			}
+			
+		}
+		
+		return result;
+		
+	}
 	
 	protected boolean isRawType(MCType type) {
 		

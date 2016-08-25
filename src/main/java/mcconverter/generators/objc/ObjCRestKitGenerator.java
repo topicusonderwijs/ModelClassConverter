@@ -50,6 +50,26 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 		
 	}
 	
+	public List<String> generateImports(MCEntity entity) {
+		
+		List<String> imports = new ArrayList<String>();
+		
+		if ( entity instanceof MCClass ) {
+			
+			MCClass c = (MCClass)entity;
+			
+			for ( MCProperty property : c.getProperties() ) {
+				
+				importType(imports, property.getType());
+				
+			}
+			
+		}
+		
+		return imports;
+		
+	}
+	
 	public String generatePropertyName(MCProperty property) {
 		
 		String name = replacePropertyName(property.getName());
@@ -271,28 +291,6 @@ public class ObjCRestKitGenerator extends AbstractGenerator {
 	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
 		
 		return true;
-	}
-
-	public boolean validateModel(MCEntity entity, Map<String, Object> model) {
-		
-		if ( entity instanceof MCClass ) {
-			
-			MCClass c = (MCClass)entity;
-			
-			List<String> imports = new ArrayList<String>();
-			
-			for ( MCProperty property : c.getProperties() ) {
-				
-				importType(imports, property.getType());
-				
-			}
-			
-			model.put("class_imports", imports);
-			
-		}
-		
-		return super.validateModel(entity, model);
-		
 	}
 	
 	

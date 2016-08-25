@@ -6,12 +6,11 @@
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
-import Model from 'ember-data/model';
-import attr from 'ember-data/attr';
-import { belongsTo } from 'ember-data/relationships';
-import { hasMany } from 'ember-data/relationships';
+<#list class_imports as import>
+import ${import};
+</#list>
 
-export default Model.extend({
+export default <#if class_parent_literal??>${class_parent_literal}<#else>Model</#if>.extend({
 	
 	<#list class_properties_raws as raw><#t>
 	${raw.property_name}: attr(${raw.property_mapping})<#sep>,

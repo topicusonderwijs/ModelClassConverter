@@ -1,6 +1,7 @@
 package mcconverter.generators.js;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,52 @@ public class JSEmberGenerator extends AbstractGenerator {
 		}
 		
 		return templates;
+		
+	}
+	
+	public List<String> generateImports(MCEntity entity) {
+		
+		List<String> imports = new ArrayList<>();
+		
+		if (entity instanceof MCClass) {
+			MCClass c = (MCClass)entity;
+			
+			// Import super entity
+			String parentImport;
+			
+			if ( c.hasParent() ) {
+				parentImport = c.getParent().getName() + " from '" + c.getParent().getName() + "'";
+			} else {
+				parentImport = "Model from 'ember-data/model'";
+			}
+			imports.add(parentImport);
+			
+			
+			// Import attribute
+			if ( hasNonRelationProperties(c) ) {
+				imports.add("attr from 'ember-data/attr'");
+			}
+			
+			
+			// Import different relations
+			List<MCRelationType> relationTypes = new ArrayList<>(Arrays.asList(MCRelationType.values()));
+			
+			for ( MCProperty property : entity.getProperties() ) {
+				
+				MCRelationType relationType = getRelationType(property);
+				
+				if ( relationType != null && relationTypes.contains(relationType) ) {
+					
+					imports.add("{ " + generateRelationTypeName(relationType) + "} from 'ember-data/relationships'");
+					relationTypes.remove(relationType);
+					
+				}
+				
+			}
+			
+		}
+		
+		return imports;
 		
 	}
 	

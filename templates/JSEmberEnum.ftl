@@ -8,6 +8,6 @@
 
 var ${entity_name} = {
 	<#list enum_values as value><#t>
-	${value.enum_value_name} = "${value.enum_value_rawValue}"<#sep>, </#sep>
+	${value.enum_value_name}: "${value.enum_value_rawValue}"<#sep>, </#sep>
 	</#list>
-}
+};

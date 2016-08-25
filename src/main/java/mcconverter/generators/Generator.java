@@ -174,6 +174,13 @@ public abstract class Generator {
 	 */
 	public abstract List<String> getTemplates(MCEntity entity);
 	
+	
+	/**
+	 * Returns the imports required for the given entity.
+	 * Note that an empty list should be returned if the entity does not require imports.
+	 */
+	public abstract List<String> generateImports(MCEntity entity);
+	
 	/**
 	 * Returns the name to be used for the given property.
 	 * This can be used to prevent from using names that are for instance keywords.

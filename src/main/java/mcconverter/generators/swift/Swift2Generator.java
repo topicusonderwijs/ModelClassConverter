@@ -37,6 +37,12 @@ public class Swift2Generator extends AbstractGenerator {
 		
 	}
 	
+	public List<String> generateImports(MCEntity entity) {
+		
+		return new ArrayList<>();
+		
+	}
+	
 	public String generateEnumValueName(MCEnumValue value) {
 		
 		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, replacePropertyName(value.getName()));

@@ -44,6 +44,13 @@ public class JavaGenerator extends AbstractGenerator {
 		
 	}
 	
+	public List<String> generateImports(MCEntity entity) {
+		
+		return new ArrayList<>();
+		
+	}
+	
+	
 	public String generateTypeName(MCType type) {
 		
 		String name = "Object";

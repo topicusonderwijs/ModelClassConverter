@@ -152,6 +152,8 @@ public class MCEntity implements MCModelable {
 		model.put("class_properties_required", MCProperty.getModel(generator, getRequiredProperties()));
 		model.put("class_properties_optional", MCProperty.getModel(generator, getOptionalProperties()));
 		
+		model.put("class_imports", generator.generateImports(this));
+		
 		model.put("entity_identifier", getIdentifier());
 		model.put("entity_name", getName());
 		
