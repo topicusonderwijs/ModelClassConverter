@@ -51,7 +51,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		</#list><#t>
 		<#list class_properties_required><#t>
 		
-		if let <#items as property>${property.property_name} = ${property.property_name}<#sep>, </#sep></#items> {
+		if <#items as property>let ${property.property_name} = ${property.property_name}<#sep>, </#sep></#items> {
 			<#list class_properties_required as property>
 			self.${property.property_name} = ${property.property_name}
 			</#list>
