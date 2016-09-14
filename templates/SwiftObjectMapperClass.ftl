@@ -41,7 +41,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 	}
 	
-	public required init?(_ map: Map) {
+	public required init?(map: Map) {
 		<#list class_properties_required><#t>
 		
 		<#items as property>
@@ -66,7 +66,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 	}
 	
-	public <#if class_parent??>override </#if>func mapping(_ map: Map) {
+	public <#if class_parent??>override </#if>func mapping(map: Map) {
 		<#if class_parent??>
 		
 		super.mapping(map)
