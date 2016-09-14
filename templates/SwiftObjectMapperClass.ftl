@@ -61,7 +61,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		}
 		</#list><#if class_parent??>
 		
-		super.init(map)
+		super.init(map: map)
 		</#if><#t>
 		
 	}
@@ -69,7 +69,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	public <#if class_parent??>override </#if>func mapping(map: Map) {
 		<#if class_parent??>
 		
-		super.mapping(map)
+		super.mapping(map: map)
 		</#if><#t>
 		<#list class_properties><#t>
 		
