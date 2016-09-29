@@ -85,6 +85,7 @@ public enum MCNativeType {
 		m.put(LocalTime.class, MCNativeType.LocalTime);
 		m.put(LocalDate.class, MCNativeType.LocalDate);
 		m.put(LocalDateTime.class, MCNativeType.LocalDateTime);
+		m.put(java.sql.Time.class, MCNativeType.LocalTime);
 		m.put(org.joda.time.DateTime.class, MCNativeType.DateTime);
 		m.put(org.joda.time.LocalTime.class, MCNativeType.LocalTime);
 		m.put(org.joda.time.LocalDate.class, MCNativeType.LocalDate);
