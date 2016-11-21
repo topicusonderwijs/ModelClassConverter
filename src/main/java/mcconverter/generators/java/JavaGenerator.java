@@ -60,22 +60,22 @@ public class JavaGenerator extends AbstractGenerator {
 			switch ( type.getNativeType() ) {
 				
 				case Boolean:
-					name = "boolean";
+					name = type.isOptional() ? "Boolean" : "boolean";
 					break;
 				case Integer:
-					name = "int";
+					name = type.isOptional() ? "Integer" : "int";
 					break;
 				case Long:
-					name = "Long";
+					name = type.isOptional() ? "Long" : "long";
 					break;
 				case BigInteger:
 					name = "BigInteger";
 					break;
 				case Double:
-					name = "double";
+					name = type.isOptional() ? "Double" : "double";
 					break;
 				case Float:
-					name = "float";
+					name = type.isOptional() ? "Float" : "float";
 					break;
 				case BigDecimal:
 					name = "BigDecimal";
