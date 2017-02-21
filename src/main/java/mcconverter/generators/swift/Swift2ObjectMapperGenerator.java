@@ -18,7 +18,7 @@ import mcconverter.model.MCProperty;
 import mcconverter.model.MCType;
 import mcconverter.utils.ListUtils;
 
-public class Swift2ObjectMapperGenerator extends SwiftGenerator {
+public class Swift2ObjectMapperGenerator extends Swift2Generator {
 	
 	/* ===== Public Functions ===== */
 	
