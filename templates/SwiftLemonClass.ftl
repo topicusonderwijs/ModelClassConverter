@@ -6,12 +6,10 @@
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
-
-import Foundation
-import ObjectMapper
+import Lemon
 
 public class ${entity_name} <#if ( class_type.type_parameters?size > 0)><<#list class_type.type_parameters as parameter><#t>
-${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_parent_literal??>${class_parent_literal}<#else>Mappable</#if> {
+${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_parent_literal??>${class_parent_literal}<#else>JSONReadable, JSONWritable</#if> {
 	<#t>
 	<#if ( class_constants?size > 0 ) >
 	
@@ -21,6 +19,14 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		</#list><#t>
 	}
 	</#if><#t>
+	
+	
+	// MARK: - Properties
+	
+	public override class var descriptor : String {
+		return "${entity_descriptor}"
+	}
+	
 	<#list class_properties><#t>
 	
 	<#items as property>
@@ -41,49 +47,31 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 	}
 	
-	public required init?(_ map: Map) {
+	public required init(_ from: JSONReader) throws {
 		<#list class_properties_required><#t>
 		
 		<#items as property>
-		var ${property.property_name}: ${property.property_type.type_literal}?
-		${property.property_mapping}
+		${property.property_name} = try from.get(${property.property_key})
 		</#items>
 		</#list><#t>
-		<#list class_properties_required><#t>
+		<#if class_parent??>
 		
-		if let <#items as property>${property.property_name} = ${property.property_name}<#sep>, </#sep></#items> {
-			<#list class_properties_required as property>
-			self.${property.property_name} = ${property.property_name}
-			</#list>
-		} else {
-			print("Warning: Could not map to ${entity_name}")
-			return nil
-		}
-		</#list><#if class_parent??>
-		
-		super.init(map)
+		try super.init(from)
 		</#if><#t>
 		
 	}
 	
-	public <#if class_parent??>override </#if>func mapping(map: Map) {
-		<#if class_parent??>
-		
-		super.mapping(map)
-		</#if><#t>
+	public <#if class_parent??>override </#if>func write(to: JSONWriter) {
 		<#list class_properties><#t>
 		
 		<#items as property>
-		${property.property_mapping}
+		to.set(${property.property_key}, value: ${property.property_name})
 		</#items>
 		</#list>
+		<#if class_parent??>
 		
-	}
-	
-	public <#if class_parent??>override </#if>class var descriptor : String {
-		
-		return "${entity_descriptor}"
-		
+		super.write(to: to)
+		</#if><#t>
 	}
 	
 }

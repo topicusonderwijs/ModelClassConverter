@@ -6,8 +6,7 @@
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
 //  
 
-
-import Foundation
+import Lemon
 
 public enum ${entity_name} : String {
 	
