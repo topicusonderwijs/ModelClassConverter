@@ -162,6 +162,7 @@ public class ConfigurationParser extends DefaultHandler {
 			CustomClass c = new CustomClass();
 			c.setName(name);
 			c.setIgnored(ignored);
+			c.setProvided(provided);
 			c.setRename(as);
 			c.setParent(attributes.getValue(ParentAttribute));
 			
@@ -175,6 +176,7 @@ public class ConfigurationParser extends DefaultHandler {
 			
 			p.setName(name);
 			p.setIgnored(ignored);
+			p.setProvided(provided);
 			p.setRename(as);
 			p.setKey(attributes.getValue(KeyAttribute));
 			p.setType(CustomType.fromString(attributes.getValue(TypeAttribute)));
