@@ -26,7 +26,6 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	public override class var descriptor : String {
 		return "${entity_descriptor}"
 	}
-	
 	<#list class_properties><#t>
 	
 	<#items as property>
@@ -67,11 +66,11 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#items as property>
 		to.set("${property.property_key}", value: ${property.property_name})
 		</#items>
+		
 		</#list>
 		<#if class_parent??>
-		
 		super.write(to: to)
-		</#if><#t>
+		</#if>
 	}
 	
 }
