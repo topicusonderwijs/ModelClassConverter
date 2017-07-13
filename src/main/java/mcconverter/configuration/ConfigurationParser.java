@@ -35,6 +35,7 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String TransformAttribute = "transform";
 	private static final String InitializedAttribute = "initialized";
 	private static final String IgnoredAttribute = "ignored";
+	private static final String ProvidedAttribute = "provided";
 	private static final String ParentAttribute = "parent";
 	private static final String AsAttribute = "as";
 	private static final String KeyAttribute = "key";
@@ -124,6 +125,7 @@ public class ConfigurationParser extends DefaultHandler {
 		String path = attributes.getValue(PathAttribute);
 		String as = attributes.getValue(AsAttribute);
 		boolean ignored = getBoolean(attributes, IgnoredAttribute, false);
+		boolean provided = getBoolean(attributes, ProvidedAttribute, false);
 		
 		switch ( qName ) {
 		

@@ -7,6 +7,7 @@ public class CustomEntity {
 	private String name;
 	private String rename;
 	private boolean ignored;
+	private boolean provided;
 	private CustomType type;
 	
 	
@@ -50,15 +51,19 @@ public class CustomEntity {
 	}
 	
 	public boolean isIgnored() {
-		
 		return ignored;
-		
 	}
 	
 	public void setIgnored(boolean ignored) {
-		
 		this.ignored = ignored;
-		
+	}
+	
+	public boolean isProvided() {
+		return provided;
+	}
+	
+	public void setProvided(boolean provided) {
+		this.provided = provided;
 	}
 	
 	public boolean hasType() {

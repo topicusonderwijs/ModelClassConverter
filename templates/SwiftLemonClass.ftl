@@ -20,8 +20,8 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		public ${property.property_literal}
 		</#list><#t>
 	}
-	</#if><#t>
 	
+	</#if><#t>
 	
 	// MARK: - Properties
 	

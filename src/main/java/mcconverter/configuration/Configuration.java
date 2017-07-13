@@ -321,6 +321,12 @@ public final class Configuration {
 		
 	}
 	
+	public boolean hasProvidedClass(String name) {
+		
+		return hasCustomClass(name) && getCustomClass(name).isProvided();
+		
+	}
+	
 	public void addCustomEntity(CustomEntity entity) {
 		
 		if ( entity instanceof CustomClass ) {

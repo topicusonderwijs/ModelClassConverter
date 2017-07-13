@@ -105,9 +105,7 @@ public abstract class Generator {
 					MCEntity entity = getPackage().getEntity(identifier);
 					
 					if ( validateEntity(entity) ) {
-						
 						entities.add(entity);
-						
 					}
 					
 				}
@@ -117,12 +115,10 @@ public abstract class Generator {
 					
 					Map<String, Object> model = generateModel(entity);
 					
-					if ( model != null ) {
+					if ( model != null && !getConfiguration().hasProvidedClass(entity.getName()) ) {
 						
 						for ( String templateName : getTemplates(entity) ) {
-							
 							writeModel(templateName, generateFileName(entity, templateName), model);
-							
 						}
 						
 					}
