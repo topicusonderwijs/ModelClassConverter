@@ -51,7 +51,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		${property.property_name} = try from.get(${property.property_key})
+		${property.property_name} = try from.get("${property.property_key}")
 		</#items>
 		</#list><#t>
 		<#if class_parent??>
@@ -65,7 +65,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		to.set(${property.property_key}, value: ${property.property_name})
+		to.set("${property.property_key}", value: ${property.property_name})
 		</#items>
 		</#list>
 		<#if class_parent??>
