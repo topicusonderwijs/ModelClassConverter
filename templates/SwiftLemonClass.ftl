@@ -13,6 +13,8 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	<#t>
 	<#if ( class_constants?size > 0 ) >
 	
+	// MARK: - Constants
+	
 	public struct Constants {
 		<#list class_constants as property>
 		public ${property.property_literal}
@@ -32,6 +34,10 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	public ${property.property_literal}
 	</#items>
 	</#list><#t>
+	
+	
+	
+	// MARK: - Construction
 	
 	public <#if class_parent?? && class_properties?size==0 >override </#if>init(<#list class_properties_all as property>${property.property_name}: ${property.property_type.type_literal}<#if property.property_value??> = ${property.property_value}<#elseif property.property_type.type_optional> = nil</#if><#sep>, </#sep></#list>) {
 		<#list class_properties>
@@ -60,6 +66,13 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		
 	}
 	
+	
+	
+	// MARK: - Functions
+	
+	
+	// MARK: JSONWritable Functions
+	
 	public <#if class_parent??>override </#if>func write(to: JSONWriter) {
 		<#list class_properties><#t>
 		
@@ -70,6 +83,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		</#list>
 		<#if class_parent??>
 		super.write(to: to)
+		
 		</#if>
 	}
 	
