@@ -48,7 +48,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	}
 	
 	public required init(_ from: JSONReader) throws {
-		<#list class_properties_required><#t>
+		<#list class_properties><#t>
 		
 		<#items as property>
 		${property.property_name} = try from.get(${property.property_key})

@@ -75,6 +75,31 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 		
 	}
 	
+	public String generateTypeLiteral(MCType type) {
+		
+		String t = super.generateTypeLiteral(type);
+		
+		if ( type != null ) {
+			
+			switch ( type.getNativeType() ) {
+			case Long:
+			case BigInteger:
+				t = "NSNumber" + generateOptionalLiteral(type);
+				break;
+			case URI:
+				t = "String" + generateOptionalLiteral(type);
+				break;
+			default:
+				break;
+				
+			}
+			
+		}
+		
+		return t;
+		
+	}
+	
 	public String generatePropertyValue(MCProperty property) {
 		
 		String value = super.generatePropertyValue(property);
