@@ -7,6 +7,7 @@ import java.util.Map;
 import com.google.common.base.CaseFormat;
 
 import mcconverter.configuration.CustomClass;
+import mcconverter.configuration.CustomProperty;
 import mcconverter.generators.AbstractGenerator;
 import mcconverter.main.Main;
 import mcconverter.model.MCClass;
@@ -296,8 +297,22 @@ public class SwiftGenerator extends AbstractGenerator {
 	}
 	
 	public boolean validateModel(MCPackage pack, Map<String, Object> model) {
-		
 		return true;
+	}
+	
+	public boolean validateEntity(MCEntity entity) {
+		
+		if ( entity instanceof MCClass ) {
+			
+			MCClass c = (MCClass)entity;
+			
+			for ( MCProperty property : c.getProperties() ) {
+				applyOptional(property.getType());
+			}
+			
+		}
+		
+		return super.validateEntity(entity);
 		
 	}
 	
@@ -339,6 +354,35 @@ public class SwiftGenerator extends AbstractGenerator {
 		}
 		
 		return name;
+		
+	}
+	
+	private void applyOptional(MCType type) {
+		
+		// By default use no optional for lists, maps and sets
+		if ( type.getOwner() instanceof MCProperty ) {
+			
+			MCProperty property = (MCProperty)type.getOwner();
+			
+			CustomProperty customProperty = getConfiguration().getSpecificCustomProperty(property);
+			
+			if ( customProperty == null || !customProperty.hasType() ) {
+
+				switch ( type.getNativeType() ) {
+				
+				case List:
+				case Map:
+				case Set:
+					type.setOptional(false);
+					break;
+				default:
+					break;
+					
+				}
+				
+			}
+			
+		}
 		
 	}
 	
