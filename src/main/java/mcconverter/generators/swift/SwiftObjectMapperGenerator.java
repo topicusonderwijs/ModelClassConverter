@@ -250,9 +250,7 @@ public class SwiftObjectMapperGenerator extends SwiftGenerator {
 				CustomProperty customProperty = getConfiguration().getCustomTransformForProperty(p);
 				
 				if ( customProperty != null && customProperty.hasTransform() ) {
-					
 					transforms.put(generatePropertyTransformName(p), generatePropertyTransform(p));
-					
 				}
 				
 			}

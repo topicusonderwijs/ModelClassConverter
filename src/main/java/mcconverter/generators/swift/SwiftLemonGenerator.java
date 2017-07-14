@@ -3,11 +3,13 @@ package mcconverter.generators.swift;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
 import mcconverter.model.MCPackage;
+import mcconverter.model.MCProperty;
 
 public class SwiftLemonGenerator extends SwiftGenerator {
 	
@@ -37,6 +39,21 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 	
 	public String generateFileName(MCPackage pack, String template) {
 		return pack.getName() + "Model.swift";
+	}
+	
+	public String generatePropertyMapping(MCProperty property) {
+		
+		List<String> keys = Arrays.asList(property.getKey().split(","));
+		String mapping = keys.stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", "));
+		
+		String transformName = generatePropertyTransformName(property);
+		
+		if ( transformName != null ) {
+			mapping += ", transform: " + transformName;
+		}
+		
+		return mapping;
+		
 	}
 	
 }
