@@ -43,7 +43,7 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 	
 	public String generatePropertyMapping(MCProperty property) {
 		
-		List<String> keys = Arrays.asList(property.getKey().split("."));
+		List<String> keys = Arrays.asList(property.getKey().split("\\."));
 		String mapping = keys.stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", "));
 		
 		String transformName = generatePropertyTransformName(property);
