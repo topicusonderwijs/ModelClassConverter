@@ -54,13 +54,13 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		switch (property.getType().getNativeType()) {
 		
 		case LocalTime:
-			custom += "string(.localTimeLong)";
+			custom = "string(.localTimeLong)";
 			break;
 		case LocalDate:
-			custom += "string(.localDate)";
+			custom = "string(.localDate)";
 			break;
 		case LocalDateTime:
-			custom += "string(.localDateTime)";
+			custom = "string(.localDateTime)";
 			break;
 		default:
 			break;
@@ -68,7 +68,10 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		}
 		
 		if (custom != null) {
-			transform += "?." + custom;
+			if (property.getType().isOptional()) {
+				transform += "?";
+			}
+			transform += "." + custom;
 		}
 		
 		return transform;
