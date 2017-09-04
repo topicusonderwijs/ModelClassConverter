@@ -46,10 +46,23 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		List<String> keys = Arrays.asList(property.getKey().split("\\."));
 		String mapping = keys.stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", "));
 		
-		String transformName = generatePropertyTransformName(property);
+		mapping += ", value: " + property.getName();
 		
-		if ( transformName != null ) {
-			mapping += ", transform: " + transformName;
+		switch(property.getType().getNativeType()) {
+		
+		case LocalTime:
+			mapping += ".string(.localTimeLong)";
+			break;
+		case LocalDate:
+			mapping += ".string(.localDate)";
+			break;
+		case LocalDateTime:
+			mapping += ".string(.localDateTime)";
+			break;
+			
+		default:
+			break;
+			
 		}
 		
 		return mapping;
