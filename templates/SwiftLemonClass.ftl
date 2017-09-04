@@ -77,7 +77,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		to.set(${property.property_mapping})
+		to.set(${property.property_mapping}${property.property_transform})
 		</#items>
 		
 		</#list>
