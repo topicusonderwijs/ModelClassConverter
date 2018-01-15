@@ -58,7 +58,7 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 			if (customTransform != null) {
 				String transform = customTransform.getTransform();
 				if (transform != null) {
-					reading += ", transform: " + transform;
+					reading += ", coder: " + transform;
 				}
 			}
 		}
