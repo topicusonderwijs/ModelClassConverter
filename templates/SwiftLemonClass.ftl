@@ -56,7 +56,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		${property.property_name} = try<#if property.property_type.type_optional >?</#if> from.get(${property.property_mapping})
+		${property.property_name} = try<#if property.property_type.type_optional >?</#if> from.get(${property.property_reading})
 		</#items>
 		</#list><#t>
 		<#if class_parent??>
@@ -77,7 +77,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 		<#list class_properties><#t>
 		
 		<#items as property>
-		to.set(${property.property_mapping}${property.property_transform})
+		to.set(${property.property_writing})
 		</#items>
 		
 		</#list>

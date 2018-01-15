@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mcconverter.configuration.CustomProperty;
+import mcconverter.configuration.CustomTransform;
 import mcconverter.model.MCClass;
 import mcconverter.model.MCEntity;
 import mcconverter.model.MCEnum;
@@ -46,9 +48,27 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		return keys.stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", "));
 	}
 	
-	public String generatePropertyTransform(MCProperty property) {
+	public String generatePropertyReading(MCProperty property) {
+		String reading = generatePropertyMapping(property);
 		
-		String transform = ", value: " + property.getName();
+		CustomProperty customProperty = getConfiguration().getCustomTransformForProperty(property);
+		
+		if (customProperty != null) {
+			CustomTransform customTransform = customProperty.getTransform();
+			if (customTransform != null) {
+				String transform = customTransform.getTransform();
+				if (transform != null) {
+					reading += ", " + transform;
+				}
+			}
+		}
+		
+		return reading;
+	}
+	
+	public String generatePropertyWriting(MCProperty property) {
+		
+		String writing = generatePropertyMapping(property) + ", value: " + property.getName();
 		String custom = null;
 		
 		switch (property.getType().getNativeType()) {
@@ -69,12 +89,12 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		
 		if (custom != null) {
 			if (property.getType().isOptional()) {
-				transform += "?";
+				writing += "?";
 			}
-			transform += "." + custom;
+			writing += "." + custom;
 		}
 		
-		return transform;
+		return writing;
 		
 	}
 	
