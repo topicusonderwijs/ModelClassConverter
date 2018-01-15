@@ -215,6 +215,20 @@ public abstract class Generator {
 	}
 	
 	/**
+	 * Generates and returns the reading for the given property.
+	 */
+	public String generatePropertyReading(MCProperty property) {
+		return null;
+	}
+	
+	/**
+	 * Generates and returns the writing for the given property.
+	 */
+	public String generatePropertyWriting(MCProperty property) {
+		return null;
+	}
+	
+	/**
 	 * Generates and returns the name of the transform for the given property.
 	 */
 	public String generatePropertyTransformName(MCProperty property) {

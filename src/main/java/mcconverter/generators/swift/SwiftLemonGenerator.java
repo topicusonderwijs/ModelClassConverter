@@ -67,7 +67,6 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 	}
 	
 	public String generatePropertyWriting(MCProperty property) {
-		
 		String writing = generatePropertyMapping(property) + ", value: " + property.getName();
 		String custom = null;
 		
@@ -95,7 +94,6 @@ public class SwiftLemonGenerator extends SwiftGenerator {
 		}
 		
 		return writing;
-		
 	}
 	
 }

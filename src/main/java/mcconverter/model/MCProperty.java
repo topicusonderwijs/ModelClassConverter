@@ -155,6 +155,8 @@ public class MCProperty extends MCEntity implements MCModelable {
 		model.put("property_isConstant", isConstant());
 		model.put("property_mapping", generator.generatePropertyMapping(this));
 		model.put("property_transform", generator.generatePropertyTransform(this));
+		model.put("property_reading", generator.generatePropertyReading(this));
+		model.put("property_writing", generator.generatePropertyWriting(this));
 		
 		return model;
 		
