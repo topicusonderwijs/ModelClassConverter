@@ -145,6 +145,7 @@ public class Loader {
 				correct = true;
 				
 			} catch (Exception e) {
+				e.printStackTrace();
 				correct = false;
 			}
 			
