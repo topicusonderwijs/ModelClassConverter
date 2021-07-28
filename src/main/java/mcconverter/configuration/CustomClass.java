@@ -13,6 +13,7 @@ public class CustomClass extends CustomEntity {
 	/* ===== Private Properties ===== */
 	
 	private String parent;
+	private String descriptor;
 	private List<CustomProperty> properties;
 	
 	
@@ -155,5 +156,21 @@ public class CustomClass extends CustomEntity {
 		return s;
 		
 	}
+
+	public boolean hasDescriptor() {
+		
+		return getDescriptor() != null;
+	}
 	
+	public String getDescriptor() {
+		
+		return descriptor;
+		
+	}
+	
+	public void setDescriptor(String descriptor) {
+	
+		this.descriptor = descriptor;
+	
+	}
 }

@@ -231,6 +231,20 @@ public abstract class AbstractGenerator extends Generator {
 			
 		}
 		
+		CustomClass customClass = getConfiguration().getCustomClass(entity.getName());
+		
+		if ( customClass == null ) {
+			
+			customClass = getConfiguration().getCustomClass(entity.getIdentifier());
+			
+		}
+		
+		if ( customClass != null && customClass.hasDescriptor()) {
+			
+			descriptor = customClass.getDescriptor();
+			
+		}
+		
 		model.put("entity_descriptor", descriptor);
 		
 		return valid;

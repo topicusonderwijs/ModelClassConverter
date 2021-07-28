@@ -25,6 +25,7 @@ public class ConfigurationParser extends DefaultHandler {
 	private static final String DeepestSuperClassTag = "deepestSuperClass";
 	private static final String IgnoreProtocolsTag = "ignoreProtocols";
 	private static final String CustomClassTag = "customClass";
+	private static final String CustomDescriptorTag = "customDescriptor";
 	private static final String CustomPropertyTag = "customProperty";
 
 	private static final String NameAttribute = "name";
@@ -165,6 +166,11 @@ public class ConfigurationParser extends DefaultHandler {
 			
 			currentClass = c;
 			getConfiguration().addCustomEntity(c);
+			
+			break;
+		case CustomDescriptorTag:
+			
+			currentClass.setDescriptor(name);
 			
 			break;
 		case CustomPropertyTag:
