@@ -1,10 +1,10 @@
-//  
+//
 //  ${file_name}
 //  ${entity_identifier}
 //  ${product_name} (${model_version})
-//  
+//
 //  Automatically generated on ${file_date} at ${file_time} by ${user}.
-//  
+//
 
 import Lemon
 
@@ -25,7 +25,7 @@ ${parameter.parameter_literal}<#t><#sep>, </#sep></#list>> </#if>: <#if class_pa
 	
 	// MARK: - Properties
 	
-	public override class var descriptor : String {
+	public <#if class_parent??>override </#if>class var descriptor : String {
 		return "${entity_descriptor}"
 	}
 	<#list class_properties><#t>
