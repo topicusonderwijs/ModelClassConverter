@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Utility script for running ModelClassConverter
 
@@ -35,8 +35,8 @@ then
 fi
 
 echo "converter.sh"
-echo "\tAction: $ACTION"
-echo "\tBranch: $BRANCH"
+printf "\tAction: %s\n", "$ACTION"
+printf "\tBranch: %s\n", "$BRANCH"
 
 
 # Run different actions
@@ -100,7 +100,7 @@ then
 	then
 		
 		# Determine artifacts
-		DEPENDENCIES=`perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < $CONFIGURATION`
+		DEPENDENCIES=$(perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < "$CONFIGURATION")
 		
 		# Download artifacts
 		for DEPENDENCY in $DEPENDENCIES
