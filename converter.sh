@@ -47,6 +47,7 @@ echo "\tBranch: $BRANCH"
 echo "\tGithub user: $GITHUB_USER"
 echo "\tGithub URL: $GITHUB_URL"
 echo `pwd`
+pwd
 
 # Run different actions
 
@@ -83,6 +84,8 @@ then
 
 	cd "$DIRECTORY"
 	git checkout "$BRANCH"
+	echo `pwd`
+	pwd
 	
 	EXECUTABLE="$EXECUTABLE-$BRANCH"
 
@@ -96,12 +99,12 @@ then
 		fi
 
 		cd target
+		echo `pwd`
 		pwd
 		mv ModelClassConverter*jar "$EXECUTABLE.jar"
 		cd ..
 		
 	else
-	
 		echo "Already compiled executable"
 		
 	fi
@@ -116,6 +119,9 @@ then
 		# Determine artifacts
 		DEPENDENCIES=`perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < $CONFIGURATION`
 		
+		echo `pwd`
+		pwd
+
 		# Download artifacts
 		for DEPENDENCY in $DEPENDENCIES
 		do
