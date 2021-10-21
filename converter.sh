@@ -118,7 +118,6 @@ then
 		# Determine artifacts
 		DEPENDENCIES=`perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < $CONFIGURATION`
 		
-		echo "$DEPENDENCIES"
 		echo `pwd`
 
 		# Download artifacts
@@ -127,7 +126,7 @@ then
 			if [ -n $GITHUB_TOKEN ]
 			then
 				echo "running maven using custom settings.xml"
-				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../settings.xml
+				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s settings.xml
 			else
 				echo "running maven using system settings.xml"
 				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
