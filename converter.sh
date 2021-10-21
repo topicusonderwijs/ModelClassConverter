@@ -89,7 +89,7 @@ then
 
 	if [ ! -f "target/$EXECUTABLE.jar" ]
 	then
-		if [ -z $GITHUB_TOKEN ]
+		if [ -n $GITHUB_TOKEN ]
 		then
 			echo "running maven using custom settings.xml"
 			mvn clean compile assembly:single -U -s ../settings.xml
@@ -124,7 +124,7 @@ then
 		# Download artifacts
 		for DEPENDENCY in $DEPENDENCIES
 		do
-			if [ -z $GITHUB_TOKEN ]
+			if [ -n $GITHUB_TOKEN ]
 			then
 				echo "running maven using custom settings.xml"
 				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../settings.xml
