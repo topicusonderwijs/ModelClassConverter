@@ -46,6 +46,7 @@ echo "\tAction: $ACTION"
 echo "\tBranch: $BRANCH"
 echo "\tGithub user: $GITHUB_USER"
 echo "\tGithub URL: $GITHUB_URL"
+echo `pwd`
 
 # Run different actions
 
@@ -89,7 +90,7 @@ then
 	then
 		if [ -z $GITHUB_TOKEN ]
 		then
-			mvn clean compile assembly:single -U -s ../entity-generator/settings.xml
+			mvn clean compile assembly:single -U -s settings.xml
 		else
 			mvn clean compile assembly:single -U
 		fi
