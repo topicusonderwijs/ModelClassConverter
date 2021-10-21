@@ -47,7 +47,6 @@ echo "\tBranch: $BRANCH"
 echo "\tGithub user: $GITHUB_USER"
 echo "\tGithub URL: $GITHUB_URL"
 echo `pwd`
-pwd
 
 # Run different actions
 
@@ -85,7 +84,6 @@ then
 	cd "$DIRECTORY"
 	git checkout "$BRANCH"
 	echo `pwd`
-	pwd
 	
 	EXECUTABLE="$EXECUTABLE-$BRANCH"
 
@@ -93,14 +91,13 @@ then
 	then
 		if [ -z $GITHUB_TOKEN ]
 		then
-			mvn clean compile assembly:single -U -s settings.xml
+			mvn clean compile assembly:single -U -s ../settings.xml
 		else
 			mvn clean compile assembly:single -U
 		fi
 
 		cd target
 		echo `pwd`
-		pwd
 		mv ModelClassConverter*jar "$EXECUTABLE.jar"
 		cd ..
 		
@@ -119,15 +116,15 @@ then
 		# Determine artifacts
 		DEPENDENCIES=`perl -e 'while ($_ = <>) { /<dependency name=\"(.*?)\"/; if ( $t ne $1 ) { print "$1\n"; $t = $1; } }' < $CONFIGURATION`
 		
+		echo "$DEPENDENCIES"
 		echo `pwd`
-		pwd
 
 		# Download artifacts
 		for DEPENDENCY in $DEPENDENCIES
 		do
 			if [ -z $GITHUB_TOKEN ]
 			then
-				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../entity-generator/settings.xml
+				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../settings.xml
 			else
 				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
 			fi
