@@ -9,6 +9,13 @@ CONFIGURATION="configuration.xml"
 DIRECTORY="converter"
 EXECUTABLE="ModelClassConverter"
 DOWNLOAD_ARTIFACTS="download"
+GITHUB_URL="git@github.com:"
+
+# If user and token is set then use https urls
+if [ -n "$GITHUB_TOKEN" ]
+then
+	GITHUB_URL="https://$GITHUB_TOKEN@github.com/"
+fi
 
 # Determine which action to perform
 if [ -n "$1" ]
@@ -37,7 +44,8 @@ fi
 echo "converter.sh"
 echo "\tAction: $ACTION"
 echo "\tBranch: $BRANCH"
-
+echo "\tGithub user: $GITHUB_USER"
+echo "\tGithub URL: $GITHUB_URL"
 
 # Run different actions
 
@@ -67,7 +75,7 @@ then
 
 	if [ ! -d "$DIRECTORY" ]
 	then
-		git clone git@github.com:topicusonderwijs/ModelClassConverter.git "$DIRECTORY"
+		git clone "$GITHUB_URL"topicusonderwijs/ModelClassConverter.git "$DIRECTORY"
 	else
 		echo "Already cloned repository"
 	fi
@@ -79,8 +87,13 @@ then
 
 	if [ ! -f "target/$EXECUTABLE.jar" ]
 	then
-		
-		mvn clean compile assembly:single -U
+		if [ -z $GITHUB_TOKEN ]
+		then
+			mvn clean compile assembly:single -U -s ../entity-generator/settings.xml
+		else
+			mvn clean compile assembly:single -U
+		fi
+
 		cd target
 		pwd
 		mv ModelClassConverter*jar "$EXECUTABLE.jar"
@@ -105,7 +118,12 @@ then
 		# Download artifacts
 		for DEPENDENCY in $DEPENDENCIES
 		do
-			mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
+			if [ -z $GITHUB_TOKEN ]
+			then
+				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../entity-generator/settings.xml
+			else
+				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
+			fi
 		done
 		
 	fi
