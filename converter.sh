@@ -91,8 +91,10 @@ then
 	then
 		if [ -z $GITHUB_TOKEN ]
 		then
+			echo "running maven using custom settings.xml"
 			mvn clean compile assembly:single -U -s ../settings.xml
 		else
+			echo "running maven using system settings.xml"
 			mvn clean compile assembly:single -U
 		fi
 
@@ -124,8 +126,10 @@ then
 		do
 			if [ -z $GITHUB_TOKEN ]
 			then
+				echo "running maven using custom settings.xml"
 				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY" -s ../settings.xml
 			else
+				echo "running maven using system settings.xml"
 				mvn org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact="$DEPENDENCY"
 			fi
 		done
