@@ -87,6 +87,9 @@ public class Loader {
 		if ( !hasLoaded() ) {
 
 			Naether n = new NaetherImpl();
+			// Maven vereist HTTPS
+			n.getRemoteRepositories().clear();
+			n.addRemoteRepository("central https", "default", "https://repo1.maven.org/maven2/");
 			
 			try {
 				
